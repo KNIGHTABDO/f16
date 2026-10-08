@@ -1,5 +1,12 @@
 [gd_resource type="AudioBusLayout" format=3]
 
+[sub_resource type="AudioEffectLowPassFilter" id="AudioEffectLowPassFilter_sfx_cockpit"]
+cutoff_hz = 1600.0
+
+[sub_resource type="AudioEffectBandPassFilter" id="AudioEffectBandPassFilter_music_radio"]
+cutoff_hz = 2200.0
+resonance = 0.35
+
 [resource]
 bus/1/name = &"SFX"
 bus/1/solo = false
@@ -7,9 +14,19 @@ bus/1/mute = false
 bus/1/bypass_fx = false
 bus/1/volume_db = 0.0
 bus/1/send = &"Master"
+bus/1/effect/0/effect = SubResource("AudioEffectLowPassFilter_sfx_cockpit")
+bus/1/effect/0/enabled = false
 bus/2/name = &"Music"
 bus/2/solo = false
 bus/2/mute = false
 bus/2/bypass_fx = false
 bus/2/volume_db = 0.0
 bus/2/send = &"Master"
+bus/2/effect/0/effect = SubResource("AudioEffectBandPassFilter_music_radio")
+bus/2/effect/0/enabled = false
+bus/3/name = &"Cockpit"
+bus/3/solo = false
+bus/3/mute = false
+bus/3/bypass_fx = false
+bus/3/volume_db = 0.0
+bus/3/send = &"Master"
