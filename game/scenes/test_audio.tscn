@@ -1,0 +1,13 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://core/missions/test_audio.gd" id="1_test"]
+
+[node name="TestAudio" type="Node3D"]
+script = ExtResource("1_test")
+
+[node name="Camera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+current = true
+
+[node name="Flyby" type="AudioStreamPlayer3D" parent="."]
+bus = &"SFX"
