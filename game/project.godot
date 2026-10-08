@@ -18,6 +18,7 @@ Settings="*res://autoload/settings.gd"
 GameState="*res://autoload/game_state.gd"
 Ground="*res://autoload/ground.gd"
 Sfx="*res://autoload/sfx.gd"
+Vfx="*res://autoload/vfx.gd"
 Radio="*res://autoload/radio.gd"
 
 [display]

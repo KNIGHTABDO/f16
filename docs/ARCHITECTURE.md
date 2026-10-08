@@ -6,7 +6,7 @@ Built on GitHub Actions macOS (no Mac locally); developed and tested on Linux wi
 
 ## Layout
 ```
-game/autoload/   WorldOrigin, Events, Settings, GameState, Ground, Sfx, Radio  (singletons, see each file header)
+game/autoload/   WorldOrigin, Events, Settings, GameState, Ground, Sfx, Vfx, Radio  (singletons, see each file header)
 game/core/flight/     FlightModel (pure physics), AircraftData (JSON loader)
 game/core/aircraft/   Aircraft node + scene, visuals (control surfaces, afterburner, gear), damage FX
 game/core/controls/   ControlInput, PlayerController (touch/gyro/keyboard/gamepad), AIPilot
