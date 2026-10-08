@@ -1,0 +1,12 @@
+{
+	"m61a1": {"type": "gun", "name": "M61A1 Vulcan 20mm", "rpm": 6000, "muzzle_velocity": 1050, "damage": 9, "spread_mrad": 4, "tracer_every": 3, "range": 2500, "sound": "gun_vulcan"},
+	"m2_50cal": {"type": "gun", "name": "M2 .50 cal", "rpm": 800, "muzzle_velocity": 870, "damage": 4, "spread_mrad": 6, "tracer_every": 4, "range": 1400, "sound": "gun_50cal"},
+	"gsh301": {"type": "gun", "name": "GSh-30-1 30mm", "rpm": 1600, "muzzle_velocity": 860, "damage": 18, "spread_mrad": 4, "tracer_every": 2, "range": 2200, "sound": "gun_30mm"},
+	"gau8": {"type": "gun", "name": "GAU-8 Avenger 30mm", "rpm": 3900, "muzzle_velocity": 1010, "damage": 22, "spread_mrad": 5, "tracer_every": 3, "range": 3000, "sound": "gun_gau8"},
+	"aim9x": {"type": "ir_missile", "name": "AIM-9X Sidewinder", "mass": 85, "speed_max": 900, "boost_s": 5.0, "accel": 300, "max_g": 40, "nav_gain": 4.0, "seeker_fov_deg": 90, "lock_fov_deg": 30, "range": 10000, "min_range": 300, "lifetime": 25, "proximity": 9, "damage": 120, "flare_resist": 0.75, "targets": ["air", "helicopter"]},
+	"aim120c": {"type": "radar_missile", "name": "AIM-120C AMRAAM", "mass": 157, "speed_max": 1350, "boost_s": 8.0, "accel": 250, "max_g": 35, "nav_gain": 3.5, "seeker_fov_deg": 60, "lock_fov_deg": 60, "range": 50000, "min_range": 1000, "lifetime": 60, "proximity": 12, "damage": 140, "chaff_resist": 0.7, "targets": ["air", "helicopter"]},
+	"agm65": {"type": "ag_missile", "name": "AGM-65 Maverick", "mass": 210, "speed_max": 320, "boost_s": 4.0, "accel": 80, "max_g": 15, "nav_gain": 3.0, "seeker_fov_deg": 40, "lock_fov_deg": 15, "range": 15000, "min_range": 600, "lifetime": 60, "proximity": 4, "damage": 400, "blast_radius": 15, "targets": ["vehicle", "armor", "sam", "aaa", "ship", "structure"]},
+	"mk82": {"type": "bomb", "name": "Mk 82 500 lb", "mass": 241, "drag": 0.12, "damage": 500, "blast_radius": 40, "targets": ["vehicle", "armor", "sam", "aaa", "ship", "structure"]},
+	"gbu12": {"type": "guided_bomb", "name": "GBU-12 Paveway II", "mass": 230, "drag": 0.10, "max_g": 3, "nav_gain": 3.0, "lock_fov_deg": 40, "damage": 550, "blast_radius": 35, "targets": ["vehicle", "armor", "sam", "aaa", "ship", "structure"]},
+	"hydra70": {"type": "rocket", "name": "Hydra 70 rockets", "mass": 10, "speed_max": 740, "accel": 600, "boost_s": 1.1, "spread_mrad": 8, "damage": 70, "blast_radius": 10, "lifetime": 8, "salvo": 2, "targets": ["vehicle", "armor", "sam", "aaa", "ship", "structure", "helicopter"]}
+}

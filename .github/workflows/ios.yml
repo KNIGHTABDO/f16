@@ -1,0 +1,101 @@
+name: iOS
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+    paths-ignore: ['**.md', 'notes/**', 'briefs/**', 'docs/**', 'tasks/**']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GODOT_VERSION: 4.7.2
+  GODOT_TAG: 4.7.2-stable
+
+jobs:
+  build:
+    runs-on: macos-26
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select newest Xcode
+        run: |
+          XC=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -1)
+          [ -n "$XC" ] && sudo xcode-select -s "$XC"
+          xcodebuild -version
+
+      - uses: actions/cache@v4
+        id: godot-cache
+        with:
+          path: ~/godot
+          key: godot-${{ env.GODOT_TAG }}-macos
+
+      - name: Download Godot + export templates
+        if: steps.godot-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/godot && cd ~/godot
+          base=https://github.com/godotengine/godot/releases/download/$GODOT_TAG
+          curl -fsSL -o godot.zip "$base/Godot_v${GODOT_TAG}_macos.universal.zip"
+          unzip -q godot.zip && rm godot.zip
+          curl -fsSL -o templates.tpz "$base/Godot_v${GODOT_TAG}_export_templates.tpz"
+          unzip -q templates.tpz && rm templates.tpz
+          # keep only the iOS template to make the cache small
+          find templates -type f ! -name 'ios*' -delete
+          ls templates
+
+      - name: Install templates
+        run: |
+          dest="$HOME/Library/Application Support/Godot/export_templates/${GODOT_VERSION}.stable"
+          mkdir -p "$dest" && cp -R ~/godot/templates/* "$dest/"
+          echo "GODOT=$HOME/godot/Godot.app/Contents/MacOS/Godot" >> $GITHUB_ENV
+
+      - name: Import + export Xcode project
+        run: |
+          set -o pipefail
+          $GODOT --headless --path game --import 2>&1 | tee import.log | grep -E "ERROR|SCRIPT ERROR" | head -50 || true
+          mkdir -p build/ios
+          $GODOT --headless --path game --export-release "iOS" ../build/ios/KnightWings.xcodeproj 2>&1 | tee export.log | tail -30
+          ls build/ios
+          if grep -E "SCRIPT ERROR|Parse Error" import.log export.log; then echo "::error::GDScript errors"; exit 1; fi
+
+      - name: Build unsigned IPA
+        run: |
+          set -o pipefail
+          VERSION="${GITHUB_REF_NAME#v}"; [[ "$GITHUB_REF_TYPE" == "tag" ]] || VERSION="0.${GITHUB_RUN_NUMBER}"
+          cd build/ios
+          SCHEME=$(xcodebuild -list -project KnightWings.xcodeproj | awk '/Schemes:/{getline; print $1; exit}')
+          xcodebuild -project KnightWings.xcodeproj -scheme "$SCHEME" -configuration Release \
+            -sdk iphoneos -destination 'generic/platform=iOS' -archivePath ../KnightWings.xcarchive \
+            MARKETING_VERSION="$VERSION" CURRENT_PROJECT_VERSION="$GITHUB_RUN_NUMBER" \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" DEVELOPMENT_TEAM="" \
+            archive > ../archive.log 2>&1 || { grep -E "error:" ../archive.log | sort -u | head -40; tail -30 ../archive.log; exit 1; }
+          cd ..
+          APP=$(ls -d KnightWings.xcarchive/Products/Applications/*.app | head -1)
+          mkdir -p Payload && cp -R "$APP" Payload/
+          zip -qry KnightWings.ipa Payload
+          ls -lh KnightWings.ipa
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KnightWings-ipa
+          path: build/KnightWings.ipa
+          retention-days: 14
+
+      - name: Publish release
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd build
+          git log -1 --pretty=%B | grep -viE '^co-authored-by' > release-notes.txt || true
+          APP=$(ls -d Payload/*.app | head -1)
+          python3 ../scripts/make-source.py "$APP" KnightWings.ipa "$GITHUB_REF_NAME" release-notes.txt apps.json
+          printf '\n\n---\nUnsigned iPhone/iPad build. Install with SideStore, or add the source:\nhttps://github.com/%s/releases/latest/download/apps.json\n' "$GITHUB_REPOSITORY" >> release-notes.txt
+          gh release create "$GITHUB_REF_NAME" KnightWings.ipa apps.json --title "Knight Wings $GITHUB_REF_NAME" --notes-file release-notes.txt

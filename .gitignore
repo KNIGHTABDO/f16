@@ -1,0 +1,8 @@
+.gemini-tasks/
+.claude/worktrees/
+.gemini-tasks-*.out
+.godot/
+/build/
+*.tmp
+__pycache__/
+/tools/cache/
