@@ -52,6 +52,51 @@
       "wing": "^WingTips$",
       "cockpit": "^canopy$",
       "muzzles_raw": [[-0.9, 0.6, -4.5]]
+    },
+    "ef2000": {
+      "kind": "aircraft",
+      "repo": "IAHM-COL/EF-Typhoon",
+      "branch": "master",
+      "src": "tools/cache/models/src-ef2000",
+      "sparse": ["Models/*.ac", "Models/*.xml", "Models/*.png"],
+      "entry": "Models/EF-Typhoon.xml",
+      "include_models": [],
+      "offset_overrides": {},
+      "source": "https://github.com/IAHM-COL/EF-Typhoon (Models/EF-Typhoon.xml, EF-Typhoon.ac)",
+      "license": "GPL-2.0",
+      "out": "game/assets/models/aircraft/ef2000/ef2000.glb",
+      "remap": ["-z", "+y", "+x"],
+      "body_remap": ["+y", "+z", "+x"],
+      "scale": 1.0,
+      "origin": "center",
+      "max_tex": 2048,
+      "max_tris": 60000,
+      "rules": [
+        ["_drop", "Flame|beacon|strobe|^Light\\.|^blah\\.|^lens\\."],
+        ["canopy", "^canopy"],
+        ["gear", "^gear|^nosegear|^wheel|^nosewheel|^geardoor"],
+        ["aileron_l", "^flaperon\\.L|^flaperon1\\.L"],
+        ["aileron_r", "^flaperon\\.R|^flaperon1\\.R"],
+        ["elevator_l", "^elevator\\.L$"],
+        ["elevator_r", "^elevator\\.R$"],
+        ["rudder", "^rudder$"],
+        ["speedbrake", "^speedbrake$"],
+        ["nozzle", "^Mesh153\\.007$"]
+      ],
+      "anim": {
+        "canopy": "canopyframe",
+        "elevator_l": "elevator.L",
+        "elevator_r": "elevator.R",
+        "rudder": "rudder",
+        "aileron_l": "flaperon.L",
+        "aileron_r": "flaperon.R",
+        "speedbrake": "speedbrake"
+      },
+      "hinges": {},
+      "nozzle": "^Mesh153\\.007$",
+      "wing": "^wing\\.01[LR]$",
+      "cockpit": "^canopyglass$",
+      "muzzles_raw": []
     }
   }
 }

@@ -261,7 +261,8 @@ def xf(node, name, default=0.0):
     if node is None:
         return default
     v = node.findtext(name)
-    return float(v) if v not in (None, "") else default
+    # Some FG XMLs use a decimal comma ("4,3428"); accept it.
+    return float(v.strip().replace(",", ".")) if v not in (None, "") else default
 
 
 def parse_animations(root):
