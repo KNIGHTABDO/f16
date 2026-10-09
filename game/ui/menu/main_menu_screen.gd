@@ -5,6 +5,8 @@ extends Control
 var _bg_texture: TextureRect
 var _pan_time: float = 0.0
 var _callsign_label: Label
+var _flight_btn: Button
+var _hangar_btn: Button
 
 
 func _ready() -> void:
@@ -101,17 +103,17 @@ func _ready() -> void:
 	btn_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
 	left_vbox.add_child(btn_vbox)
 
-	var btn_flight := _create_menu_button("FREE FLIGHT", "Immediate takeoff over Gibraltar")
-	btn_flight.pressed.connect(_on_free_flight_pressed)
-	btn_vbox.add_child(btn_flight)
+	_flight_btn = _create_menu_button("FREE FLIGHT", "")
+	_flight_btn.pressed.connect(_on_free_flight_pressed)
+	btn_vbox.add_child(_flight_btn)
 
 	var btn_missions := _create_menu_button("MISSIONS", "Air combat engagements & strikes")
 	btn_missions.pressed.connect(_on_missions_pressed)
 	btn_vbox.add_child(btn_missions)
 
-	var btn_hangar := _create_menu_button("HANGAR", "Aircraft selection & loadouts")
-	btn_hangar.pressed.connect(_on_hangar_pressed)
-	btn_vbox.add_child(btn_hangar)
+	_hangar_btn = _create_menu_button("HANGAR", "")
+	_hangar_btn.pressed.connect(_on_hangar_pressed)
+	btn_vbox.add_child(_hangar_btn)
 
 	var btn_settings := _create_menu_button("SETTINGS", "Controls, graphics, audio & radio")
 	btn_settings.pressed.connect(_on_settings_pressed)
@@ -143,6 +145,7 @@ func _ready() -> void:
 	bottom_hbox.add_child(_callsign_label)
 
 	Settings.changed.connect(_on_settings_changed)
+	_refresh_subtexts()
 
 
 func _process(delta: float) -> void:
@@ -180,6 +183,7 @@ func _create_menu_button(text: String, subtext: String) -> Button:
 	sub_lbl.add_theme_color_override("font_color", Color(0.60, 0.70, 0.80, 0.75))
 	sub_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(sub_lbl)
+	btn.set_meta("subtext", sub_lbl)
 
 	return btn
 
@@ -192,12 +196,14 @@ func _update_callsign() -> void:
 func _on_settings_changed(key: String) -> void:
 	if key == "pilot_callsign" or key == "" or key == "all":
 		_update_callsign()
+	if key in ["", "all", "flight_mode", "gameplay_time_of_day", "gameplay_weather"]:
+		_refresh_subtexts()
 
 
+## Loads the level with the selected map, aircraft, and Settings flight mode, time of day and weather.
 func _on_free_flight_pressed() -> void:
 	Sfx.play_2d("ui_confirm")
 	GameState.selected_mode = "free_flight"
-	GameState.selected_map = "gibraltar"
 	GameState.start_flight()
 
 
@@ -207,17 +213,42 @@ func _on_missions_pressed() -> void:
 	GameState.start_flight()
 
 
+## Hangar: each press steps to the next aircraft that has a data file.
 func _on_hangar_pressed() -> void:
 	Sfx.play_2d("ui_click")
-	# Simple hangar dialog showing current aircraft & map
-	var dlg := AcceptDialog.new()
-	dlg.title = "HANGAR - AIRCRAFT ASSIGNMENT"
-	dlg.dialog_text = "Current Aircraft: %s (F-16C Fighting Falcon)\nMap: %s\nStatus: READY FOR FLIGHT" % [
-		GameState.selected_aircraft.to_upper(),
-		GameState.selected_map.capitalize()
-	]
-	add_child(dlg)
-	dlg.popup_centered()
+	var ids := _aircraft_ids()
+	if ids.is_empty():
+		return
+	var idx := ids.find(GameState.selected_aircraft)
+	GameState.selected_aircraft = ids[(idx + 1) % ids.size()]
+	_refresh_subtexts()
+
+
+func _refresh_subtexts() -> void:
+	var flight := "%s flight" % Settings.flight_mode.capitalize()
+	var sky := "%s, %s" % [Settings.gameplay_time_of_day.capitalize(), Settings.gameplay_weather.capitalize()]
+	_set_subtext(_flight_btn, "%s · %s · %s" % [GameState.selected_map.capitalize(), flight, sky])
+	_set_subtext(_hangar_btn, "%s · tap to change" % _aircraft_name(GameState.selected_aircraft))
+
+
+func _set_subtext(btn: Button, text: String) -> void:
+	(btn.get_meta("subtext") as Label).text = text
+
+
+func _aircraft_name(id: String) -> String:
+	var data: Variant = GameState.load_json("res://data/aircraft/%s.json" % id)
+	if data is Dictionary and data.has("short_name"):
+		return str(data["short_name"])
+	return id.to_upper()
+
+
+func _aircraft_ids() -> Array[String]:
+	var ids: Array[String] = []
+	for file in DirAccess.get_files_at("res://data/aircraft"):
+		if file.ends_with(".json"):
+			ids.append(file.get_basename())
+	ids.sort()
+	return ids
 
 
 func _on_settings_pressed() -> void:
