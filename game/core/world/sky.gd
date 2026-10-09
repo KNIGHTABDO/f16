@@ -9,9 +9,12 @@ extends Node
 const SKY_SHADER := preload("res://core/world/sky.gdshader")
 const LATITUDE_DEG := 35.8  # Strait of Gibraltar
 const DECLINATION_DEG := 21.0  # sun declination, a summer sky
-const SUN_ENERGY := 40.0  # sky scattering irradiance, same value as the shader default
-const MOON_ENERGY := 1.2  # moon scattering irradiance at full night
-const HAZE_DENSITY := 0.0000167  # per metre at sea level, clear weather (matches Terrain/Ocean defaults)
+const SUN_ENERGY := 14.0  # sky scattering irradiance: sets the zenith blue and the horizon haze (about 1 in linear HDR)
+const MOON_ENERGY := 0.5  # moon scattering irradiance at full night
+const MOON_LIGHT := 0.25  # moon direct light at full night, the only light source after dark
+const MOON_LIGHT_COLOR := Color(0.55, 0.68, 1.0)
+const HAZE_DENSITY := 0.0000100  # per metre at sea level, clear weather: light haze that builds towards the horizon
+const FOG_SHARE := 0.35  # share of the haze the engine fog takes; Terrain and Ocean do the rest, so haze is not counted twice
 const NIGHT_START := -0.02  # sin(sun elevation) where night begins to fade in
 const NIGHT_FULL := -0.12  # sin(sun elevation) at full night
 const FOG_INSIDE_DENSITY := 0.02  # white-out density while the camera is inside a cloud
@@ -77,7 +80,10 @@ func setup(world_env: WorldEnvironment, sun_light: DirectionalLight3D, preset: S
 	env.fog_sky_affect = 0.0  # the dome itself is not hazed; distant geometry is (terrain shader + fog)
 	env.glow_intensity = 0.6
 	env.glow_bloom = 0.05
-	env.glow_hdr_threshold = 1.2
+	env.glow_hdr_threshold = 1.6  # above the bright sky and horizon, so only sun glints, lights and the sun glow
+	env.adjustment_enabled = true
+	env.adjustment_contrast = 1.05
+	env.adjustment_saturation = 1.1
 	world_env.environment = env
 	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
 	set_quality(preset)
@@ -92,7 +98,7 @@ func set_quality(preset: String) -> void:
 	_shadows_on = bool(cfg["shadows"])
 	sun.shadow_enabled = _shadows_on
 	sun.directional_shadow_max_distance = Settings.shadow_distance
-	env.glow_enabled = bool(cfg["glow"])
+	env.glow_enabled = bool(cfg["glow"]) and Settings.bloom
 	_sky.radiance_size = int(cfg["radiance"])
 	_sky.process_mode = Sky.PROCESS_MODE_INCREMENTAL
 	_apply()
@@ -124,7 +130,7 @@ func set_inside_cloud(k: float) -> void:
 	_apply_environment()
 
 
-## Linear sky radiance at the horizon, averaged over azimuth. Terrain and Ocean take it as sRGB (use linear_to_srgb()).
+## Linear HDR sky radiance at the horizon, averaged over azimuth. Terrain and Ocean use it as-is (no colour conversion).
 func horizon_color() -> Color:
 	return _horizon
 
@@ -203,8 +209,10 @@ func _apply() -> void:
 	var turb := turbidity()
 	var cover := cloud_cover()
 	_mat.set_shader_parameter("sun_dir", sun_dir)
-	_mat.set_shader_parameter("sun_color", Vector3.ONE)
-	_mat.set_shader_parameter("sun_energy", SUN_ENERGY)
+	# Sun scattering fades out after sunset; otherwise the airmass cap at the horizon tints the night sky red.
+	var sun_k := 1.0 - night
+	_mat.set_shader_parameter("sun_color", Vector3.ONE * sun_k)
+	_mat.set_shader_parameter("sun_energy", SUN_ENERGY * sun_k)
 	_mat.set_shader_parameter("moon_dir", moon_dir)
 	_mat.set_shader_parameter("moon_energy", MOON_ENERGY * night)
 	_mat.set_shader_parameter("night", night)
@@ -213,16 +221,25 @@ func _apply() -> void:
 	_horizon = _horizon_radiance(turb, cover)
 	_mat.set_shader_parameter("ground_tint", Vector3(_horizon.r, _horizon.g, _horizon.b) * 0.35)
 
-	# Sun light: colour from the transmittance of the air it shines through; dims under cloud and at dusk.
-	var ms := _airmass(sun_dir.y)
-	var tr := _vexp(-(BETA_R * (H_R * ms) + Vector3.ONE * (BETA_M * turb * H_M * ms)))
-	var tmax := maxf(tr.x, maxf(tr.y, tr.z))
-	var tint := (tr / tmax).lerp(Vector3.ONE, 0.5)
-	sun.light_color = Color(tint.x, tint.y, tint.z)
-	sun.light_energy = clampf(sun_dir.y * 4.0, 0.0, 1.0) * 1.1 * (1.0 - 0.55 * cover)
-	sun.shadow_enabled = _shadows_on and sun_dir.y > 0.01
-	var up := Vector3.UP if absf(sun_dir.y) < 0.98 else Vector3.FORWARD
-	sun.basis = Basis.looking_at(-sun_dir, up)
+	# Directional light: the sun by day (colour from the transmittance of the air it shines through, dimmed
+	# under cloud and at dusk). After dark the same light becomes the moon: cool, dim, unshadowed.
+	var moon_k := smoothstep(0.5, 1.0, night)
+	var light_dir := sun_dir
+	if moon_k > 0.0:
+		light_dir = moon_dir
+		sun.light_color = MOON_LIGHT_COLOR
+		sun.light_energy = MOON_LIGHT * moon_k
+		sun.shadow_enabled = false
+	else:
+		var ms := _airmass(sun_dir.y)
+		var tr := _vexp(-(BETA_R * (H_R * ms) + Vector3.ONE * (BETA_M * turb * H_M * ms)))
+		var tmax := maxf(tr.x, maxf(tr.y, tr.z))
+		var tint := (tr / tmax).lerp(Vector3.ONE, 0.5)
+		sun.light_color = Color(tint.x, tint.y, tint.z)
+		sun.light_energy = clampf(sun_dir.y * 4.0, 0.0, 1.0) * 1.1 * (1.0 - 0.55 * cover)
+		sun.shadow_enabled = _shadows_on and sun_dir.y > 0.01
+	var up := Vector3.UP if absf(light_dir.y) < 0.98 else Vector3.FORWARD
+	sun.basis = Basis.looking_at(-light_dir, up)
 
 	_apply_environment()
 
@@ -230,7 +247,7 @@ func _apply() -> void:
 func _apply_environment() -> void:
 	var haze := HAZE_DENSITY * haze_multiplier()
 	var base := _horizon
-	env.fog_density = lerpf(haze, FOG_INSIDE_DENSITY, inside_cloud)
+	env.fog_density = lerpf(haze * FOG_SHARE, FOG_INSIDE_DENSITY, inside_cloud)
 	env.fog_light_color = base.lerp(FOG_INSIDE_COLOR, inside_cloud)
 	# Ambient keeps a floor at night (dark blue from the moon and stars) and rises with lightning.
 	env.ambient_light_energy = 1.0 + 0.6 * night + 2.0 * flash
@@ -243,7 +260,7 @@ func _horizon_radiance(turb: float, cover: float) -> Color:
 	for i in 8:
 		var a := TAU * (float(i) + 0.5) / 8.0
 		var v := Vector3(cos(a), 0.02, sin(a)).normalized()
-		var col := scatter(v, sun_dir, SUN_ENERGY, turb)
+		var col := scatter(v, sun_dir, SUN_ENERGY * (1.0 - night), turb)
 		if night > 0.0:
 			col += scatter(v, moon_dir, MOON_ENERGY * night, turb) * Vector3(0.75, 0.85, 1.0)
 		var lum := col.dot(Vector3(0.2126, 0.7152, 0.0722))

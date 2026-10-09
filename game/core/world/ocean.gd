@@ -30,7 +30,7 @@ const PRESETS := {
 	"ultra": {"half_cells": 24, "wave_count": 4},
 }
 
-## Aerial haze colour (sky horizon tone) and density per metre at sea level.
+## Aerial haze colour (linear HDR sky horizon radiance) and density per metre at sea level.
 var haze_color: Color = Color(0.62, 0.74, 0.86):
 	set(value):
 		haze_color = value
@@ -176,10 +176,10 @@ func _build_rings() -> void:
 	_push_shared()
 
 
-## The haze is written to EMISSION in linear light; the sky's colours are authored in sRGB, so convert.
+## The haze is written to EMISSION in linear light. haze_color is already linear HDR radiance from
+## WorldSky.horizon_color(), so it is passed through unconverted (converting it inflated the haze ~10x).
 func _haze_linear() -> Vector3:
-	var c := haze_color.srgb_to_linear()
-	return Vector3(c.r, c.g, c.b)
+	return Vector3(haze_color.r, haze_color.g, haze_color.b)
 
 
 func _push_shared() -> void:
