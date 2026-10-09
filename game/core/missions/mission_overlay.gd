@@ -6,6 +6,7 @@ extends Control
 const BRIEF_S := 6.0  ## s the briefing card is up (it fades over the last BRIEF_FADE_S)
 const BRIEF_FADE_S := 0.8
 const LIST_TOP := 150.0  ## y below the safe-area top, just under the minimap (HUD margin 12 + 138 tall)
+const LIST_W := 250.0  ## text width before wrapping; keeps the list clear of the speed tape on the left
 const PLATE := Color(0.02, 0.05, 0.06, 0.45)
 
 var _level  ## the flight level (untyped: no class_name)
@@ -59,6 +60,7 @@ func _build() -> void:
 
 	_list_box = _plated(PRESET_TOP_LEFT, 0.0)
 	_list = VBoxContainer.new()
+	_list.custom_minimum_size.x = LIST_W
 	_list.add_theme_constant_override("separation", 2)
 	_list_box.add_child(_list)
 	add_child(_list_box)
@@ -85,7 +87,13 @@ func _plated(preset: int, top_offset: float) -> PanelContainer:
 	panel.grow_vertical = Control.GROW_DIRECTION_BOTH
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if preset == PRESET_CENTER_TOP:
+		# Top-anchored cards grow downward only, so the text never rises past the screen edge
 		panel.offset_top = top_offset
+		panel.grow_vertical = Control.GROW_DIRECTION_END
+	elif preset == PRESET_TOP_LEFT:
+		# Left-anchored list grows right and down only, so long lines never run off the left edge
+		panel.grow_horizontal = Control.GROW_DIRECTION_END
+		panel.grow_vertical = Control.GROW_DIRECTION_END
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = PLATE
 	sb.set_corner_radius_all(6)
@@ -145,6 +153,7 @@ func _on_objectives(list: Array) -> void:
 			continue
 		var done: bool = entry["done"]
 		var lbl := _label(13, Color(0.6, 0.7, 0.8, 0.55) if done else Color("#CFEFFF"))
+		lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		lbl.text = ("✓ " if done else "• ") + text
 		_list.add_child(lbl)
 

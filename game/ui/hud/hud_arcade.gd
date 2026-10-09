@@ -134,9 +134,10 @@ func _draw_tapes(vp_size: Vector2, col: Color) -> void:
 	var fs_unit := int(11.0 * s)
 	var tape_h := 240.0 * s
 	var tape_w := 76.0 * s
-	var mid := vp_size.y * 0.5
-	var spd_rect := Rect2(vp_size.x * 0.22 - tape_w * 0.5, mid - tape_h * 0.5, tape_w, tape_h)
-	var alt_rect := Rect2(vp_size.x * 0.78 - tape_w * 0.5, mid - tape_h * 0.5, tape_w, tape_h)
+	# Inboard of the gear and cycle buttons, and above the middle so the lower-right buttons stay clear
+	var mid := vp_size.y * 0.42
+	var spd_rect := Rect2(vp_size.x * 0.28 - tape_w * 0.5, mid - tape_h * 0.5, tape_w, tape_h)
+	var alt_rect := Rect2(vp_size.x * 0.72 - tape_w * 0.5, mid - tape_h * 0.5, tape_w, tape_h)
 
 	var spd_unit := HUDTapes.speed_unit(units)
 	var alt_unit := HUDTapes.alt_unit(units)
@@ -235,16 +236,18 @@ func _draw_offscreen_arrow(cam: Camera3D, world_pos: Vector3, vp_size: Vector2, 
 	var angle := atan2(-local_dir.y, local_dir.x)
 	var dir_2d := Vector2(cos(angle), sin(angle))
 
-	# Clamp to edge
+	# Clamp to edge; the lower edge stops above the integrity bar and its label
 	var margin := 45.0 * hud_scale
 	var max_x := center.x - margin
 	var max_y := center.y - margin
+	var max_y_low := vp_size.y - 90.0 * hud_scale - center.y
+	var edge_y := max_y_low if dir_2d.y > 0.0 else max_y
 
 	var scale_factor := 1.0
-	if absf(dir_2d.x) * max_y > absf(dir_2d.y) * max_x:
+	if absf(dir_2d.x) * edge_y > absf(dir_2d.y) * max_x:
 		scale_factor = max_x / maxf(absf(dir_2d.x), 0.001)
 	else:
-		scale_factor = max_y / maxf(absf(dir_2d.y), 0.001)
+		scale_factor = edge_y / maxf(absf(dir_2d.y), 0.001)
 
 	var arrow_pos := center + dir_2d * scale_factor
 

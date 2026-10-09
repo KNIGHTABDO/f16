@@ -267,9 +267,10 @@ func _draw_tapes(vp_size: Vector2, col: Color) -> void:
 	var s := hud_scale
 	var tape_h := 240.0 * s
 	var tape_w := 76.0 * s
-	var mid := vp_size.y * 0.5
-	var spd_rect := Rect2(vp_size.x * 0.22 - tape_w * 0.5, mid - tape_h * 0.5, tape_w, tape_h)
-	var alt_rect := Rect2(vp_size.x * 0.78 - tape_w * 0.5, mid - tape_h * 0.5, tape_w, tape_h)
+	# Inboard of the gear and cycle buttons, and above the middle so the lower-right buttons stay clear
+	var mid := vp_size.y * 0.42
+	var spd_rect := Rect2(vp_size.x * 0.28 - tape_w * 0.5, mid - tape_h * 0.5, tape_w, tape_h)
+	var alt_rect := Rect2(vp_size.x * 0.72 - tape_w * 0.5, mid - tape_h * 0.5, tape_w, tape_h)
 
 	if Settings.hud_show_tapes:
 		HUDTapes.draw_speed(self, _font, spd_rect, HUDTapes.speed_value(aircraft.get_ias_kmh(), units), units, col, s)
