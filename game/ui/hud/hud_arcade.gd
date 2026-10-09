@@ -80,8 +80,8 @@ func _draw() -> void:
 	# 1. Aim Reticle
 	_draw_aim_reticle(cam, center, col)
 
-	# 2. Simple Speed / Alt Readouts
-	_draw_simple_instruments(vp_size, col)
+	# 2. Speed / Altitude tapes
+	_draw_tapes(vp_size, col)
 
 	# 3. Target Brackets & Lead Indicator
 	_draw_targets(cam, vp_size, col)
@@ -93,8 +93,9 @@ func _draw() -> void:
 	if _hit_marker_time > 0.0:
 		_draw_hit_marker(center)
 
-	# 6. Kill Feed (Top Right)
-	_draw_kill_feed(vp_size)
+	# 6. Kill Feed (top right, under the touch utility row)
+	if Settings.hud_show_kill_feed:
+		_draw_kill_feed(vp_size)
 
 
 func _draw_aim_reticle(cam: Camera3D, screen_center: Vector2, col: Color) -> void:
@@ -125,54 +126,32 @@ func _draw_aim_reticle(cam: Camera3D, screen_center: Vector2, col: Color) -> voi
 		draw_dashed_line(reticle_pos, lead_pos, Color(pip_col.r, pip_col.g, pip_col.b, 0.4), 1.2, 5.0)
 
 
-func _draw_simple_instruments(vp_size: Vector2, col: Color) -> void:
-	var fs_num := int(24.0 * hud_scale)
-	var fs_unit := int(12.0 * hud_scale)
+## Fixed-position speed (left) and altitude (right) tapes, clear of the touch cluster and the aim point.
+func _draw_tapes(vp_size: Vector2, col: Color) -> void:
+	if not Settings.hud_show_tapes:
+		return
+	var s := hud_scale
+	var fs_unit := int(11.0 * s)
+	var tape_h := 240.0 * s
+	var tape_w := 76.0 * s
+	var mid := vp_size.y * 0.5
+	var spd_rect := Rect2(vp_size.x * 0.22 - tape_w * 0.5, mid - tape_h * 0.5, tape_w, tape_h)
+	var alt_rect := Rect2(vp_size.x * 0.78 - tape_w * 0.5, mid - tape_h * 0.5, tape_w, tape_h)
 
-	# Left: Speed
-	var spd_x := vp_size.x * 0.28
-	var spd_y := vp_size.y * 0.5
-	var spd_val := 0
-	var spd_unit := "KM/H"
-	match units:
-		"aviation":
-			spd_val = roundi(aircraft.get_ias_kmh() / 1.852)
-			spd_unit = "KT"
-		"metric":
-			spd_val = roundi(aircraft.get_ias_kmh())
-			spd_unit = "KM/H"
-		"imperial":
-			spd_val = roundi(aircraft.get_ias_kmh() / 1.60934)
-			spd_unit = "MPH"
+	var spd_unit := HUDTapes.speed_unit(units)
+	var alt_unit := HUDTapes.alt_unit(units)
+	HUDTapes.draw_speed(self, _font, spd_rect, HUDTapes.speed_value(aircraft.get_ias_kmh(), units), units, col, s)
+	HUDTapes.draw_altitude(self, _font, alt_rect, HUDTapes.alt_value(aircraft.get_altitude_m(), units), units, col, s)
 
-	draw_string(_font, Vector2(spd_x - 50 * hud_scale, spd_y), "%d" % spd_val, HORIZONTAL_ALIGNMENT_RIGHT, 80 * int(hud_scale), fs_num, col)
-	draw_string(_font, Vector2(spd_x + 35 * hud_scale, spd_y), spd_unit, HORIZONTAL_ALIGNMENT_LEFT, -1, fs_unit, Color(col.r, col.g, col.b, 0.7))
+	var dim := Color(col.r, col.g, col.b, 0.7)
+	draw_string(_font, Vector2(spd_rect.position.x, spd_rect.position.y - 6.0 * s), "IAS " + spd_unit, HORIZONTAL_ALIGNMENT_LEFT, -1, fs_unit, dim)
+	draw_string(_font, Vector2(alt_rect.position.x, alt_rect.position.y - 6.0 * s), "ALT " + alt_unit, HORIZONTAL_ALIGNMENT_LEFT, -1, fs_unit, dim)
 
-	# Right: Altitude
-	var alt_x := vp_size.x * 0.72
-	var alt_y := vp_size.y * 0.5
-	var alt_val := 0
-	var alt_unit := "M"
-	match units:
-		"aviation", "imperial":
-			alt_val = roundi(aircraft.get_altitude_m() * 3.28084)
-			alt_unit = "FT"
-		"metric":
-			alt_val = roundi(aircraft.get_altitude_m())
-			alt_unit = "M"
-
-	draw_string(_font, Vector2(alt_x - 40 * hud_scale, alt_y), "%d" % alt_val, HORIZONTAL_ALIGNMENT_RIGHT, 90 * int(hud_scale), fs_num, col)
-	draw_string(_font, Vector2(alt_x + 55 * hud_scale, alt_y), alt_unit, HORIZONTAL_ALIGNMENT_LEFT, -1, fs_unit, Color(col.r, col.g, col.b, 0.7))
-
-	# Throttle bar on the left
-	var thr_frac := aircraft.get_throttle()
-	var thr_h := 80.0 * hud_scale
-	var thr_w := 6.0 * hud_scale
-	var thr_p := Vector2(spd_x - 70 * hud_scale, spd_y - thr_h * 0.5)
-	draw_rect(Rect2(thr_p, Vector2(thr_w, thr_h)), Color(col.r, col.g, col.b, 0.2), true)
-	var fill_h := thr_h * thr_frac
-	var fill_col := Color("#FFAA00") if aircraft.is_afterburner() else col
-	draw_rect(Rect2(thr_p.x, thr_p.y + thr_h - fill_h, thr_w, fill_h), fill_col, true)
+	# Throttle readout under the speed tape; afterburner shows in amber
+	var thr := roundi(aircraft.get_throttle() * 100.0)
+	var thr_col := Color("#FFAA00") if aircraft.is_afterburner() else dim
+	var thr_text := "AB" if aircraft.is_afterburner() else "THR %d%%" % thr
+	draw_string(_font, Vector2(spd_rect.position.x, spd_rect.end.y + 16.0 * s), thr_text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs_unit, thr_col)
 
 
 func _draw_targets(cam: Camera3D, vp_size: Vector2, col: Color) -> void:
@@ -330,8 +309,9 @@ func _draw_hit_marker(center: Vector2) -> void:
 
 
 func _draw_kill_feed(vp_size: Vector2) -> void:
-	var start_x := vp_size.x - 280.0 * hud_scale
-	var start_y := 40.0 * hud_scale
+	var r := HUDLayout.safe_rect(vp_size)
+	var start_x := r.end.x - 270.0 * hud_scale
+	var start_y := r.position.y + 118.0 * hud_scale
 	var line_h := 22.0 * hud_scale
 	var fs := int(13.0 * hud_scale)
 

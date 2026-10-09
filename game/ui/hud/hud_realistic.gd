@@ -1,7 +1,7 @@
 class_name HUDRealistic
 extends Control
 ## F-16 style collimated green HUD drawn with _draw() projected to the camera.
-## Renders pitch ladder, flight path marker, heading tape, speed + altitude boxes,
+## Renders pitch ladder, flight path marker, heading tape, speed + altitude tapes,
 ## G, Mach, AOA, waterline, gun funnel / lead pip, missile seeker + lock diamond,
 ## target box + range + closure rate, and bomb CCIP pipper.
 
@@ -87,15 +87,11 @@ func _draw() -> void:
 	var pitch_center := fpm_screen if fpm_valid else waterline_screen
 	_draw_pitch_ladder(cam, pitch_center, col)
 
-	# 4. Heading Tape (Top of HUD)
+	# 4. Heading Tape (top of HUD, under the status line)
 	_draw_heading_tape(vp_size, col)
 
-	# 5. Speed Box & Altitude Box
-	_draw_speed_box(pitch_center, col)
-	_draw_altitude_box(pitch_center, col)
-
-	# 6. Flight parameters: G, Mach, AOA
-	_draw_flight_params(pitch_center, col)
+	# 5. Speed & altitude tapes at fixed screen positions, with G / Mach / AOA and radar altimeter
+	_draw_tapes(vp_size, col)
 
 	# 7. Weapons cues: Gun lead pip / funnel, Missile seeker / diamond, Bomb CCIP
 	_draw_weapons_overlay(cam, waterline_screen, fpm_screen, col)
@@ -226,7 +222,7 @@ func _draw_pitch_ladder(cam: Camera3D, ref_pos: Vector2, col: Color) -> void:
 
 func _draw_heading_tape(vp_size: Vector2, col: Color) -> void:
 	var hdg := aircraft.get_heading_deg()
-	var tape_y := 64.0 * hud_scale
+	var tape_y := HUDLayout.safe_rect(vp_size).position.y + 52.0 * hud_scale
 	var tape_w := 340.0 * hud_scale
 	var tape_left := (vp_size.x - tape_w) * 0.5
 	var tape_center_x := vp_size.x * 0.5
@@ -265,68 +261,31 @@ func _draw_heading_tape(vp_size: Vector2, col: Color) -> void:
 			draw_string(_font, Vector2(tick_x - 10 * hud_scale, tape_y - tick_h - 4 * hud_scale), label, HORIZONTAL_ALIGNMENT_CENTER, 20 * int(hud_scale), fs, col)
 
 
-func _draw_speed_box(ref_pos: Vector2, col: Color) -> void:
-	var box_x := ref_pos.x - 220.0 * hud_scale
-	var box_y := ref_pos.y - 18.0 * hud_scale
-	var box_w := 72.0 * hud_scale
-	var box_h := 34.0 * hud_scale
+## Speed and altitude tapes at fixed side positions (mid-height), same layout as the arcade HUD.
+## Radar altimeter sits under the altitude tape; M / G / AOA stack under the speed tape.
+func _draw_tapes(vp_size: Vector2, col: Color) -> void:
+	var s := hud_scale
+	var tape_h := 240.0 * s
+	var tape_w := 76.0 * s
+	var mid := vp_size.y * 0.5
+	var spd_rect := Rect2(vp_size.x * 0.22 - tape_w * 0.5, mid - tape_h * 0.5, tape_w, tape_h)
+	var alt_rect := Rect2(vp_size.x * 0.78 - tape_w * 0.5, mid - tape_h * 0.5, tape_w, tape_h)
 
-	# Box outline
-	draw_rect(Rect2(box_x, box_y, box_w, box_h), col, false, 2.0)
+	if Settings.hud_show_tapes:
+		HUDTapes.draw_speed(self, _font, spd_rect, HUDTapes.speed_value(aircraft.get_ias_kmh(), units), units, col, s)
+		HUDTapes.draw_altitude(self, _font, alt_rect, HUDTapes.alt_value(aircraft.get_altitude_m(), units), units, col, s)
 
-	# Speed value based on units
-	var spd_val := 0
-	match units:
-		"aviation":
-			spd_val = roundi(aircraft.get_ias_kmh() / 1.852)  # Knots
-		"metric":
-			spd_val = roundi(aircraft.get_ias_kmh())  # km/h
-		"imperial":
-			spd_val = roundi(aircraft.get_ias_kmh() / 1.60934)  # mph
-
-	var fs := int(18.0 * hud_scale)
-	draw_string(_font, Vector2(box_x, box_y + box_h * 0.72), "%d" % spd_val, HORIZONTAL_ALIGNMENT_CENTER, int(box_w), fs, col)
-
-	# Left vertical ladder line
-	draw_line(Vector2(box_x + box_w, box_y - 40 * hud_scale), Vector2(box_x + box_w, box_y + box_h + 40 * hud_scale), col, 1.2)
-
-
-func _draw_altitude_box(ref_pos: Vector2, col: Color) -> void:
-	var box_x := ref_pos.x + 150.0 * hud_scale
-	var box_y := ref_pos.y - 18.0 * hud_scale
-	var box_w := 82.0 * hud_scale
-	var box_h := 34.0 * hud_scale
-
-	# Box outline
-	draw_rect(Rect2(box_x, box_y, box_w, box_h), col, false, 2.0)
-
-	# Altitude value based on units
-	var alt_val := 0
-	match units:
-		"aviation", "imperial":
-			alt_val = roundi(aircraft.get_altitude_m() * 3.28084)  # Feet
-		"metric":
-			alt_val = roundi(aircraft.get_altitude_m())  # Meters
-
-	var fs := int(18.0 * hud_scale)
-	draw_string(_font, Vector2(box_x, box_y + box_h * 0.72), "%d" % alt_val, HORIZONTAL_ALIGNMENT_CENTER, int(box_w), fs, col)
-
-	# Radar altimeter below altitude box (when below 1500m / 5000ft)
+	# Radar altimeter below the altitude tape (when below 1500 m / 5000 ft)
 	var agl_m := aircraft.get_agl_m()
 	if agl_m <= 1500.0 and agl_m >= 0.0:
-		var agl_disp := roundi(agl_m * 3.28084 if units != "metric" else agl_m)
-		var r_fs := int(13.0 * hud_scale)
-		draw_string(_font, Vector2(box_x, box_y + box_h + 16 * hud_scale), "R %d" % agl_disp, HORIZONTAL_ALIGNMENT_CENTER, int(box_w), r_fs, col)
+		var r_fs := int(13.0 * s)
+		draw_string(_font, Vector2(alt_rect.position.x, alt_rect.end.y + 16.0 * s), "R %d" % roundi(HUDTapes.alt_value(agl_m, units)), HORIZONTAL_ALIGNMENT_CENTER, int(tape_w), r_fs, col)
 
-
-func _draw_flight_params(ref_pos: Vector2, col: Color) -> void:
-	var fs := int(14.0 * hud_scale)
+	# Flight parameters stacked under the speed tape
+	var fs := int(14.0 * s)
 	var line_h := fs * 1.3
-
-	# Left column: AOA, G, Mach
-	var left_x := ref_pos.x - 220.0 * hud_scale
-	var left_y := ref_pos.y + 45.0 * hud_scale
-
+	var left_x := spd_rect.position.x
+	var left_y := spd_rect.end.y + 22.0 * s
 	draw_string(_font, Vector2(left_x, left_y), "M %.2f" % aircraft.get_mach(), HORIZONTAL_ALIGNMENT_LEFT, -1, fs, col)
 	draw_string(_font, Vector2(left_x, left_y + line_h), "G %.1f" % aircraft.get_g(), HORIZONTAL_ALIGNMENT_LEFT, -1, fs, col)
 	draw_string(_font, Vector2(left_x, left_y + line_h * 2), "α %.1f°" % aircraft.get_aoa_deg(), HORIZONTAL_ALIGNMENT_LEFT, -1, fs, col)
