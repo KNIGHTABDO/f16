@@ -304,6 +304,22 @@
         }
     },
     {
+        "id": "b2",
+        "name": "Northrop B-2 Spirit",
+        "nation": "USA",
+        "category": "bomber",
+        "era": "modern",
+        "unlock_cost": 150000,
+        "description": "Stealth flying-wing strategic bomber that carries precision and gravity munitions in internal bays, keeping its radar signature low until it reaches the target. Four non-afterburning turbofans give it subsonic speed and intercontinental range.",
+        "stats": {
+            "speed_kmh": 1010,
+            "climb_ms": 9,
+            "turn_s": 30.0,
+            "ceiling_m": 15240,
+            "guns": "None (internal bomb bays only)"
+        }
+    },
+    {
         "id": "ah64",
         "name": "AH-64D Apache Longbow",
         "nation": "USA",
