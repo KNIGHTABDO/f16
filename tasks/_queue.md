@@ -5,11 +5,12 @@ Gemini is the primary coder (check quota: scripts/job.sh gemini fails fast if ag
 - [x] settings-menus | gemini | tasks/settings_menus.md | main | needs: -
 - [~] roster | gemini | tasks/aircraft_roster.md | main | needs: -
 - [x] world | gemini | tasks/cont_world_dressing.md | worktree-agent-aebba58123a873c40 | needs: -
-- [~] models2 | gemini | tasks/cont_models2.md | worktree-agent-a5708db0613eb7421 | needs: -
+- [x] models2 (merged partial) 
+- [~] models3 | haiku | tasks/cont2_models.md | .claude/worktrees/gem-gem-models2 | needs: -
 - [~] weapons | claude | tasks/cont_weapons.md | .claude/worktrees/agent-ad75bf9a6376f65fc | needs: -
-- [~] integration | claude | tasks/cont_aircraft_integration.md | .claude/worktrees/agent-a6259d2058290c99b | needs: -
+- [~] integration | haiku | tasks/cont2_integration.md | .claude/worktrees/gem-gem-integration | needs: -
 - [x] art | gemini | tasks/art.md | main | needs: -
-- [~] art2 | gemini | tasks/art2.md | main | needs: art
+- [ ] art2 | gemini ONLY (image generation) | tasks/art2.md | main | needs: Gemini quota back (429 at 11:19 2026-10-09)
 - [ ] combat-units | gemini | tasks/combat_units.md | main | needs: weapons, integration
 - [ ] ai | claude | tasks/ai.md | main | needs: combat-units
 - [ ] hud-touch | gemini | tasks/hud_touch.md | main | needs: weapons, integration, settings-menus
@@ -18,3 +19,5 @@ Gemini is the primary coder (check quota: scripts/job.sh gemini fails fast if ag
 - [ ] hangar-progression | gemini | tasks/hangar.md | main | needs: roster, models2, settings-menus, art
 - [ ] perf-ipa | claude | tasks/perf_ipa.md | main | needs: modes-missions
 - [ ] playtest-v1 | lead | full headless playthrough, fix, tag v1.0 | main | needs: everything
+
+NOTE 2026-10-09 11:20: Gemini credits exhausted (429). Use `scripts/job.sh haiku` (non-weapons) / `claude` (weapons) until `agy -p "Reply with just OK"` works again.
