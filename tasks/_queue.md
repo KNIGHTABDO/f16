@@ -3,7 +3,7 @@ Format: `- [ ] <name> | gemini|claude | <brief> | <base or worktree> | needs: <n
 Gemini is the primary coder (check quota: scripts/job.sh gemini fails fast if agy errors -> use `job.sh haiku`). Claude Sonnet (medium effort, use sparingly) only for weapons-related work.
 
 - [x] settings-menus | gemini | tasks/settings_menus.md | main | needs: -
-- [~] roster | gemini | tasks/aircraft_roster.md | main | needs: -
+- [x] roster | gemini | tasks/aircraft_roster.md | main | needs: -
 - [x] world | gemini | tasks/cont_world_dressing.md | worktree-agent-aebba58123a873c40 | needs: -
 - [x] models2 (merged partial) 
 - [~] models3 | haiku | tasks/cont2_models.md | .claude/worktrees/gem-gem-models2 | needs: -
