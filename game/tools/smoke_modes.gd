@@ -1,7 +1,7 @@
 extends Node
 ## Headless smoke pass over every mode. Run it with:
 ##   godot --headless --path game --fixed-fps 30 res://tools/smoke_modes.tscn
-## Add `-- --only=<mode_id>` at the end to fly just one mode.
+## Add `-- --only=<mode_id>` at the end to fly just one mode, or `-- --only=<probe>` to run one UI probe (see PROBES).
 ## Each run starts a sortie the way the mode and map screens do (GameState.begin_mission with the mode's default options
 ## and the normal difficulty), flies it for RUN_S of game time with the player in straight flight, fires one shot of every
 ## weapon type the player carries in modes with enemies, then goes back to the menu the way the results screen does.
@@ -9,8 +9,12 @@ extends Node
 ## Every AI aircraft that dies is printed with its cause (a killer's name, or a crash) and its pilot state at the end.
 ## `-- --run-s=<seconds>` changes the run length. `-- --no-fire` stops the player firing and keeps the player at full health,
 ## so `--run-s=60 --no-fire` checks that enemies survive a minute with nobody shooting them.
+## The UI probes run after the modes. Each presses a real button the way the player does, then checks the scene that
+## comes up with no errors: RETRY and NEXT on the results screen, RESTART SORTIE and QUIT TO MENU on the pause menu, and
+## the hangar (pick another aircraft, SELECT FOR FLIGHT, back, FREE FLIGHT, which must fly that aircraft).
 
 const MENU_SCENE := "res://ui/menu/menu_root.tscn"
+const LEVEL_SCENE := "res://scenes/level.tscn"
 const SMOKE_MAP := "gibraltar"
 const SECOND_MAP := "atlas"
 const SECOND_MAP_MODE := "free_flight"
@@ -21,19 +25,37 @@ const FIRE_START_S := 2.0  ## game second of the first forced shot
 const FIRE_GAP_S := 1.2  ## game seconds between forced shots
 const GUN_BURST_S := 0.4  ## s the gun trigger is held for one burst
 const GUN_ACTION := "fc_gun"
+const PAUSE_ACTION := "ui_cancel"  ## the Escape key's action, which opens the pause menu
 const LOAD_TIMEOUT_MS := 120000  ## real time allowed for a level to come up
 const DIFFICULTY := "normal"
 const NO_ENEMY_MODES := ["free_flight", "time_trial", "carrier_landing"]
 const MAX_LINES_SHOWN := 3  ## distinct errors printed per run
 const LINE_CHARS := 180
+const SETTLE_MS := 600  ## real ms a probe step waits before it looks at the screen, so scene changes and tweens finish
+const PROBE_TIMEOUT_MS := 120000  ## real ms a probe step may wait for its screen
+const PROBE_AT_S := 3.0  ## game s a probe run flies before its UI action
+const PROBE_TAIL_S := 2.0  ## game s a probe run keeps flying after its action has been checked
+const PROBE_ARCADE_MODE := "dogfight"  ## won and not practice, so the results screen offers NEXT
+const PROBE_PRACTICE_MODE := "free_flight"
+## Probes that act during the flight. The hangar probe starts from the menu instead, see _start_hangar_probe.
+const RUNNING_PROBES := ["retry", "next", "pause_restart", "pause_quit"]
+const HANGAR_PROBE := "hangar"
+const PROBES := [
+	{"probe": "retry", "mode": PROBE_ARCADE_MODE},
+	{"probe": "next", "mode": PROBE_ARCADE_MODE},
+	{"probe": "pause_restart", "mode": PROBE_PRACTICE_MODE},
+	{"probe": "pause_quit", "mode": PROBE_PRACTICE_MODE},
+	{"probe": HANGAR_PROBE, "mode": PROBE_PRACTICE_MODE},
+]
 
-enum Phase { LOADING, RUNNING, LEAVING }
+enum Phase { LOADING, RUNNING, PROBE, LEAVING }
 
 var _is_driver := false
-var _pending: Array[Dictionary] = []  ## {mode, map} still to fly
+var _pending: Array[Dictionary] = []  ## {mode, map, probe} still to fly
 var _run: Dictionary = {}  ## the run in progress
 var _phase := Phase.LOADING
 var _elapsed := 0.0  ## game s into the run
+var _flight_s := RUN_S  ## game s this run flies before it leaves
 var _started_ms := 0
 var _fire_queue: Array[String] = []
 var _fire_index := 0
@@ -44,6 +66,10 @@ var _save_backup := ""
 var _had_save := false
 var _run_s := RUN_S
 var _no_fire := false
+var _probe_begun := false  ## the probe's UI action has started (it acts once)
+var _probe_step := ""  ## the probe's current step, see _drive_probe
+var _step_started_ms := 0  ## real ms when the current step or the leaving began
+var _settle_until_ms := 0  ## real ms before which a probe step does not look at the screen
 
 
 ## Logs every engine error and script error while the smoke pass runs.
@@ -108,10 +134,17 @@ func _process(delta: float) -> void:
 			_drive()
 			if _no_fire:
 				_keep_player_up()
-			if _elapsed >= _run_s or _mission_over() or GameState.level == null:
+			if _probe_is_due():
+				_begin_probe()
+			elif _elapsed >= _flight_s or _mission_over() or GameState.level == null:
 				_leave()
+		Phase.PROBE:
+			_drive_probe()
 		Phase.LEAVING:
 			if _menu_is_up():
+				_end_run()
+			elif Time.get_ticks_msec() - _step_started_ms > LOAD_TIMEOUT_MS:
+				_run["errors"].append("menu did not come up")
 				_end_run()
 
 
@@ -124,7 +157,8 @@ func _keep_player_up() -> void:
 		p.health = PLAYER_HEALTH_NO_FIRE
 
 
-## One run per mode on the smoke map, plus free flight on the second map. `-- --only=<mode>` keeps just that mode.
+## One run per mode on the smoke map, plus free flight on the second map, plus the UI probes.
+## `-- --only=<mode or probe>` keeps just that one.
 func _plan_runs() -> Array[Dictionary]:
 	var only := ""
 	for arg in OS.get_cmdline_user_args():
@@ -138,9 +172,12 @@ func _plan_runs() -> Array[Dictionary]:
 	var data := MissionGenerator.data()
 	for mode_id in data["mode_order"]:
 		if only == "" or String(mode_id) == only:
-			out.append({"mode": String(mode_id), "map": SMOKE_MAP})
+			out.append({"mode": String(mode_id), "map": SMOKE_MAP, "probe": ""})
 	if only == "" or only == SECOND_MAP_MODE:
-		out.append({"mode": SECOND_MAP_MODE, "map": SECOND_MAP})
+		out.append({"mode": SECOND_MAP_MODE, "map": SECOND_MAP, "probe": ""})
+	for probe in PROBES:
+		if only == "" or only == String(probe["probe"]):
+			out.append({"mode": String(probe["mode"]), "map": SMOKE_MAP, "probe": String(probe["probe"])})
 	return out
 
 
@@ -150,13 +187,21 @@ func _next_run() -> void:
 		return
 	_run = _pending.pop_front()
 	_run["errors"] = []
+	_run["probe_done"] = false
+	_run["fired"] = {}
 	_elapsed = 0.0
+	_flight_s = _run_s
 	_fire_index = 0
 	_gun_until = -1.0
 	_fire_queue.clear()
-	_phase = Phase.LOADING
+	_probe_begun = false
+	_probe_step = ""
 	_started_ms = Time.get_ticks_msec()
 	_log.take()
+	if String(_run["probe"]) == HANGAR_PROBE:
+		_start_hangar_probe()
+		return
+	_phase = Phase.LOADING
 	var mode_id := String(_run["mode"])
 	var mode: Dictionary = MissionGenerator.data()["modes"][mode_id]
 	var options := {}
@@ -191,8 +236,15 @@ func _start_run() -> void:
 			w.gun.fired.connect(_on_fired.bind("gun"))
 	Events.aircraft_destroyed.connect(_on_aircraft_destroyed)
 	var mode_id := String(_run["mode"])
-	if not NO_ENEMY_MODES.has(mode_id) and not _no_fire:
+	if not NO_ENEMY_MODES.has(mode_id) and not _no_fire and String(_run["probe"]) == "":
 		_fire_queue = _weapon_types()
+	if String(_run["probe"]) == HANGAR_PROBE:
+		# The launch is the probe's last step: the level must fly the aircraft that the hangar selected.
+		_run["probe_done"] = true
+		_flight_s = PROBE_TAIL_S
+		if p == null or p.aircraft_id != String(_run["aircraft"]):
+			_run["errors"].append("hangar: flew %s, not the picked %s" % [
+				"nothing" if p == null else p.aircraft_id, String(_run["aircraft"])])
 
 
 ## One entry per weapon type the player carries, in loadout order. The gun is always first.
@@ -286,10 +338,7 @@ func _mission_over() -> bool:
 func _leave() -> void:
 	if _phase == Phase.LEAVING:
 		return
-	_phase = Phase.LEAVING
 	_run["time_s"] = _elapsed
-	if Events.aircraft_destroyed.is_connected(_on_aircraft_destroyed):
-		Events.aircraft_destroyed.disconnect(_on_aircraft_destroyed)
 	var mission = GameState.level.get("_mission") if GameState.level != null else null
 	if mission != null:
 		_run["stats"] = "enemies %d, shots %d, hits %d, air kills %d, ground kills %d, score %d, fired %s" % [
@@ -297,12 +346,198 @@ func _leave() -> void:
 			int(mission.score), str(_run["fired"])]
 		if mission.over:
 			_run["stats"] += ", ended early: %s" % mission.reason
+	if String(_run["probe"]) != "" and not bool(_run["probe_done"]):
+		_run["errors"].append("probe stopped at step '%s'" % _probe_step)
+	_await_menu()
 	GameState.goto_menu()
+
+
+## The run is over and the menu is on its way. _process ends the run once the menu is up.
+func _await_menu() -> void:
+	if Events.aircraft_destroyed.is_connected(_on_aircraft_destroyed):
+		Events.aircraft_destroyed.disconnect(_on_aircraft_destroyed)
+	_phase = Phase.LEAVING
+	_step_started_ms = Time.get_ticks_msec()
 
 
 func _menu_is_up() -> bool:
 	var scene := get_tree().current_scene
 	return GameState.level == null and scene != null and scene.scene_file_path == MENU_SCENE
+
+
+## Starts a probe's UI action. RETRY and NEXT need a finished sortie, so the mission ends here; the pause menu comes
+## from the Escape key. The action itself runs in _drive_probe.
+func _begin_probe() -> void:
+	_probe_begun = true
+	_phase = Phase.PROBE
+	var level = GameState.level
+	_run["seed"] = GameState.mission_seed
+	_run["level_id"] = level.get_instance_id()
+	if String(_run["probe"]) == "retry" or String(_run["probe"]) == "next":
+		(level.get("_mission") as Mission).finish(true, "Smoke check")
+		_next_step("results")
+	else:
+		_send_action(PAUSE_ACTION, true)
+		_next_step("pause")
+
+
+## True once a probe's flight time is up and its action has not started yet.
+func _probe_is_due() -> bool:
+	return not _probe_begun and RUNNING_PROBES.has(String(_run["probe"])) and _elapsed >= PROBE_AT_S
+
+
+## Runs the probe's current step. A step waits SETTLE_MS of real time after it starts, then looks at the screen it expects.
+## A step that does not show up within PROBE_TIMEOUT_MS fails the probe.
+func _drive_probe() -> void:
+	var now := Time.get_ticks_msec()
+	if now < _settle_until_ms:
+		return
+	if now - _step_started_ms > PROBE_TIMEOUT_MS:
+		_probe_fail("gave up at step '%s'" % _probe_step)
+		return
+	match _probe_step:
+		"results":
+			_probe_press_results()
+		"pause":
+			_probe_press_pause()
+		"reload":
+			_probe_check_reload()
+		"menu", "hangar", "select", "back", "launch":
+			_probe_hangar_step()
+
+
+func _next_step(step_name: String) -> void:
+	_probe_step = step_name
+	_step_started_ms = Time.get_ticks_msec()
+	_settle_until_ms = _step_started_ms + SETTLE_MS
+
+
+## Ends the probe with an error. The run then goes back to the menu like any other run.
+func _probe_fail(text: String) -> void:
+	_run["errors"].append("%s: %s" % [String(_run["probe"]), text])
+	_run["probe_done"] = true
+	_leave()
+
+
+## RETRY or NEXT on the results screen. Both load a new level, which the reload step checks.
+func _probe_press_results() -> void:
+	var button := "RETRY" if String(_run["probe"]) == "retry" else "NEXT"
+	var screen := _find_script(GameState.level, ResultsScreen)
+	if screen == null:
+		return
+	var btn := _find_text_button(screen, button)
+	if btn == null:
+		_probe_fail("%s is missing from the results screen" % button)
+		return
+	_press(btn)
+	_next_step("reload")
+
+
+## RESTART SORTIE or QUIT TO MENU on the pause menu that Escape opened.
+func _probe_press_pause() -> void:
+	var pause := _find_script(GameState.level, PauseMenu)
+	if pause == null or not get_tree().paused:
+		return
+	_send_action(PAUSE_ACTION, false)  # release the Escape key that opened the menu, so no action is left held
+	var restart := String(_run["probe"]) == "pause_restart"
+	var label := "RESTART SORTIE" if restart else "QUIT TO MENU"
+	var btn := _find_text_button(pause, label)
+	if btn == null:
+		_probe_fail("the pause menu has no %s button" % label)
+		return
+	_press(btn)
+	if restart:
+		_next_step("reload")
+	else:
+		# QUIT TO MENU has already asked for the menu, and the level goes with it.
+		_run["probe_done"] = true
+		_run["time_s"] = _elapsed
+		_await_menu()
+
+
+## Checks the level that RETRY, NEXT or RESTART loaded. RETRY and RESTART replay the same sortie seed, NEXT rolls a new one.
+## Then the level flies a short tail before the run goes back to the menu.
+func _probe_check_reload() -> void:
+	if not _new_level_ready():
+		return
+	var probe := String(_run["probe"])
+	var replays := probe == "retry" or probe == "pause_restart"
+	if (GameState.mission_seed == int(_run["seed"])) != replays:
+		_run["errors"].append("%s %s the sortie seed" % [probe, "did not keep" if replays else "did not change"])
+	if get_tree().paused:
+		_run["errors"].append("%s left the tree paused" % probe)
+	var scene := get_tree().current_scene
+	if scene == null or scene.scene_file_path != LEVEL_SCENE:
+		_run["errors"].append("%s loaded %s, not the level" % [
+			probe, "nothing" if scene == null else scene.scene_file_path])
+	_run["probe_done"] = true
+	_flight_s = PROBE_TAIL_S
+	_elapsed = 0.0
+	_phase = Phase.RUNNING
+
+
+## True once a level other than the one the probe started in is up, with its mission and its player.
+func _new_level_ready() -> bool:
+	var level = GameState.level
+	return level != null and is_instance_valid(level) and level.get_instance_id() != int(_run["level_id"]) \
+			and level.get("_mission") != null and GameState.player != null
+
+
+## The hangar probe starts from the menu rather than a sortie: the main menu's HANGAR, pick another aircraft, SELECT FOR
+## FLIGHT, BACK, then FREE FLIGHT. The launched level is then checked by _start_run.
+func _start_hangar_probe() -> void:
+	_run["aircraft"] = _hangar_pick()
+	_phase = Phase.PROBE
+	_next_step("menu")
+	# A scene change is deferred, so the menu still on screen would be the one the probe presses. Only change when needed.
+	if not _menu_is_up():
+		GameState.goto_menu()
+
+
+## An unlocked aircraft in the same hangar tab as the current one, so its row is on screen. "" if there is none.
+func _hangar_pick() -> String:
+	var current := GameState.selected_aircraft
+	var group := AircraftList.group_of(Progression.entry(current))
+	for e: Dictionary in Progression.aircraft_roster():
+		var id := str(e.get("id", ""))
+		if id != current and Progression.is_unlocked(id) and AircraftList.group_of(e) == group:
+			return id
+	return ""
+
+
+## The hangar probe's steps, all on the menu scene.
+func _probe_hangar_step() -> void:
+	var menu := get_tree().current_scene
+	var id := String(_run["aircraft"])
+	var hangar := _find_script(menu, HangarScreen)
+	match _probe_step:
+		"menu":
+			if _menu_is_up():
+				_press(_find_button(menu, "_on_hangar_pressed"))
+				_next_step("hangar")
+		"hangar":
+			if id == "":
+				_probe_fail("no other unlocked aircraft in the current hangar tab")
+			elif hangar != null:
+				_press(_find_button(hangar.get("_list") as Node, "_on_row_pressed", id))
+				_next_step("select")
+		"select":
+			if hangar != null:
+				_press(hangar.get("_action_btn") as Button)
+				_next_step("back")
+		"back":
+			if Progression.selected_aircraft() != id:
+				_probe_fail("the hangar did not select %s (selected %s)" % [id, Progression.selected_aircraft()])
+			elif not bool(menu.get("_is_transitioning")):
+				_press(_find_button(menu, "_on_back_pressed"))
+				_next_step("launch")
+		"launch":
+			var flight := _find_button(menu, "_on_free_flight_pressed")
+			if hangar == null and flight != null:
+				GameState.selected_map = SMOKE_MAP
+				_phase = Phase.LOADING
+				_started_ms = Time.get_ticks_msec()
+				_press(flight)
 
 
 func _end_run() -> void:
@@ -311,6 +546,8 @@ func _end_run() -> void:
 		_run["errors"].append(line)
 	var mode_id := String(_run["mode"])
 	var label := "%s / %s" % [mode_id, String(_run["map"])]
+	if String(_run["probe"]) != "":
+		label += " [%s]" % String(_run["probe"])
 	var errs: Array = _run["errors"]
 	var stats := String(_run.get("stats", ""))
 	if errs.is_empty():
@@ -335,6 +572,53 @@ func _finish() -> void:
 	get_tree().quit(0 if _failures == 0 else 1)
 
 
+## Presses the button the same way a click does: its pressed signal runs the connected handler.
+func _press(btn: Button) -> void:
+	if btn != null:
+		btn.pressed.emit()
+
+
+func _send_action(action: String, pressed: bool) -> void:
+	var ev := InputEventAction.new()
+	ev.action = action
+	ev.pressed = pressed
+	Input.parse_input_event(ev)
+
+
+## The button whose pressed signal calls `method`, with `bound` as its first bound argument if one is given.
+func _find_button(root: Node, method: String, bound := "") -> Button:
+	if root == null:
+		return null
+	for node in root.find_children("*", "", true, false):
+		if not node is Button:
+			continue
+		for c in (node as Button).pressed.get_connections():
+			var cb: Callable = c["callable"]
+			if cb.get_method() != method:
+				continue
+			if bound == "" or (cb.get_bound_arguments_count() > 0 and String(cb.get_bound_arguments()[0]) == bound):
+				return node as Button
+	return null
+
+
+func _find_text_button(root: Node, text: String) -> Button:
+	if root == null:
+		return null
+	for node in root.find_children("*", "", true, false):
+		if node is Button and (node as Button).text == text:
+			return node as Button
+	return null
+
+
+func _find_script(root: Node, script: Script) -> Node:
+	if root == null:
+		return null
+	for node in root.find_children("*", "", true, false):
+		if node.get_script() == script:
+			return node
+	return null
+
+
 ## The smoke runs change the sortie record and progress. The player's save is put back afterwards.
 func _backup_save() -> void:
 	_had_save = FileAccess.file_exists(GameState.SAVE_PATH)
@@ -349,4 +633,3 @@ func _restore_save() -> void:
 	var f := FileAccess.open(GameState.SAVE_PATH, FileAccess.WRITE)
 	if f:
 		f.store_string(_save_backup)
-

@@ -58,6 +58,15 @@ func _ready() -> void:
 	_apply_volumes()
 
 
+## Disconnects from the autoload signals, so nothing calls back into a sound node that is being torn down.
+func _exit_tree() -> void:
+	Events.explosion.disconnect(_on_explosion)
+	Events.missile_launched.disconnect(_on_missile_launched)
+	Events.flares_dropped.disconnect(_on_flares_dropped)
+	WorldOrigin.shifted.disconnect(_on_origin_shifted)
+	Settings.changed.disconnect(_apply_volumes)
+
+
 ## Returns the stream for a sound name, loading it once. Unknown names warn once and return null.
 func get_stream(sound_name: String) -> AudioStream:
 	if _cache.has(sound_name):
@@ -186,7 +195,8 @@ func _take_2d() -> AudioStreamPlayer:
 	return stolen
 
 
-func _apply_volumes() -> void:
+## Also connected to Settings.changed(key), which passes the changed key. Every key may change a volume, so all are applied.
+func _apply_volumes(_key: String = "") -> void:
 	if _cockpit_bus >= 0:
 		AudioServer.set_bus_volume_db(_cockpit_bus, linear_to_db(maxf(Settings.volume_sfx, 0.0001)))
 
