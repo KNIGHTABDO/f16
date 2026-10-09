@@ -18,11 +18,17 @@ const WAVE_FADE := Vector2(1500.0, 3200.0)  # waves vanish between these camera 
 const WAVE_HEIGHT_MAX := 1.8  # sum of the wave amplitudes, metres (vertical cull bounds)
 const HAZE_SCALE := 2500.0  # altitude scale of the aerial haze, metres
 const NOISE_SIZE := 512  # seamless noise texture size
-const DEEP_COLOR := Color(0.006, 0.040, 0.085)  # linear albedo offshore
-const SHALLOW_COLOR := Color(0.05, 0.36, 0.34)  # linear albedo over the shelf
+const DEEP_COLOR := Color(0.004, 0.024, 0.075)  # linear albedo offshore (Atlantic/Mediterranean deep blue)
+const SHALLOW_COLOR := Color(0.025, 0.40, 0.38)  # linear albedo over the shelf (clear turquoise)
 
-## Half-width of each ring in cells (must be even). Presets trade vertex count for edge quality.
-const PRESETS := {"low": 12, "balanced": 16, "high": 20, "ultra": 24}
+## Quality presets ("low", "medium", "balanced", "high", "ultra"): ring resolution and wave complexity.
+const PRESETS := {
+	"low": {"half_cells": 12, "wave_count": 1},
+	"medium": {"half_cells": 16, "wave_count": 2},
+	"balanced": {"half_cells": 16, "wave_count": 2},
+	"high": {"half_cells": 20, "wave_count": 4},
+	"ultra": {"half_cells": 24, "wave_count": 4},
+}
 
 ## Aerial haze colour (sky horizon tone) and density per metre at sea level.
 var haze_color: Color = Color(0.62, 0.74, 0.86):
@@ -41,6 +47,7 @@ var wave_strength: float = 1.0:
 
 var map_id := ""
 var _half_cells := 16
+var _wave_count := 4
 var _active := false
 var _camera: Camera3D
 var _height_tex: Texture2D
@@ -53,8 +60,8 @@ var _materials: Array[ShaderMaterial] = []
 var _centres := PackedVector2Array()
 
 
-## Builds the sea surface for the map Ground has loaded. Pass the Terrain of the same map to share its
-## height texture (otherwise the height grid is uploaded again). Returns false if the map is not loaded.
+## Builds the sea surface for the map Ground has loaded. Reuses Ground's height texture directly.
+## Pass the Terrain of the same map to share its height texture if already created.
 func setup(id: String, terrain: Terrain = null) -> bool:
 	if not Ground.is_loaded() or Ground.map_id != id:
 		push_error("Ocean.setup: Ground.load_map(\"%s\") must run first" % id)
@@ -62,9 +69,13 @@ func setup(id: String, terrain: Terrain = null) -> bool:
 	map_id = id
 	if terrain != null and terrain.height_texture() != null:
 		_height_tex = terrain.height_texture()
+	elif Ground.get_height_texture() != null:
+		_height_tex = Ground.get_height_texture()
 	else:
 		var n := Ground.height_n
-		var height_bytes := FileAccess.get_file_as_bytes(String(Ground.meta["height_file"]))
+		var height_bytes := Ground.get_height_bytes()
+		if height_bytes.is_empty():
+			height_bytes = FileAccess.get_file_as_bytes(String(Ground.meta["height_file"]))
 		_height_tex = ImageTexture.create_from_image(
 				Image.create_from_data(n, n, false, Image.FORMAT_R16, height_bytes))
 	_normal_tex = _noise_texture(true)
@@ -74,11 +85,15 @@ func setup(id: String, terrain: Terrain = null) -> bool:
 	return true
 
 
-## Chooses the quality preset ("low", "balanced", "high", "ultra"): ring resolution.
+## Chooses the quality preset ("low", "medium", "balanced", "high", "ultra"): ring resolution and wave complexity.
 func apply_quality(preset: String) -> void:
+	if preset == "medium":
+		preset = "balanced"
 	if not PRESETS.has(preset):
 		push_warning("Ocean.apply_quality: unknown preset '%s', using balanced" % preset)
-	_half_cells = int(PRESETS.get(preset, PRESETS["balanced"]))
+	var cfg: Dictionary = PRESETS.get(preset, PRESETS["balanced"])
+	_half_cells = int(cfg["half_cells"])
+	_wave_count = int(cfg.get("wave_count", 4))
 	if _active:
 		_build_rings()
 
@@ -131,8 +146,8 @@ func _build_rings() -> void:
 	_centres.fill(Vector2.INF)
 	_hole_slot.resize(RING_COUNT)
 	var grid := _grid_vertices(_half_cells)
-	var y0 := Ground.sea_level - WAVE_HEIGHT_MAX - 1.0
-	var y1 := Ground.sea_level + WAVE_HEIGHT_MAX + 1.0
+	var y0 := Ground.sea_level - 50.0
+	var y1 := Ground.sea_level + 50.0
 	for k in range(RING_COUNT):
 		var half := BASE_CELL * float(1 << k) * float(_half_cells)
 		var mat := ShaderMaterial.new()
@@ -153,6 +168,8 @@ func _build_rings() -> void:
 		mi.mesh = meshes[slot]
 		mi.material_override = mat
 		mi.custom_aabb = AABB(Vector3(-half, y0, -half), Vector3(2.0 * half, y1 - y0, 2.0 * half))
+		mi.extra_cull_margin = 10000.0
+		mi.ignore_occlusion_culling = true
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		mi.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 		add_child(mi)
@@ -181,6 +198,7 @@ func _push_shared() -> void:
 		"u_sea": Ground.sea_level,
 		"u_morph_band": MORPH_BAND,
 		"u_wave_amp": wave_strength,
+		"u_wave_count": float(_wave_count),
 		"u_wave_fade0": WAVE_FADE.x,
 		"u_wave_fade1": WAVE_FADE.y,
 		"u_haze_color": _haze_linear(),

@@ -29,14 +29,29 @@ var height_n := 0
 var landcover_n := 0
 var _heights := PackedByteArray()
 var _landcover := PackedByteArray()
+var _height_tex: ImageTexture = null
 
 
 func is_loaded() -> bool:
 	return height_n > 0
 
 
+## Raw height bytes (N*N little-endian uint16).
+func get_height_bytes() -> PackedByteArray:
+	return _heights
+
+
+## GPU ImageTexture created from _heights (cached, shared by Terrain and Ocean).
+func get_height_texture() -> ImageTexture:
+	if _height_tex == null and height_n > 0 and not _heights.is_empty():
+		var img := Image.create_from_data(height_n, height_n, false, Image.FORMAT_R16, _heights)
+		_height_tex = ImageTexture.create_from_image(img)
+	return _height_tex
+
+
 ## Loads data/maps/<id>.json and the binary files it references. Returns false on error.
 func load_map(id: String) -> bool:
+	_height_tex = null
 	var f := FileAccess.open("res://data/maps/%s.json" % id, FileAccess.READ)
 	if f == null:
 		push_error("Ground: missing map %s" % id)

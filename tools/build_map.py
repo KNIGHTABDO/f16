@@ -599,11 +599,14 @@ def build_colour(proj: Projection, landcover: np.ndarray) -> np.ndarray:
     return out
 
 
-def grade_colour(colour: np.ndarray, landcover: np.ndarray) -> np.ndarray:
+def grade_colour(colour: np.ndarray, landcover: np.ndarray, sea_grid: np.ndarray | None = None) -> np.ndarray:
     """Global white balance, mild contrast and saturation boost, neutral deep blue-grey sea. In place."""
     n = colour.shape[0]
     idx = np.rint(np.arange(n) * (LANDCOVER_N - 1) / (n - 1)).astype(np.int64)
-    sea = landcover[np.ix_(idx, idx)] == LC_WATER
+    if sea_grid is not None:
+        sea = sea_grid[np.ix_(idx, idx)]
+    else:
+        sea = landcover[np.ix_(idx, idx)] == LC_WATER
     sub = colour[::8, ::8].reshape(-1, 3).astype(np.float64)
     land = ~sea[::8, ::8].reshape(-1)
     means = sub[land].mean(axis=0)
@@ -1012,7 +1015,7 @@ def build_map(mdef: dict, previews: bool) -> None:
 
     log(f"[{map_id}] colour (EOX Sentinel-2 cloudless, zoom {EOX_ZOOM})")
     colour = build_colour(proj, landcover)
-    colour = grade_colour(colour, landcover)
+    colour = grade_colour(colour, landcover, sea)
 
     out_dir = ASSETS_DIR / map_id
     out_dir.mkdir(parents=True, exist_ok=True)
