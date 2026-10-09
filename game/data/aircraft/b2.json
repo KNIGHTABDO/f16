@@ -1,0 +1,102 @@
+{
+    "id": "b2",
+    "name": "Northrop B-2 Spirit",
+    "short_name": "B-2",
+    "category": "bomber",
+    "nation": "USA",
+    "era": "modern",
+    "description": "Stealth flying-wing strategic bomber carrying precision and gravity munitions in internal bays. Four non-afterburning turbofans give it subsonic speed and intercontinental range with a very low radar signature.",
+    "model": "res://assets/models/aircraft/b2/b2.glb",
+    "model_scale": 1.0,
+    "model_rotation_deg": [
+        0,
+        0,
+        0
+    ],
+    "model_offset": [
+        0,
+        0.29,
+        0
+    ],
+    "cockpit_eye": [
+        0.0,
+        1.44,
+        -7.55
+    ],
+    "chase_distance": 30.0,
+    "chase_height": 7.5,
+    "length": 21.03,
+    "wing_span": 52.4,
+    "hit_radius": 15.0,
+    "engine": "jet",
+    "engine_sound": "engine_jet",
+    "mass_empty": 71700,
+    "mass_fuel": 75750,
+    "fuel_burn_dry": 1.4,
+    "fuel_burn_ab": 1.4,
+    "thrust_dry": 308000,
+    "thrust_ab": 0,
+    "thrust_altitude_lapse": 0.7,
+    "engine_spool_s": 4.0,
+    "prop_power_kw": 0,
+    "prop_efficiency": 0.0,
+    "wing_area": 477.0,
+    "cl0": 0.1,
+    "cl_alpha": 4.6,
+    "cl_max": 1.2,
+    "alpha_stall_deg": 16,
+    "cd0": 0.0125,
+    "induced_k": 0.07,
+    "cd_wave_mach": 0.85,
+    "cd_wave_max": 0.01,
+    "cd_gear": 0.02,
+    "cd_airbrake": 0.0,
+    "side_force": 0.6,
+    "max_g": 2.5,
+    "min_g": -1.0,
+    "max_aoa_deg": 18,
+    "roll_rate_deg": 25,
+    "pitch_rate_deg": 6,
+    "yaw_rate_deg": 4,
+    "control_response": 1.8,
+    "stability": 1.0,
+    "fly_by_wire": true,
+    "max_speed_kmh": 1010,
+    "vne_kmh": 1100,
+    "stall_speed_kmh": 240,
+    "takeoff_speed_kmh": 280,
+    "landing_speed_kmh": 265,
+    "service_ceiling_m": 15240,
+    "has_gear": true,
+    "has_hook": false,
+    "has_afterburner": false,
+    "health": 500,
+    "gun": {
+        "weapon": "",
+        "ammo": 0,
+        "muzzles": []
+    },
+    "flares": 60,
+    "hardpoints": 8,
+    "default_loadout": "jdam_strike",
+    "loadouts": {
+        "carpet_bombing": [
+            {
+                "weapon": "mk82",
+                "count": 8
+            }
+        ],
+        "precision_strike": [
+            {
+                "weapon": "gbu12",
+                "count": 8
+            }
+        ],
+        "jdam_strike": [
+            {
+                "weapon": "gbu31",
+                "count": 8
+            }
+        ]
+    }
+}

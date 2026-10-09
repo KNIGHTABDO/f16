@@ -2690,6 +2690,41 @@
       "nozzle": "^NOPE$",
       "wing": "^NOPE$",
       "muzzles_raw": []
+    },
+    "b2": {
+      "kind": "aircraft",
+      "repo": "FGMEMBERS/B-2",
+      "branch": "master",
+      "src": "tools/cache/models/src-b2",
+      "sparse": ["*"],
+      "entry": "Models/b2-spirit.xml",
+      "include_models": [],
+      "offset_overrides": {},
+      "source": "https://github.com/FGMEMBERS/B-2 (Models/b2-spirit.xml, spirit.ac; model by Markus Zojer, 2007)",
+      "license": "GPL-2.0 per FlightGear policy (UNVERIFIED: no LICENSE file in repo; confirm before distribution)",
+      "out": "game/assets/models/aircraft/b2/b2.glb",
+      "remap": ["-z", "+y", "+x"],
+      "body_remap": ["+y", "+z", "+x"],
+      "fit_length_m": 21.03,
+      "fit_axis": "z",
+      "origin": "center",
+      "max_tex": 2048,
+      "max_tris": 60000,
+      "rules": [
+        ["_drop", "^(bay|bay_int|chair|la_light|cockpit_\\d|cockpit\\.|cockpit_ladder)"],
+        ["canopy", "^cockpit_glass"],
+        ["gear", "^(tire|front_gear|left_gear|right_gear|gear_cover|gearbox)"],
+        ["elevon_l", "^left_aileron"],
+        ["elevon_r", "^right_aileron"],
+        ["rudder_l", "^left_rudder_up"],
+        ["rudder_r", "^right_rudder_up"]
+      ],
+      "anim": { "elevon_l": "left_aileron", "elevon_r": "right_aileron", "rudder_l": "left_rudder_up", "rudder_r": "right_rudder_up" },
+      "nozzle": "^NOPE$",
+      "wing": "^Hull",
+      "cockpit": "^cockpit_glass",
+      "muzzles_raw": [],
+      "glass": "canopy|glass|window|windscreen"
     }
   }
 }

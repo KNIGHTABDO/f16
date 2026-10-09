@@ -28,6 +28,7 @@ fetched by `tools/fetch_models.sh` into `tools/cache/models/` (not committed).
 | fa18c | McDonnell Douglas F/A-18C Hornet (FlightGear FGMEMBERS) | https://github.com/FGMEMBERS/F-18C | GPL-2.0 (COPYING in repo) | `aircraft/fa18c/fa18c.glb` |
 | rafale | Dassault Rafale B (FlightGear FGMEMBERS) | https://github.com/FGMEMBERS/RafaleB | GPL-2.0 (COPYING in repo) | `aircraft/rafale/rafale.glb` |
 | ah64 | Boeing AH-64 Apache (FlightGear FGMEMBERS) | https://github.com/FGMEMBERS/AH-64_Apache | GPL-2.0 (COPYING in repo) | `aircraft/ah64/ah64.glb` |
+| b2 | Northrop B-2 Spirit (FlightGear FGMEMBERS; model by Markus Zojer, 2007) | https://github.com/FGMEMBERS/B-2 | UNVERIFIED: no LICENSE file in repo, GPL-2.0 assumed per FlightGear policy; confirm before distribution | `aircraft/b2/b2.glb` |
 
 The GLB files embed the original FlightGear textures. The original authors are listed in each
 repository's history and README. Models are redistributed under the GPL with the licence
