@@ -71,7 +71,6 @@ func _ready() -> void:
 	_start_mission()
 
 	if Settings.radio_enabled:
-		Radio.cockpit_fx = (camera.get_mode() == FlightCamera.Mode.COCKPIT) and Settings.radio_cockpit_fx
 		Radio.start()
 
 

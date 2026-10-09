@@ -10,7 +10,7 @@
 	"model_scale": 1.0,
 	"model_rotation_deg": [0, 0, 0],
 	"model_offset": [0, 0.68, 0],
-	"cockpit_eye": [0, 0.81, -2.916],
+	"cockpit_eye": [0, 0.808, -2.916],
 	"chase_distance": 17.0,
 	"chase_height": 3.5,
 	"length": 14.307,
