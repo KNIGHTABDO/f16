@@ -2639,26 +2639,20 @@
       "origin": "center",
       "max_tex": 2048,
       "max_tris": 60000,
-      "rules": [],
+      "rules": [
+        ["_drop", "^(landinglight|Cannon|CannonMount)$"]
+      ],
       "extra_ac": [
-        {
-          "path": "Models/MainRotor/mainrotor.ac",
-          "offset": [
-            -1.3,
-            -0.05,
-            2.05
-          ],
-          "bucket": "rotor_main"
-        },
-        {
-          "path": "Models/TailRotor/tailrotor.ac",
-          "offset": [
-            8.15,
-            -0.7,
-            1.3
-          ],
-          "bucket": "rotor_tail"
-        }
+        {"path": "Models/MainRotor/rotorhub.ac", "offset": [-1.3, -0.05, 2.05], "rot": [["pitch", 2]], "bucket": "rotor_main"},
+        {"path": "Models/MainRotor/blade1a.ac", "offset": [-1.3, -0.05, 2.05], "rot": [["heading", 0], ["pitch", 2]], "bucket": "rotor_main"},
+        {"path": "Models/MainRotor/blade1a.ac", "offset": [-1.3, -0.05, 2.05], "rot": [["heading", 90], ["pitch", 2]], "bucket": "rotor_main"},
+        {"path": "Models/MainRotor/blade1a.ac", "offset": [-1.3, -0.05, 2.05], "rot": [["heading", 180], ["pitch", 2]], "bucket": "rotor_main"},
+        {"path": "Models/MainRotor/blade1a.ac", "offset": [-1.3, -0.05, 2.05], "rot": [["heading", 270], ["pitch", 2]], "bucket": "rotor_main"},
+        {"path": "Models/TailRotor/tailrotor.ac", "offset": [8.15, -0.7, 1.3], "rot": [["roll", 90]], "bucket": "rotor_tail"},
+        {"path": "Models/TailRotor/blade.ac", "offset": [8.15, -0.7, 1.3], "rot": [["heading", 0], ["roll", 90]], "bucket": "rotor_tail"},
+        {"path": "Models/TailRotor/blade.ac", "offset": [8.15, -0.7, 1.3], "rot": [["heading", 45], ["roll", 90]], "bucket": "rotor_tail"},
+        {"path": "Models/TailRotor/blade.ac", "offset": [8.15, -0.7, 1.3], "rot": [["heading", 180], ["roll", 90]], "bucket": "rotor_tail"},
+        {"path": "Models/TailRotor/blade.ac", "offset": [8.15, -0.7, 1.3], "rot": [["heading", 225], ["roll", 90]], "bucket": "rotor_tail"}
       ],
       "anim": {},
       "hinges": {
@@ -2679,9 +2673,9 @@
         },
         "rotor_tail": {
           "center": [
-            15.47,
-            0.0,
-            3.21
+            8.15,
+            -0.7,
+            1.3
           ],
           "axis": [
             0,

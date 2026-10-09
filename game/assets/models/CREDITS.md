@@ -27,6 +27,7 @@ fetched by `tools/fetch_models.sh` into `tools/cache/models/` (not committed).
 | bf109 | Messerschmitt Bf 109G (FlightGear) | https://github.com/FGMEMBERS/bf109 | GPL-2.0 (per recipe; no LICENSE file in our checkout, confirm) | `aircraft/bf109/bf109.glb` |
 | fa18c | McDonnell Douglas F/A-18C Hornet (FlightGear FGMEMBERS) | https://github.com/FGMEMBERS/F-18C | GPL-2.0 (COPYING in repo) | `aircraft/fa18c/fa18c.glb` |
 | rafale | Dassault Rafale B (FlightGear FGMEMBERS) | https://github.com/FGMEMBERS/RafaleB | GPL-2.0 (COPYING in repo) | `aircraft/rafale/rafale.glb` |
+| ah64 | Boeing AH-64 Apache (FlightGear FGMEMBERS) | https://github.com/FGMEMBERS/AH-64_Apache | GPL-2.0 (COPYING in repo) | `aircraft/ah64/ah64.glb` |
 
 The GLB files embed the original FlightGear textures. The original authors are listed in each
 repository's history and README. Models are redistributed under the GPL with the licence

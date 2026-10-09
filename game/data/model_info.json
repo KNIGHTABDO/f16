@@ -7994,5 +7994,48 @@
       }
     },
     "triangles": 17083
+  },
+  "ah64": {
+    "source": "https://github.com/FGMEMBERS/AH-64_Apache (Models/WAH-64_Apache.xml, apache3.ac, MainRotor/mainrotor.ac, TailRotor/tailrotor.ac; FGUK Hangar)",
+    "license": "GPL-2.0",
+    "scale_fix": 1.0,
+    "origin": "center",
+    "size_m": {
+      "span": 15.38,
+      "height": 5.785,
+      "length": 18.633
+    },
+    "muzzles": [],
+    "gear_nodes": [],
+    "control_surfaces": {},
+    "rotors": {
+      "rotor_main": {
+        "hub": [
+          -0.0,
+          1.124,
+          -1.634
+        ],
+        "axis": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "property": "rotors/main/rpm"
+      },
+      "rotor_tail": {
+        "hub": [
+          -0.647,
+          0.384,
+          7.816
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "property": "rotors/tail/rpm"
+      }
+    },
+    "triangles": 56997
   }
 }

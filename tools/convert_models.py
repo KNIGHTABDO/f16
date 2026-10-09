@@ -68,6 +68,23 @@ def m3vec(a, v):
             a[6] * v[0] + a[7] * v[1] + a[8] * v[2])
 
 
+def m3t(a):
+    return tuple(a[3 * j + i] for i in range(3) for j in range(3))
+
+
+def fg_rot(kind, deg):
+    """Body-frame rotation (x aft, y right, z up) for an FG <offsets> angle, in FG's sense:
+    roll right-wing-down, pitch nose-up, heading clockwise seen from above."""
+    c, s = math.cos(math.radians(deg)), math.sin(math.radians(deg))
+    if kind == "roll":
+        return (1.0, 0.0, 0.0, 0.0, c, s, 0.0, -s, c)
+    if kind == "pitch":
+        return (c, 0.0, s, 0.0, 1.0, 0.0, -s, 0.0, c)
+    if kind == "heading":
+        return (c, s, 0.0, -s, c, 0.0, 0.0, 0.0, 1.0)
+    sys.exit("unknown rotation kind: %s" % kind)
+
+
 def vadd(a, b):
     return (a[0] + b[0], a[1] + b[1], a[2] + b[2])
 
@@ -419,11 +436,16 @@ if entry_path is None:
 
 components = parse_xml_components(entry_path, [], 0, set(CFG.get("include_models", [])))
 # Extra AC3D files placed at an explicit body-frame offset with a forced bucket (rotor discs whose XML nests
-# blades with zero heading offsets, so the nested XML cannot place them)
+# blades with zero heading offsets, so the nested XML cannot place them). Optional "rot": [[kind, deg], ...]
+# is applied in list order about the origin before the offset (a blade's heading, then its parent's pitch/roll)
 FORCED_BUCKET = {}
 for x in CFG.get("extra_ac", []):
     ac_abs = os.path.normpath(os.path.join(SRC_ROOT, x["path"]))
-    components.append((ac_abs, tuple(float(c) for c in x["offset"]), None))
+    Mb = I3
+    for kind, deg in x.get("rot", []):
+        Mb = m3mul(fg_rot(kind, float(deg)), Mb)
+    Mg = m3mul(m3mul(BODY_REMAP, Mb), m3t(BODY_REMAP))  # body-frame rotation expressed in Godot frame
+    components.append((ac_abs, tuple(float(c) for c in x["offset"]), Mg))
     FORCED_BUCKET[ac_abs] = x["bucket"]
 ANIMS = []
 if entry_path.lower().endswith(".xml"):
@@ -431,7 +453,7 @@ if entry_path.lower().endswith(".xml"):
 
 geos = []        # one per AC3D poly object: dict(name, tex, verts (godot, unscaled), surfs, mats, src)
 tex_paths = {}
-for ac_rel, body_off, _ in components:
+for ac_rel, body_off, rot_g in components:
     ac_path = ac_rel
     if not os.path.exists(ac_path):
         alt = find_by_basename(ac_rel)
@@ -448,7 +470,11 @@ for ac_rel, body_off, _ in components:
         if obj["type"] != "poly" or not obj["verts"] or not obj["surfs"]:
             continue
         Rg = m3mul(REMAP, Rw)
-        tg = vadd(m3vec(REMAP, tw), off_g)
+        tg = m3vec(REMAP, tw)
+        if isinstance(rot_g, tuple):  # extra_ac rotation (3rd field is otherwise the XML root); applied before offset
+            Rg = m3mul(rot_g, Rg)
+            tg = m3vec(rot_g, tg)
+        tg = vadd(tg, off_g)
         verts = [vadd(m3vec(Rg, v), tg) for v in obj["verts"]]
         geos.append({
             "name": obj["name"] or "obj%d" % len(geos),
@@ -513,6 +539,7 @@ elif ORIGIN_MODE == "bottom":
     SHIFT = (-(lo[0] + hi[0]) * 0.5, -lo[1], -(lo[2] + hi[2]) * 0.5)
 else:
     SHIFT = (0.0, 0.0, 0.0)
+print("[%s] origin SHIFT (Godot frame m, added to every vertex) = (%.3f, %.3f, %.3f)" % ((MODEL_ID,) + tuple(SHIFT)))
 for g in geos:
     g["verts"] = [vadd(v, SHIFT) for v in g["verts"]]
 live = [g for g in geos if not g["bucket"].startswith("_")]
