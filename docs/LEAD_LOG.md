@@ -10,3 +10,7 @@
 - 12:15 tick: merged models3 (ah64, b17, fa18c, rafale); import + test_flight smoke OK.
   Running: weapons, art2, hud-touch (3/5); queue blocked on weapons for combat-units.
   Overall % unchanged.
+
+- 13:06 tick: nothing finished; running ai, art3, modes-missions, perf-ipa (4/5).
+  No merges/launches; only playtest-v1 left in queue (needs everything).
+  Overall % unchanged.
