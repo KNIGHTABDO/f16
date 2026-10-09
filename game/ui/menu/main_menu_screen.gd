@@ -209,15 +209,10 @@ func _on_missions_pressed() -> void:
 
 func _on_hangar_pressed() -> void:
 	Sfx.play_2d("ui_click")
-	# Simple hangar dialog showing current aircraft & map
-	var dlg := AcceptDialog.new()
-	dlg.title = "HANGAR - AIRCRAFT ASSIGNMENT"
-	dlg.dialog_text = "Current Aircraft: %s (F-16C Fighting Falcon)\nMap: %s\nStatus: READY FOR FLIGHT" % [
-		GameState.selected_aircraft.to_upper(),
-		GameState.selected_map.capitalize()
-	]
-	add_child(dlg)
-	dlg.popup_centered()
+	var root := _get_menu_root()
+	if root and root.has_method("push_screen"):
+		var hangar_screen := preload("res://ui/hangar/hangar.gd").new()
+		root.push_screen(hangar_screen)
 
 
 func _on_settings_pressed() -> void:
