@@ -1,6 +1,6 @@
 # Job queue (the lead tick reads and updates this file)
 Format: `- [ ] <name> | gemini|claude | <brief> | <base or worktree> | needs: <names merged first>`. Mark [~] running, [x] merged.
-Gemini is the primary coder (check quota: scripts/job.sh gemini fails fast if agy errors -> use `job.sh haiku`). Claude Sonnet (medium effort, use sparingly) only for weapons-related work.
+Run Gemini AND Haiku (job.sh haiku = Haiku 5.5 xhigh) in parallel; both are primary. Gemini: image generation + bulky multi-file jobs. Haiku: focused code jobs. Claude Sonnet (medium, sparingly) only for weapons/combat-AI work. Check Gemini quota with /usage in the agy TUI.
 
 - [x] settings-menus | gemini | tasks/settings_menus.md | main | needs: -
 - [x] roster | gemini | tasks/aircraft_roster.md | main | needs: -
@@ -17,7 +17,7 @@ Gemini is the primary coder (check quota: scripts/job.sh gemini fails fast if ag
 - [~] terrain-polish | haiku | tasks/cont_terrain_polish.md | .claude/worktrees/gem-gem-terrain-polish | needs: -
 - [ ] modes-missions | gemini | tasks/modes_missions.md | main | needs: ai, hud-touch
 - [~] hangar-progression | haiku | tasks/hangar.md | .claude/worktrees/hk-hangar (branch hk/hangar) | needs: roster, models2, settings-menus, art
-- [ ] perf-ipa | claude | tasks/perf_ipa.md | main | needs: modes-missions
+- [ ] perf-ipa | haiku | tasks/perf_ipa.md | main | needs: modes-missions
 - [ ] playtest-v1 | lead | full headless playthrough, fix, tag v1.0 | main | needs: everything
 
 NOTE 2026-10-09: agy is on abdo.knight7@gmail.com; Gemini weekly quota 95% left (check with /usage in agy TUI; "AI credits" in the status bar is unrelated). If 429 again: Use `scripts/job.sh haiku` (non-weapons) / `claude` (weapons) until `agy -p "Reply with just OK"` works again.
