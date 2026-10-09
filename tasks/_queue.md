@@ -14,7 +14,7 @@ Gemini is the primary coder (check quota: scripts/job.sh gemini fails fast if ag
 - [ ] combat-units | gemini | tasks/combat_units.md | main | needs: weapons, integration
 - [ ] ai | claude | tasks/ai.md | main | needs: combat-units
 - [ ] hud-touch | gemini | tasks/hud_touch.md | main | needs: weapons, integration, settings-menus
-- [~] terrain-polish | gemini | tasks/terrain_polish.md | main | needs: -
+- [~] terrain-polish | haiku | tasks/cont_terrain_polish.md | .claude/worktrees/gem-gem-terrain-polish | needs: -
 - [ ] modes-missions | gemini | tasks/modes_missions.md | main | needs: ai, hud-touch
 - [ ] hangar-progression | gemini | tasks/hangar.md | main | needs: roster, models2, settings-menus, art
 - [ ] perf-ipa | claude | tasks/perf_ipa.md | main | needs: modes-missions
