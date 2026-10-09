@@ -209,8 +209,9 @@ func _on_free_flight_pressed() -> void:
 
 func _on_missions_pressed() -> void:
 	Sfx.play_2d("ui_confirm")
-	GameState.selected_mode = "dogfight"
-	GameState.start_flight()
+	var root := _get_menu_root()
+	if root and root.has_method("push_screen"):
+		root.push_screen(ModeSelectScreen.new())
 
 
 ## Hangar: opens the hangar screen (aircraft, loadout, livery).
