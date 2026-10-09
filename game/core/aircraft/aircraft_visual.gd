@@ -98,6 +98,7 @@ func setup(d: AircraftData) -> void:
 		_model = _build_procedural()
 		add_child(_model)
 	_build_effects()
+	LodRanges.apply_tree(self)
 
 
 ## Links the visual to its aircraft so it can read the controls, gear and airbrake state each frame.

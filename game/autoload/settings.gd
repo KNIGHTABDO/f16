@@ -38,7 +38,10 @@ const DEFAULT_GAMEPAD_BINDINGS := {
 ## 1. Graphics: "low", "balanced", "high", "ultra", "custom"
 var graphics_preset := "balanced"
 var fps_target := 60  # 30, 60 or 120
-var render_scale := 1.0  # 0.5..1.0 (3D only)
+var render_scale := 1.0  # 0.5..1.0 (3D only); ceiling for dynamic resolution
+var dynamic_resolution := true  # PerfGovernor lowers the 3D scale toward dynamic_resolution_min when frames run long
+var dynamic_resolution_min := 0.6  # 0.5..render_scale
+var unit_draw_m := 6000.0  # aircraft and units beyond this distance are not drawn; 2000..12000
 var show_perf_hud := false
 var msaa_3d := 2  # 0 = Off, 1 = 2x, 2 = 4x
 var fxaa := false
@@ -210,7 +213,8 @@ func set_value(key: String, value: Variant) -> void:
 		set(key, value)
 		# Changing graphics sub-options switches preset to custom
 		if key in [
-			"render_scale", "fps_target", "msaa_3d", "fxaa", "terrain_detail",
+			"render_scale", "dynamic_resolution", "dynamic_resolution_min", "unit_draw_m",
+			"fps_target", "msaa_3d", "fxaa", "terrain_detail",
 			"view_distance_km", "cloud_quality", "shadow_quality", "shadow_distance",
 			"vegetation_density", "city_density", "effects_quality", "water_quality",
 			"bloom", "lens_flare", "motion_blur", "heat_haze"
@@ -261,6 +265,9 @@ func apply_graphics_preset(preset: String) -> void:
 	match preset:
 		"low":
 			render_scale = 0.65
+			dynamic_resolution = true
+			dynamic_resolution_min = 0.5
+			unit_draw_m = 2500.0
 			fps_target = 30
 			msaa_3d = 0
 			fxaa = false
@@ -278,7 +285,10 @@ func apply_graphics_preset(preset: String) -> void:
 			motion_blur = false
 			heat_haze = false
 		"balanced":
-			render_scale = 0.85
+			render_scale = 0.9
+			dynamic_resolution = true
+			dynamic_resolution_min = 0.6
+			unit_draw_m = 4000.0
 			fps_target = 60
 			msaa_3d = 1
 			fxaa = false
@@ -286,7 +296,7 @@ func apply_graphics_preset(preset: String) -> void:
 			view_distance_km = 50.0
 			cloud_quality = "medium"
 			shadow_quality = "medium"
-			shadow_distance = 2500.0
+			shadow_distance = 1500.0
 			vegetation_density = "medium"
 			city_density = "medium"
 			effects_quality = "medium"
@@ -297,6 +307,9 @@ func apply_graphics_preset(preset: String) -> void:
 			heat_haze = true
 		"high":
 			render_scale = 1.0
+			dynamic_resolution = true
+			dynamic_resolution_min = 0.75
+			unit_draw_m = 6000.0
 			fps_target = 60
 			msaa_3d = 2
 			fxaa = true
@@ -304,7 +317,7 @@ func apply_graphics_preset(preset: String) -> void:
 			view_distance_km = 70.0
 			cloud_quality = "high"
 			shadow_quality = "high"
-			shadow_distance = 4000.0
+			shadow_distance = 2500.0
 			vegetation_density = "high"
 			city_density = "high"
 			effects_quality = "high"
@@ -315,6 +328,9 @@ func apply_graphics_preset(preset: String) -> void:
 			heat_haze = true
 		"ultra":
 			render_scale = 1.0
+			dynamic_resolution = false
+			dynamic_resolution_min = 1.0
+			unit_draw_m = 9000.0
 			fps_target = 120
 			msaa_3d = 2
 			fxaa = true
@@ -322,7 +338,7 @@ func apply_graphics_preset(preset: String) -> void:
 			view_distance_km = 100.0
 			cloud_quality = "ultra"
 			shadow_quality = "ultra"
-			shadow_distance = 6000.0
+			shadow_distance = 4000.0
 			vegetation_density = "high"
 			city_density = "high"
 			effects_quality = "high"
