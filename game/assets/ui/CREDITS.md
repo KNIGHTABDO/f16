@@ -83,64 +83,75 @@ This document records the provenance, tools, and prompts used to create each gam
 
 ---
 
-## 4. Aircraft Renders (1024x512, RGBA PNG)
+## 4. Aircraft Profiles (1024x512, RGBA PNG)
 
-- **Source Models**: Official in-game GLB models from `res://assets/models/aircraft/<id>/<id>.glb`
-- **Tool**: Blender 4.0.2 EEVEE offscreen renderer (`tools/render_aircraft.py`)
+- **Source Images**: Photoreal authentic 3/4-side and profile aviation photography of real aircraft in service with authentic liveries and accurate geometric silhouettes.
 - **Pipeline**:
-  1. Automated bounding box calculation and center normalization.
-  2. Gear meshes hidden for streamlined in-flight profile.
-  3. 3-quarter front perspective camera (72mm focal length, 62° azimuth, 15° elevation).
-  4. Three-point cinematic lighting:
-     - Warm amber key sunlight (`#FFEAC6`, 5.0 energy)
-     - Cool naval ambient fill (`#66A6F2`, 2.5 energy)
-     - Vivid cyan accent rim light (`#3FD0FF`, 4.0 energy)
-  5. Antialiased rendering direct to 1024x512 with transparent background.
-- **Aircraft Covered**:
-  - `aircraft/f16c.png`: F-16C Fighting Falcon
-  - `aircraft/ef2000.png`: Eurofighter Typhoon
-  - `aircraft/f35a.png`: F-35A Lightning II
-  - `aircraft/su27.png`: Sukhoi Su-27 Flanker
-  - `aircraft/mig29.png`: Mikoyan MiG-29 Fulcrum
-  - `aircraft/f15c.png`: F-15C Eagle
-  - `aircraft/mig21bis.png`: MiG-21bis Fishbed
+  1. Automated border flood-fill background keying and alpha extraction via `tools/resize_art.py` (`--key auto`).
+  2. Tight foreground bounding box detection with antialiased edge preservation.
+  3. Aspect-ratio containment scaling and centering within a 1024x512 transparent RGBA canvas.
+  4. Optimized PNG compression.
+- **Aircraft Covered (All 21 Roster & Model IDs)**:
+  - `aircraft/a10c.png`: Fairchild Republic A-10C Thunderbolt II (30mm GAU-8, straight wing, twin high-bypass turbofans)
+  - `aircraft/ah64.png`: Boeing AH-64 Apache Attack Helicopter (mast radar dome, tandem cockpit, chain gun)
+  - `aircraft/b17.png`: Boeing B-17G Flying Fortress (WWII heavy bomber, 4 radial engines, glazed nose)
+  - `aircraft/bf109.png`: Messerschmitt Bf 109 (WWII fighter, narrow-track gear, Daimler-Benz liquid-cooled V12)
+  - `aircraft/ef2000.png`: Eurofighter Typhoon (canard delta wing, twin Eurojet EJ200 engines)
+  - `aircraft/f14b.png`: Grumman F-14B Tomcat (twin-engine, variable-sweep wings, twin vertical stabilizers)
+  - `aircraft/f15c.png`: McDonnell Douglas F-15C Eagle (air-superiority fighter, twin tails, shoulder-mounted wings)
+  - `aircraft/f15e.png`: McDonnell Douglas F-15E Strike Eagle (conformal fuel tanks, dark tactical camo)
+  - `aircraft/f16c.png`: General Dynamics F-16C Fighting Falcon (bubble canopy, ventral intake, blended wing-body)
+  - `aircraft/f22a.png`: Lockheed Martin F-22A Raptor (stealth 5th-gen fighter, canted stabilizers, RAM coating)
+  - `aircraft/f35a.png`: Lockheed Martin F-35A Lightning II (conventional takeoff stealth fighter, electro-optical EOTS)
+  - `aircraft/fa18c.png`: McDonnell Douglas F/A-18C Hornet (naval strike fighter, twin canted tails, LEX)
+  - `aircraft/ja37.png`: Saab JA 37 Viggen (Swedish canard delta wing, tactical camouflage)
+  - `aircraft/mig21bis.png`: Mikoyan MiG-21bis Fishbed (supersonic delta fighter, conical nose shock intake)
+  - `aircraft/mig29.png`: Mikoyan MiG-29 Fulcrum (twin-tail air-superiority fighter, leading-edge root extensions)
+  - `aircraft/mirage2000.png`: Dassault Mirage 2000 (tailless delta wing, ventral drop tank, low-drag airframe)
+  - `aircraft/p51d.png`: North American P-51D Mustang (WWII escort fighter, Packard V-1650 Merlin, teardrop canopy)
+  - `aircraft/rafale.png`: Dassault Rafale (omnirole twin-engine fighter, close-coupled active canards)
+  - `aircraft/spitfire.png`: Supermarine Spitfire Mk IX (WWII interceptor, iconic elliptical wings, Rolls-Royce Merlin)
+  - `aircraft/su27.png`: Sukhoi Su-27 Flanker (heavy air-superiority fighter, curved LERX, tail stinger boom)
+  - `aircraft/su57.png`: Sukhoi Su-57 Felon (5th-gen stealth multirole fighter, flattened fuselage, 3D vectoring)
 
 ---
 
 ## 5. Game Mode Cards (768x432, JPEG q85)
 
-- **Tool**: `tools/generate_mode_cards.py` with custom framing, contrast, and color grading from high-resolution cinematic aviation captures.
+- **Art Pass 2 Update**: Every one of the 11 mode cards is a dedicated, unique action scene tailored to that specific game mode (no reuse of menu/loading screens).
+- **Processing**: Sourced from high-definition public-domain military and combat captures + DeepMind Imagen generation, color-graded to the game's deep-navy/warm-amber palette, and processed via `tools/resize_art.py`.
 - **Modes**:
-  - `modes/free_flight.jpg`: Serene solo/echelon cruise above golden cloud layer
-  - `modes/instant_action.jpg`: Aggressive high-G bank into contested airspace
-  - `modes/dogfight.jpg`: Close-quarters air combat scissors maneuver with afterburners
-  - `modes/strike.jpg`: Low-altitude supersonic strike through red rock canyon
-  - `modes/sead.jpg`: Transonic stealth penetration run with shockwave cone
-  - `modes/anti_ship.jpg`: Sea-skimming maritime strike over deep ocean waters
-  - `modes/convoy_hunt.jpg`: Desert canyon terrain-following attack vector
-  - `modes/base_defense.jpg`: Night scramble interception from airbase taxiway
-  - `modes/carrier_landing.jpg`: Twilight approach over coastal waters
-  - `modes/time_trial.jpg`: High-speed navigation through Atlas mountain ridges
-  - `modes/target_range.jpg`: Tactical reconnaissance bombing range overview
+  - `modes/free_flight.jpg`: Lone supersonic fighter jet cruising smoothly over snow-capped mountain peaks at golden hour
+  - `modes/instant_action.jpg`: Intense close air-combat furball with multiple jets deploying arching golden flares into twilight (Generated via Google DeepMind Imagen `gemini-3.1-flash-image`)
+  - `modes/dogfight.jpg`: Close-quarters air combat maneuvering with wingtip vortex condensation vapor streaming off lifting surfaces
+  - `modes/strike.jpg`: Precision strike ordnance explosion detonating on target with violent fireball and dark smoke plume
+  - `modes/sead.jpg`: Surface-to-air missile (SAM) battery launch and tactical engagement site at twilight
+  - `modes/anti_ship.jpg`: Anti-ship cruise missile launch skimming low toward a maritime target in open waters
+  - `modes/convoy_hunt.jpg`: A-10 Thunderbolt II low-angle strafing run firing high-explosive 30mm cannon burst
+  - `modes/base_defense.jpg`: Interceptor jet scramble immediate takeoff from military airbase runway with afterburners ablaze
+  - `modes/carrier_landing.jpg`: Naval strike fighter catching the arresting wire (tailhook trap) on an aircraft carrier flight deck
+  - `modes/time_trial.jpg`: High-speed low-altitude navigation sprint through mountain pass and canyon terrain
+  - `modes/target_range.jpg`: Aerial overview of a military weapons test and bombing target range with concentric rings and craters
 
 ---
 
 ## 6. Icons (256x256, RGBA PNG)
 
 - **Tool**: Procedural anti-aliased vector generator `tools/generate_ui_glyphs.py`
-- **Style**: Flat, clean white `#FFFFFF` glyphs on transparent background, 4x supersampling downscaled via Lanczos filter.
-- **Icons**:
+- **Style**: Flat, clean white `#FFFFFF` glyphs on transparent background, 4x supersampling downscaled via Lanczos filter. Tested and verified for sharp, instantaneous legibility down to 48px.
+- **Weapon Icons Redesign (Art Pass 2)**:
+  - `icons/bomb.png`: Completely redesigned from the previous teardrop shape into an authentic aerial general-purpose bomb (heavy cylindrical body, rounded ballistic ogive nose, conical boat-tail, cruciform box stabilizer fins and outer box ring) angled 45° downward to unmistakably read as a gravity ordnance drop and eliminate fish-like appearance at 48px.
+  - `icons/missile.png`: Redesigned with higher fineness ratio, sharp needle radome nose, forward delta canard control surfaces, large swept rear stabilizing fins, and rocket motor nozzle, angled 45° upward.
+  - `icons/rocket.png`: Redesigned with conical warhead, narrow motor tube, straight stabilizing fins, and dynamic triple exhaust thrust plume for clear differentiation from missiles.
+- **General Icons**:
   - `icons/settings.png`: 8-tooth mechanical gear
   - `icons/radio.png`: Broadcast antenna tower with radiating radio wave arcs
   - `icons/hangar.png`: Military aircraft hangar arched structure with tarmac line
   - `icons/map.png`: Three-panel folded tactical navigation map
   - `icons/play.png`: Triangle play glyph
   - `icons/pause.png`: Twin vertical rounded pause bars
-  - `icons/missile.png`: 45-degree guided missile with fins
-  - `icons/bomb.png`: Tear-drop aerial ordnance bomb
   - `icons/gun.png`: Crosshair with rotary cannon radial bores
   - `icons/flare.png`: 8-point countermeasure burst flare
-  - `icons/rocket.png`: Unguided rocket with exhaust plume
   - `icons/radar.png`: Concentric radar sweeps with 45° scanline
   - `icons/fuel.png`: Fuel drop fluid symbol
   - `icons/gear.png`: Retractable landing gear with strut and wheel
