@@ -6,12 +6,16 @@ extends Node
 ## and the normal difficulty), flies it for RUN_S of game time with the player in straight flight, fires one shot of every
 ## weapon type the player carries in modes with enemies, then goes back to the menu the way the results screen does.
 ## Engine errors (SCRIPT ERROR, ERROR, push_error) are counted per run by a Logger. One line is printed per run.
+## Every AI aircraft that dies is printed with its cause (a killer's name, or a crash) and its pilot state at the end.
+## `-- --run-s=<seconds>` changes the run length. `-- --no-fire` stops the player firing and keeps the player at full health,
+## so `--run-s=60 --no-fire` checks that enemies survive a minute with nobody shooting them.
 
 const MENU_SCENE := "res://ui/menu/menu_root.tscn"
 const SMOKE_MAP := "gibraltar"
 const SECOND_MAP := "atlas"
 const SECOND_MAP_MODE := "free_flight"
-const RUN_S := 15.0  ## game seconds per run
+const RUN_S := 15.0  ## game seconds per run, unless --run-s is given
+const PLAYER_HEALTH_NO_FIRE := 1.0e9  ## player health under --no-fire, far above any hit
 const TIME_SCALE := 2.0  ## game seconds per real second, with --fixed-fps 30
 const FIRE_START_S := 2.0  ## game second of the first forced shot
 const FIRE_GAP_S := 1.2  ## game seconds between forced shots
@@ -38,6 +42,8 @@ var _log: ErrorLog
 var _failures := 0
 var _save_backup := ""
 var _had_save := false
+var _run_s := RUN_S
+var _no_fire := false
 
 
 ## Logs every engine error and script error while the smoke pass runs.
@@ -100,11 +106,22 @@ func _process(delta: float) -> void:
 		Phase.RUNNING:
 			_elapsed += delta
 			_drive()
-			if _elapsed >= RUN_S or _mission_over() or GameState.level == null:
+			if _no_fire:
+				_keep_player_up()
+			if _elapsed >= _run_s or _mission_over() or GameState.level == null:
 				_leave()
 		Phase.LEAVING:
 			if _menu_is_up():
 				_end_run()
+
+
+## With --no-fire the enemy AI can still shoot, but the player cannot die, so a long run is not cut short by lives. The
+## health is topped up every frame, and it is high enough that one missile hit cannot take it down in a single step.
+func _keep_player_up() -> void:
+	var p := GameState.player as Aircraft
+	if p != null and p.alive:
+		p.max_health = PLAYER_HEALTH_NO_FIRE
+		p.health = PLAYER_HEALTH_NO_FIRE
 
 
 ## One run per mode on the smoke map, plus free flight on the second map. `-- --only=<mode>` keeps just that mode.
@@ -113,6 +130,10 @@ func _plan_runs() -> Array[Dictionary]:
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--only="):
 			only = arg.trim_prefix("--only=")
+		elif arg.begins_with("--run-s="):
+			_run_s = float(arg.trim_prefix("--run-s="))
+		elif arg == "--no-fire":
+			_no_fire = true
 	var out: Array[Dictionary] = []
 	var data := MissionGenerator.data()
 	for mode_id in data["mode_order"]:
@@ -168,8 +189,9 @@ func _start_run() -> void:
 		w.fired.connect(_on_fired)
 		if w.gun != null:
 			w.gun.fired.connect(_on_fired.bind("gun"))
+	Events.aircraft_destroyed.connect(_on_aircraft_destroyed)
 	var mode_id := String(_run["mode"])
-	if not NO_ENEMY_MODES.has(mode_id):
+	if not NO_ENEMY_MODES.has(mode_id) and not _no_fire:
 		_fire_queue = _weapon_types()
 
 
@@ -221,6 +243,33 @@ func _on_fired(weapon_id: String) -> void:
 	fired[weapon_id] = int(fired.get(weapon_id, 0)) + 1
 
 
+## Prints each aircraft death: who or what killed it, and how it was flying (its pilot's state, speed, pitch, altitude).
+## A crash has no killer. The speed and attitude are the last synced values, so they are the ones just before a crash.
+## The killer is described by team and whether it is a player aircraft that is still alive, so a shot from a player
+## aircraft that has since been replaced by a respawn shows up as such.
+func _on_aircraft_destroyed(aircraft: Node3D, killer: Node) -> void:
+	var a := aircraft as Aircraft
+	if a == null:
+		return
+	if a.is_player:
+		print("    player aircraft %s down at %5.1f s (%s)" % [a.name, _elapsed, _cause_text(killer)])
+		return
+	var pilot_state := "none"
+	for child in a.get_children():
+		if child is AIPilot:
+			pilot_state = (child as AIPilot).get_state()
+	print("    AI death at %5.1f s: %s (team %d), %s; pilot %s, %.0f km/h, pitch %.0f deg, altitude %.0f m" % [
+		_elapsed, a.name, a.team, _cause_text(killer), pilot_state, a.get_speed_kmh(), a.get_pitch_deg(), a.position.y])
+
+
+func _cause_text(killer: Node) -> String:
+	if killer == null:
+		return "crashed into terrain or sea"
+	var flags := "player" if killer.get("is_player") == true else "AI"
+	flags += ", alive" if killer.get("alive") != false else ", dead"
+	return "shot down by %s (team %s, %s)" % [killer.name, str(killer.get("team")), flags]
+
+
 func _player_controller() -> PlayerController:
 	return GameState.level.controller as PlayerController
 
@@ -239,6 +288,8 @@ func _leave() -> void:
 		return
 	_phase = Phase.LEAVING
 	_run["time_s"] = _elapsed
+	if Events.aircraft_destroyed.is_connected(_on_aircraft_destroyed):
+		Events.aircraft_destroyed.disconnect(_on_aircraft_destroyed)
 	var mission = GameState.level.get("_mission") if GameState.level != null else null
 	if mission != null:
 		_run["stats"] = "enemies %d, shots %d, hits %d, air kills %d, ground kills %d, score %d, fired %s" % [

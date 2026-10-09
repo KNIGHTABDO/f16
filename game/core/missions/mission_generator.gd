@@ -680,7 +680,11 @@ static func _plan_time_trial(plan: Dictionary, ctx: Dictionary) -> void:
 	var first_dir := (Vector2(first.x, first.z) - site).normalized()
 	var start_xz := Vector2(first.x, first.z) - first_dir * 2000.0
 	plan["rings"] = rings
-	plan["start"] = {"pos": _at(start_xz, alt), "heading": _bearing(start_xz, Vector2(first.x, first.z)), "speed_kmh": CRUISE_KMH, "ground": false}
+	var rw: Dictionary = _nearest_runway(ctx["runways"], site) if String(ctx["spawn"]) == "runway" else {}
+	if rw.is_empty():
+		plan["start"] = {"pos": _at(start_xz, alt), "heading": _bearing(start_xz, Vector2(first.x, first.z)), "speed_kmh": CRUISE_KMH, "ground": false}
+	else:
+		plan["start"] = _runway_start(rw)
 	_finish_start(plan)
 	plan["briefing"] = "Fly the %d-ring course at %s. Pass through each ring inside %d m. Time is score." % [
 		count, plan["site_name"], int(t["ring_radius_m"])]
