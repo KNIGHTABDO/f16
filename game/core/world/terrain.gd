@@ -93,14 +93,14 @@ func setup(id: String) -> bool:
 		var n := Ground.height_n
 		var height_bytes := Ground.get_height_bytes()
 		if height_bytes.is_empty():
-			height_bytes = FileAccess.get_file_as_bytes(String(meta["height_file"]))
+			height_bytes = Ground.read_map_bytes(String(meta["height_file"]))
 		_height_tex = ImageTexture.create_from_image(
 				Image.create_from_data(n, n, false, Image.FORMAT_R16, height_bytes))
 
 	var lc_img: Image
 	_land_n = Ground.landcover_n
 	if _land_n > 0:
-		var lc_bytes := FileAccess.get_file_as_bytes(String(meta["landcover_file"]))
+		var lc_bytes := Ground.read_map_bytes(String(meta["landcover_file"]))
 		lc_img = Image.create_from_data(_land_n, _land_n, false, Image.FORMAT_R8, lc_bytes)
 	else:
 		_land_n = 1

@@ -75,7 +75,7 @@ func setup(id: String, terrain: Terrain = null) -> bool:
 		var n := Ground.height_n
 		var height_bytes := Ground.get_height_bytes()
 		if height_bytes.is_empty():
-			height_bytes = FileAccess.get_file_as_bytes(String(Ground.meta["height_file"]))
+			height_bytes = Ground.read_map_bytes(String(Ground.meta["height_file"]))
 		_height_tex = ImageTexture.create_from_image(
 				Image.create_from_data(n, n, false, Image.FORMAT_R16, height_bytes))
 	_normal_tex = _noise_texture(true)
