@@ -1,0 +1,322 @@
+[
+    {
+        "id": "mig21bis",
+        "name": "MiG-21bis Fishbed-L",
+        "nation": "USSR",
+        "category": "fighter",
+        "era": "cold_war",
+        "unlock_cost": 0,
+        "description": "Supersonic second-generation delta-wing interceptor. Highly agile in gunfights with impressive Mach 2 acceleration.",
+        "stats": {
+            "speed_kmh": 2175,
+            "climb_ms": 225,
+            "turn_s": 14.5,
+            "ceiling_m": 17500,
+            "guns": "1x 23mm GSh-23L (200 rds)"
+        }
+    },
+    {
+        "id": "f15c",
+        "name": "F-15C Eagle",
+        "nation": "USA",
+        "category": "fighter",
+        "era": "modern",
+        "unlock_cost": 55000,
+        "description": "Twin-engine all-weather air superiority fighter. Unmatched combat record with over 100 victories and zero losses.",
+        "stats": {
+            "speed_kmh": 2655,
+            "climb_ms": 254,
+            "turn_s": 13.0,
+            "ceiling_m": 20000,
+            "guns": "1x 20mm M61A1 Vulcan (940 rds)"
+        }
+    },
+    {
+        "id": "mig29",
+        "name": "MiG-29 Fulcrum-A",
+        "nation": "USSR",
+        "category": "fighter",
+        "era": "modern",
+        "unlock_cost": 50000,
+        "description": "Twin-engine air superiority fighter with leading-edge root extensions. Renowned for off-boresight R-73 missile lethality.",
+        "stats": {
+            "speed_kmh": 2400,
+            "climb_ms": 330,
+            "turn_s": 12.5,
+            "ceiling_m": 18000,
+            "guns": "1x 30mm GSh-30-1 (150 rds)"
+        }
+    },
+    {
+        "id": "su27",
+        "name": "Su-27 Flanker-B",
+        "nation": "USSR",
+        "category": "fighter",
+        "era": "modern",
+        "unlock_cost": 65000,
+        "description": "Heavy long-range air superiority fighter renowned for the Cobra maneuver. Superb high-angle-of-attack maneuverability and heavy payload.",
+        "stats": {
+            "speed_kmh": 2500,
+            "climb_ms": 300,
+            "turn_s": 12.0,
+            "ceiling_m": 19000,
+            "guns": "1x 30mm GSh-30-1 (150 rds)"
+        }
+    },
+    {
+        "id": "f22a",
+        "name": "F-22A Raptor",
+        "nation": "USA",
+        "category": "fighter",
+        "era": "fifth_gen",
+        "unlock_cost": 100000,
+        "description": "Premier stealth air superiority fighter with 2D thrust vectoring nozzles. Supercruises at Mach 1.82 with unparalleled radar stealth.",
+        "stats": {
+            "speed_kmh": 2414,
+            "climb_ms": 350,
+            "turn_s": 11.5,
+            "ceiling_m": 20000,
+            "guns": "1x 20mm M61A1 Vulcan (480 rds)"
+        }
+    },
+    {
+        "id": "su57",
+        "name": "Su-57 Felon",
+        "nation": "Russia",
+        "category": "fighter",
+        "era": "fifth_gen",
+        "unlock_cost": 100000,
+        "description": "Fifth-generation stealth multirole fighter equipped with 3D thrust vectoring. Supercruise capable with extreme post-stall supermaneuverability.",
+        "stats": {
+            "speed_kmh": 2600,
+            "climb_ms": 360,
+            "turn_s": 11.0,
+            "ceiling_m": 20000,
+            "guns": "1x 30mm GSh-30-1 (150 rds)"
+        }
+    },
+    {
+        "id": "f16c",
+        "name": "F-16C Fighting Falcon",
+        "nation": "USA",
+        "category": "multirole",
+        "era": "modern",
+        "unlock_cost": 0,
+        "description": "Lightweight multirole fighter with fly-by-wire flight control. Combines 9g turn capability with excellent roll response.",
+        "stats": {
+            "speed_kmh": 2120,
+            "climb_ms": 254,
+            "turn_s": 13.5,
+            "ceiling_m": 15240,
+            "guns": "1x 20mm M61A1 Vulcan (511 rds)"
+        }
+    },
+    {
+        "id": "f15e",
+        "name": "F-15E Strike Eagle",
+        "nation": "USA",
+        "category": "multirole",
+        "era": "modern",
+        "unlock_cost": 70000,
+        "description": "Dual-role strike fighter designed for long-range, high-speed interdiction. Carries massive ordnance payloads while retaining air combat prowess.",
+        "stats": {
+            "speed_kmh": 2650,
+            "climb_ms": 250,
+            "turn_s": 14.0,
+            "ceiling_m": 18200,
+            "guns": "1x 20mm M61A1 Vulcan (512 rds)"
+        }
+    },
+    {
+        "id": "fa18c",
+        "name": "F/A-18C Hornet",
+        "nation": "USA",
+        "category": "multirole",
+        "era": "modern",
+        "unlock_cost": 60000,
+        "description": "Carrier-capable supersonic multirole combat jet. Exceptional high-AoA nose pointing and versatile carrier strike capability.",
+        "stats": {
+            "speed_kmh": 1915,
+            "climb_ms": 250,
+            "turn_s": 13.0,
+            "ceiling_m": 15240,
+            "guns": "1x 20mm M61A1 Vulcan (578 rds)"
+        }
+    },
+    {
+        "id": "ef2000",
+        "name": "Eurofighter Typhoon",
+        "nation": "UK/Germany/Italy/Spain",
+        "category": "multirole",
+        "era": "modern",
+        "unlock_cost": 80000,
+        "description": "Twin-engine canard delta multirole fighter engineered for extreme instantaneous turn agility. Armed with Meteor BVR ramjet missiles and BK-27 cannon.",
+        "stats": {
+            "speed_kmh": 2495,
+            "climb_ms": 315,
+            "turn_s": 12.0,
+            "ceiling_m": 19800,
+            "guns": "1x 27mm Mauser BK-27 (150 rds)"
+        }
+    },
+    {
+        "id": "mirage2000",
+        "name": "Mirage 2000-5",
+        "nation": "France",
+        "category": "multirole",
+        "era": "modern",
+        "unlock_cost": 55000,
+        "description": "French tailless delta multirole fighter with fly-by-wire agility. Armed with twin DEFA 30mm cannons and versatile MICA missiles.",
+        "stats": {
+            "speed_kmh": 2336,
+            "climb_ms": 285,
+            "turn_s": 12.5,
+            "ceiling_m": 17060,
+            "guns": "2x 30mm DEFA 554 (250 rds)"
+        }
+    },
+    {
+        "id": "f35a",
+        "name": "F-35A Lightning II",
+        "nation": "USA",
+        "category": "multirole",
+        "era": "fifth_gen",
+        "unlock_cost": 90000,
+        "description": "Fifth-generation stealth multirole strike fighter with advanced sensor fusion. Features the most powerful single jet engine in military aviation.",
+        "stats": {
+            "speed_kmh": 1960,
+            "climb_ms": 230,
+            "turn_s": 13.5,
+            "ceiling_m": 15240,
+            "guns": "1x 25mm GAU-22/A (182 rds)"
+        }
+    },
+    {
+        "id": "a10c",
+        "name": "A-10C Thunderbolt II",
+        "nation": "USA",
+        "category": "attack",
+        "era": "modern",
+        "unlock_cost": 40000,
+        "description": "Twin-turbofan dedicated close air support aircraft built around the devastating GAU-8 Avenger 30mm rotary cannon. Heavily armored titanium bathtub cockpit.",
+        "stats": {
+            "speed_kmh": 706,
+            "climb_ms": 30,
+            "turn_s": 17.0,
+            "ceiling_m": 13700,
+            "guns": "1x 30mm GAU-8 Avenger (1174 rds)"
+        }
+    },
+    {
+        "id": "f14b",
+        "name": "F-14B Tomcat",
+        "nation": "USA",
+        "category": "interceptor",
+        "era": "cold_war",
+        "unlock_cost": 50000,
+        "description": "Variable-sweep wing fleet defense interceptor. Armed with long-range AIM-54 Phoenix missiles for BVR dominance.",
+        "stats": {
+            "speed_kmh": 2485,
+            "climb_ms": 230,
+            "turn_s": 14.5,
+            "ceiling_m": 16000,
+            "guns": "1x 20mm M61A1 Vulcan (675 rds)"
+        }
+    },
+    {
+        "id": "ja37",
+        "name": "Saab JA 37 Viggen",
+        "nation": "Sweden",
+        "category": "interceptor",
+        "era": "cold_war",
+        "unlock_cost": 45000,
+        "description": "Swedish canard delta interceptor designed for short runway dispersal operations. Fitted with a powerful afterburning turbofan with thrust reverser.",
+        "stats": {
+            "speed_kmh": 2231,
+            "climb_ms": 200,
+            "turn_s": 14.0,
+            "ceiling_m": 18000,
+            "guns": "1x 27mm Mauser BK-27 (150 rds)"
+        }
+    },
+    {
+        "id": "bf109",
+        "name": "Messerschmitt Bf 109 K-4",
+        "nation": "Germany",
+        "category": "prop",
+        "era": "ww2",
+        "unlock_cost": 15000,
+        "description": "Final wartime production variant of the iconic German fighter. Features incredible climb rates and high-altitude energy fighting power.",
+        "stats": {
+            "speed_kmh": 710,
+            "climb_ms": 24,
+            "turn_s": 15.0,
+            "ceiling_m": 12500,
+            "guns": "1x 20mm MG 151/20 (300 rds)"
+        }
+    },
+    {
+        "id": "p51d",
+        "name": "P-51D Mustang",
+        "nation": "USA",
+        "category": "prop",
+        "era": "ww2",
+        "unlock_cost": 0,
+        "description": "Legendary long-range piston fighter powered by the Packard Merlin V-12 engine. Outstanding speed, range, and high-altitude escort performance.",
+        "stats": {
+            "speed_kmh": 703,
+            "climb_ms": 16,
+            "turn_s": 16.0,
+            "ceiling_m": 12800,
+            "guns": "6x .50 cal M2 Browning (1880 rds)"
+        }
+    },
+    {
+        "id": "spitfire",
+        "name": "Supermarine Spitfire Mk IX",
+        "nation": "UK",
+        "category": "prop",
+        "era": "ww2",
+        "unlock_cost": 15000,
+        "description": "Iconic British fighter renowned for its beautiful elliptical wing and tight turning circle. Powered by the supercharged Rolls-Royce Merlin engine.",
+        "stats": {
+            "speed_kmh": 657,
+            "climb_ms": 23,
+            "turn_s": 13.5,
+            "ceiling_m": 13000,
+            "guns": "2x 20mm Hispano Mk II (240 rds)"
+        }
+    },
+    {
+        "id": "b17",
+        "name": "Boeing B-17G Flying Fortress",
+        "nation": "USA",
+        "category": "bomber",
+        "era": "ww2",
+        "unlock_cost": 25000,
+        "description": "Four-engine heavy strategic bomber known for rugged survivability and heavy defensive armament. Dropped more ordnance than any other US aircraft in WWII.",
+        "stats": {
+            "speed_kmh": 462,
+            "climb_ms": 5,
+            "turn_s": 26.0,
+            "ceiling_m": 10850,
+            "guns": "13x .50 cal M2 Browning (2400 rds)"
+        }
+    },
+    {
+        "id": "ah64",
+        "name": "AH-64D Apache Longbow",
+        "nation": "USA",
+        "category": "helicopter",
+        "era": "modern",
+        "unlock_cost": 35000,
+        "description": "Twin-turboshaft attack helicopter featuring a mast-mounted fire-control radar. Armed with Hellfire anti-armor missiles and a 30mm chain gun.",
+        "stats": {
+            "speed_kmh": 293,
+            "climb_ms": 13,
+            "turn_s": 8.0,
+            "ceiling_m": 6400,
+            "guns": "1x 30mm M230 Chain Gun (1200 rds)"
+        }
+    }
+]

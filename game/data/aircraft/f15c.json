@@ -1,0 +1,134 @@
+{
+    "id": "f15c",
+    "name": "F-15C Eagle",
+    "short_name": "F-15C",
+    "category": "fighter",
+    "nation": "USA",
+    "era": "cold_war",
+    "description": "Twin-engine all-weather air superiority fighter. Unmatched combat record with over 100 victories and zero losses.",
+    "model": "res://assets/models/aircraft/f15c/f15c.glb",
+    "model_scale": 1.0,
+    "model_rotation_deg": [
+        0,
+        0,
+        0
+    ],
+    "model_offset": [
+        0,
+        0,
+        0
+    ],
+    "cockpit_eye": [
+        0.0,
+        0.749,
+        -4.07
+    ],
+    "chase_distance": 21.0,
+    "chase_height": 4.5,
+    "length": 19.43,
+    "wing_span": 13.03,
+    "hit_radius": 7.5,
+    "engine": "jet",
+    "engine_sound": "engine_jet",
+    "mass_empty": 12700,
+    "mass_fuel": 6100,
+    "fuel_burn_dry": 1.8,
+    "fuel_burn_ab": 9.2,
+    "thrust_dry": 129800,
+    "thrust_ab": 211400,
+    "thrust_altitude_lapse": 0.67,
+    "engine_spool_s": 3.0,
+    "prop_power_kw": 0,
+    "prop_efficiency": 0.0,
+    "wing_area": 56.5,
+    "cl0": 0.04,
+    "cl_alpha": 4.2,
+    "cl_max": 1.5,
+    "alpha_stall_deg": 28,
+    "cd0": 0.011,
+    "induced_k": 0.12,
+    "cd_wave_mach": 0.9,
+    "cd_wave_max": 0.0172,
+    "cd_gear": 0.02,
+    "cd_airbrake": 0.06,
+    "side_force": 1.1,
+    "max_g": 9.0,
+    "min_g": -3.0,
+    "max_aoa_deg": 30,
+    "roll_rate_deg": 240,
+    "pitch_rate_deg": 24,
+    "yaw_rate_deg": 9,
+    "control_response": 5.5,
+    "stability": 1.05,
+    "fly_by_wire": false,
+    "max_speed_kmh": 2655,
+    "vne_kmh": 2800,
+    "stall_speed_kmh": 220,
+    "takeoff_speed_kmh": 270,
+    "landing_speed_kmh": 250,
+    "service_ceiling_m": 20000,
+    "has_gear": true,
+    "has_hook": true,
+    "has_afterburner": true,
+    "health": 120,
+    "gun": {
+        "weapon": "m61a1",
+        "ammo": 940,
+        "muzzles": [
+            [
+                1.35,
+                0.45,
+                -3.2
+            ]
+        ]
+    },
+    "flares": 120,
+    "hardpoints": 11,
+    "default_loadout": "air_superiority",
+    "loadouts": {
+        "air_superiority": [
+            {
+                "weapon": "aim120c",
+                "count": 4
+            },
+            {
+                "weapon": "aim9x",
+                "count": 4
+            }
+        ],
+        "interceptor": [
+            {
+                "weapon": "aim7m",
+                "count": 4
+            },
+            {
+                "weapon": "aim9x",
+                "count": 4
+            }
+        ],
+        "bvr": [
+            {
+                "weapon": "aim120c",
+                "count": 6
+            },
+            {
+                "weapon": "aim9x",
+                "count": 2
+            }
+        ],
+        "strike": [
+            {
+                "weapon": "aim120c",
+                "count": 2
+            },
+            {
+                "weapon": "aim9x",
+                "count": 2
+            },
+            {
+                "weapon": "mk82",
+                "count": 6
+            }
+        ]
+    }
+}

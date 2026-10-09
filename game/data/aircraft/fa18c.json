@@ -1,0 +1,146 @@
+{
+    "id": "fa18c",
+    "name": "F/A-18C Hornet",
+    "short_name": "F/A-18C",
+    "category": "multirole",
+    "nation": "USA",
+    "era": "modern",
+    "description": "Carrier-capable supersonic multirole combat jet. Exceptional high-AoA nose pointing and versatile carrier strike capability.",
+    "model": "",
+    "model_scale": 1.0,
+    "model_rotation_deg": [
+        0,
+        0,
+        0
+    ],
+    "model_offset": [
+        0,
+        0,
+        0
+    ],
+    "cockpit_eye": [
+        0.0,
+        0.8,
+        -4.0
+    ],
+    "chase_distance": 18.0,
+    "chase_height": 3.6,
+    "length": 17.1,
+    "wing_span": 12.3,
+    "hit_radius": 6.5,
+    "engine": "jet",
+    "engine_sound": "engine_jet",
+    "mass_empty": 10400,
+    "mass_fuel": 4900,
+    "fuel_burn_dry": 1.4,
+    "fuel_burn_ab": 6.8,
+    "thrust_dry": 106600,
+    "thrust_ab": 157400,
+    "thrust_altitude_lapse": 0.73,
+    "engine_spool_s": 2.8,
+    "prop_power_kw": 0,
+    "prop_efficiency": 0.0,
+    "wing_area": 38.0,
+    "cl0": 0.05,
+    "cl_alpha": 4.5,
+    "cl_max": 1.62,
+    "alpha_stall_deg": 35,
+    "cd0": 0.01669,
+    "induced_k": 0.13,
+    "cd_wave_mach": 0.88,
+    "cd_wave_max": 0.0289,
+    "cd_gear": 0.022,
+    "cd_airbrake": 0.065,
+    "side_force": 1.25,
+    "max_g": 7.5,
+    "min_g": -3.0,
+    "max_aoa_deg": 35,
+    "roll_rate_deg": 220,
+    "pitch_rate_deg": 25,
+    "yaw_rate_deg": 10,
+    "control_response": 6.0,
+    "stability": 0.98,
+    "fly_by_wire": true,
+    "max_speed_kmh": 1915,
+    "vne_kmh": 2100,
+    "stall_speed_kmh": 215,
+    "takeoff_speed_kmh": 260,
+    "landing_speed_kmh": 240,
+    "service_ceiling_m": 15240,
+    "has_gear": true,
+    "has_hook": true,
+    "has_afterburner": true,
+    "health": 110,
+    "gun": {
+        "weapon": "m61a1",
+        "ammo": 578,
+        "muzzles": [
+            [
+                0.0,
+                0.7,
+                -6.2
+            ]
+        ]
+    },
+    "flares": 60,
+    "hardpoints": 9,
+    "default_loadout": "air_superiority",
+    "loadouts": {
+        "air_superiority": [
+            {
+                "weapon": "aim9x",
+                "count": 2
+            },
+            {
+                "weapon": "aim120c",
+                "count": 6
+            }
+        ],
+        "strike": [
+            {
+                "weapon": "aim9x",
+                "count": 2
+            },
+            {
+                "weapon": "aim120c",
+                "count": 2
+            },
+            {
+                "weapon": "mk82",
+                "count": 6
+            }
+        ],
+        "precision": [
+            {
+                "weapon": "aim9x",
+                "count": 2
+            },
+            {
+                "weapon": "aim120c",
+                "count": 2
+            },
+            {
+                "weapon": "gbu12",
+                "count": 4
+            },
+            {
+                "weapon": "agm65",
+                "count": 2
+            }
+        ],
+        "cas": [
+            {
+                "weapon": "aim9x",
+                "count": 2
+            },
+            {
+                "weapon": "agm65",
+                "count": 4
+            },
+            {
+                "weapon": "hydra70",
+                "count": 38
+            }
+        ]
+    }
+}

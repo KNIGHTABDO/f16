@@ -1,0 +1,108 @@
+{
+    "id": "b17",
+    "name": "Boeing B-17G Flying Fortress",
+    "short_name": "B-17",
+    "category": "bomber",
+    "nation": "USA",
+    "era": "ww2",
+    "description": "Four-engine heavy strategic bomber known for rugged survivability and heavy defensive armament. Dropped more ordnance than any other US aircraft in WWII.",
+    "model": "",
+    "model_scale": 1.0,
+    "model_rotation_deg": [
+        0,
+        0,
+        0
+    ],
+    "model_offset": [
+        0,
+        0,
+        0
+    ],
+    "cockpit_eye": [
+        0.0,
+        1.4,
+        -6.5
+    ],
+    "chase_distance": 35.0,
+    "chase_height": 8.0,
+    "length": 22.66,
+    "wing_span": 31.62,
+    "hit_radius": 12.0,
+    "engine": "prop",
+    "engine_sound": "engine_prop",
+    "mass_empty": 16390,
+    "mass_fuel": 8400,
+    "fuel_burn_dry": 0.45,
+    "fuel_burn_ab": 0.45,
+    "thrust_dry": 0,
+    "thrust_ab": 0,
+    "thrust_altitude_lapse": 0.8,
+    "engine_spool_s": 3.5,
+    "prop_power_kw": 3580,
+    "prop_efficiency": 0.8,
+    "wing_area": 131.9,
+    "cl0": 0.12,
+    "cl_alpha": 4.8,
+    "cl_max": 1.5,
+    "alpha_stall_deg": 16,
+    "cd0": 0.01556,
+    "induced_k": 0.055,
+    "cd_wave_mach": 0.65,
+    "cd_wave_max": 0.06,
+    "cd_gear": 0.035,
+    "cd_airbrake": 0.05,
+    "side_force": 1.4,
+    "max_g": 4.0,
+    "min_g": -1.5,
+    "max_aoa_deg": 16,
+    "roll_rate_deg": 45,
+    "pitch_rate_deg": 12,
+    "yaw_rate_deg": 6,
+    "control_response": 3.0,
+    "stability": 1.4,
+    "fly_by_wire": false,
+    "max_speed_kmh": 462,
+    "vne_kmh": 550,
+    "stall_speed_kmh": 145,
+    "takeoff_speed_kmh": 175,
+    "landing_speed_kmh": 160,
+    "service_ceiling_m": 10850,
+    "has_gear": true,
+    "has_hook": false,
+    "has_afterburner": false,
+    "health": 350,
+    "gun": {
+        "weapon": "m2_50cal",
+        "ammo": 2400,
+        "muzzles": [
+            [
+                0.0,
+                1.2,
+                -6.0
+            ]
+        ]
+    },
+    "flares": 0,
+    "hardpoints": 8,
+    "default_loadout": "carpet_bombing",
+    "loadouts": {
+        "carpet_bombing": [
+            {
+                "weapon": "mk82",
+                "count": 8
+            }
+        ],
+        "heavy_strike": [
+            {
+                "weapon": "mk82",
+                "count": 12
+            }
+        ],
+        "mixed_bombing": [
+            {
+                "weapon": "mk82",
+                "count": 6
+            }
+        ]
+    }
+}
