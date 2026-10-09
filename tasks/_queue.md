@@ -1,6 +1,6 @@
 # Job queue (the lead tick reads and updates this file)
 Format: `- [ ] <name> | gemini|claude | <brief> | <base or worktree> | needs: <names merged first>`. Mark [~] running, [x] merged.
-Gemini is the primary coder (check quota: scripts/job.sh gemini fails fast if agy errors -> use claude). Claude Sonnet for weapons-related work.
+Gemini is the primary coder (check quota: scripts/job.sh gemini fails fast if agy errors -> use `job.sh haiku`). Claude Sonnet (medium effort, use sparingly) only for weapons-related work.
 
 - [~] settings-menus | gemini | tasks/settings_menus.md | main | needs: -
 - [~] roster | gemini | tasks/aircraft_roster.md | main | needs: -

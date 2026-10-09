@@ -24,6 +24,7 @@ RULES="Rules: You are working inside a git worktree of this project. Read CLAUDE
 If the project cannot be built locally (e.g. iOS on Linux), do not try to; write code that compiles first time:
 correct imports, exact type/method names copied from the existing code (open and read the files you call into), no invented APIs.
 Do NOT run git commands, do NOT push, do NOT edit files outside the paths the brief allows. Do not create placeholder or fake data.
+SPEED OVER TESTING: the machine is very slow. Build features fully, but keep verification to a single `godot --headless --path game --import` parse check at the end (fix any script errors it prints); no screenshots, no long test runs.
 When finished, reply with a short list of files you created/changed."
 
 agy_run() { # $1 = prompt ; uses conversation id if present
