@@ -615,7 +615,7 @@ static func _plan_base_defense(plan: Dictionary, ctx: Dictionary) -> void:
 		var idx := _add_aircraft(plan, _pick(rng, enemy["escorts"]), 1, pos, heading, 520.0, "escort")
 		plan["aircraft"][idx]["escort_of"] = lead
 	plan["rtb_enabled"] = true
-	plan["briefing"] = "Bombers are heading for %s with fighter escort. Destroy every bomber before they drop. Losing %d base assets ends the sortie." % [
+	plan["briefing"] = "Bombers are heading for %s with fighter escort. Destroy every bomber before they drop. Losing more than %d base assets ends the sortie." % [
 		plan["site_name"], int(t["max_asset_losses"])]
 
 

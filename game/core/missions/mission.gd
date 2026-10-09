@@ -183,6 +183,25 @@ func is_down(node: Node) -> bool:
 	return _down.has(node.get_instance_id())
 
 
+## Spawned nodes tagged with `role` (MissionSpawner sets the meta), from every list in `nodes`.
+func by_role(role: String) -> Array:
+	var out: Array = []
+	for key in nodes:
+		for node in nodes[key]:
+			if is_instance_valid(node) and node.get_meta("role", "") == role:
+				out.append(node)
+	return out
+
+
+## How many of `list` are still standing: valid nodes whose alive flag is not false.
+func count_alive(list: Array) -> int:
+	var n := 0
+	for node in list:
+		if is_instance_valid(node) and node.get("alive") != false:
+			n += 1
+	return n
+
+
 func result_dict() -> Dictionary:
 	var accuracy := 0.0 if shots == 0 else minf(float(hits) / float(shots), 1.0)
 	return {
