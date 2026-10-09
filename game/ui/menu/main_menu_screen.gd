@@ -213,22 +213,20 @@ func _on_missions_pressed() -> void:
 	GameState.start_flight()
 
 
-## Hangar: each press steps to the next aircraft that has a data file.
+## Hangar: opens the hangar screen (aircraft, loadout, livery).
 func _on_hangar_pressed() -> void:
 	Sfx.play_2d("ui_click")
-	var ids := _aircraft_ids()
-	if ids.is_empty():
-		return
-	var idx := ids.find(GameState.selected_aircraft)
-	GameState.selected_aircraft = ids[(idx + 1) % ids.size()]
-	_refresh_subtexts()
+	var root := _get_menu_root()
+	if root and root.has_method("push_screen"):
+		var hangar_screen := preload("res://ui/hangar/hangar.gd").new()
+		root.push_screen(hangar_screen)
 
 
 func _refresh_subtexts() -> void:
 	var flight := "%s flight" % Settings.flight_mode.capitalize()
 	var sky := "%s, %s" % [Settings.gameplay_time_of_day.capitalize(), Settings.gameplay_weather.capitalize()]
 	_set_subtext(_flight_btn, "%s · %s · %s" % [GameState.selected_map.capitalize(), flight, sky])
-	_set_subtext(_hangar_btn, "%s · tap to change" % _aircraft_name(GameState.selected_aircraft))
+	_set_subtext(_hangar_btn, "%s · open hangar" % _aircraft_name(GameState.selected_aircraft))
 
 
 func _set_subtext(btn: Button, text: String) -> void:
