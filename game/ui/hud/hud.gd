@@ -141,8 +141,10 @@ func _layout_subviews() -> void:
 	_hud_minimap.position = r.position
 	_hud_rwr.position = Vector2(r.position.x + _hud_minimap.size.x + 10.0 * s, r.position.y)
 
-	# Bottom band: weapons panel on the right shares its baseline with the integrity bar
-	_hud_weapons.position = Vector2(r.end.x - _hud_weapons.size.x, r.end.y - _hud_weapons.size.y)
+	# Top right, under the utility buttons: the bottom-right corner belongs to the fire buttons
+	var util_y: float = HUDLayout.TOUCH_DEFAULTS["pause"]["pos"][1]
+	var util_bottom := r.position.y + r.size.y * util_y + HUDLayout.TOUCH_RADIUS["pause"] * s + 10.0 * s
+	_hud_weapons.position = Vector2(r.end.x - _hud_weapons.size.x, util_bottom)
 
 	# Radio ticker centered, just above the integrity bar
 	_hud_radio_ticker.position = Vector2((vp.x - _hud_radio_ticker.size.x) * 0.5, r.end.y - BAND_H * s - _hud_radio_ticker.size.y - 6.0 * s)
@@ -195,8 +197,9 @@ func _update_subviews(delta: float) -> void:
 	_hud_rwr.hud_scale = s
 	_hud_rwr.aircraft = _aircraft
 	_hud_rwr.set_incoming_missiles(_incoming_missiles)
-	_hud_rwr.visible = Settings.hud_show_rwr
 	_hud_rwr.update_rwr(delta)
+	# One scope on screen in calm flight: the RWR only appears beside the minimap when something is hunting us
+	_hud_rwr.visible = Settings.hud_show_rwr and _hud_rwr.has_threats()
 
 	_hud_minimap.hud_color = hud_col
 	_hud_minimap.hud_scale = s

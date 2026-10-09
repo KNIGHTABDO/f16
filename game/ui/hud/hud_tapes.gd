@@ -58,7 +58,7 @@ static func draw_tape(ci: CanvasItem, font: Font, rect: Rect2, value: float, min
 	var tick_col := Color(col.r, col.g, col.b, 0.5)
 	var label_col := Color(col.r, col.g, col.b, 0.85)
 
-	ci.draw_rect(rect, Color(0.0, 0.03, 0.03, 0.32), true)
+	ci.draw_rect(rect, Color(0.0, 0.03, 0.03, 0.16), true)
 	ci.draw_line(Vector2(edge_x, rect.position.y), Vector2(edge_x, rect.end.y), tick_col, 1.0)
 
 	var half := rect.size.y * 0.5 / px_per_unit

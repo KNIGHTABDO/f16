@@ -5,6 +5,13 @@ extends Control
 ## weapon fire, target cycling, flares, airbrake, gear, camera toggle, and pause.
 ## Multi-touch tracking, haptic feedback, customizable layout from Settings, and auto-hide with gamepad.
 
+## Warm rims on the fire buttons; everything else keeps the cyan glass look.
+const FIRE_RIM := {"gun": Color(1.0, 0.42, 0.3), "weapon": Color(1.0, 0.72, 0.3), "flares": Color(1.0, 0.85, 0.45)}
+const BUTTON_CAPTION := {
+	"gun": "GUN", "weapon": "MISSILE", "flares": "FLARES", "cycle_target": "TARGET", "cycle_weapon": "WEAPON",
+	"airbrake": "BRAKE", "gear": "GEAR"
+}
+
 var _controller: PlayerController
 var _camera: FlightCamera
 
@@ -346,8 +353,8 @@ func _draw_stick() -> void:
 
 	# Base ring
 	draw_circle(c, r, Color(0.02, 0.06, 0.07, 0.35 * op))
-	draw_arc(c, r, 0.0, TAU, 40, Color(0.45, 0.9, 1.0, 0.3 * op), 1.5)
-	draw_arc(c, r * 0.5, 0.0, TAU, 24, Color(0.25, 0.82, 1.0, 0.2 * op), 1.0)
+	draw_arc(c, r, 0.0, TAU, 64, Color(0.45, 0.9, 1.0, 0.45 * op), 2.0, true)
+	draw_arc(c, r * 0.5, 0.0, TAU, 48, Color(0.25, 0.82, 1.0, 0.18 * op), 1.0, true)
 
 	# Crosshair axes
 	draw_line(c - Vector2(r, 0), c + Vector2(r, 0), Color(0.25, 0.82, 1.0, 0.15 * op), 1.0)
@@ -358,7 +365,7 @@ func _draw_stick() -> void:
 	var knob_r := r * 0.42
 	var knob_col := Color(0.35, 0.9, 0.55, 0.7 * op) if _stick_touch_index >= 0 else Color(0.25, 0.82, 1.0, 0.6 * op)
 	draw_circle(knob_p, knob_r, knob_col)
-	draw_arc(knob_p, knob_r, 0.0, TAU, 24, Color(1, 1, 1, 0.7 * op), 2.0)
+	draw_arc(knob_p, knob_r, 0.0, TAU, 40, Color(1, 1, 1, 0.75 * op), 2.0, true)
 
 
 func _draw_throttle() -> void:
@@ -399,22 +406,29 @@ func _draw_action_button(k: String) -> void:
 	var op: float = spec["opacity"] * _fade_alpha
 	var held := _is_held(k)
 
-	# Translucent glass disc, thin cyan rim; held buttons brighten instead of changing hue
-	var bg_col := Color(0.20, 0.55, 0.55, 0.40 * op) if held else Color(0.02, 0.06, 0.07, 0.42 * op)
-	var border_col := Color(0.75, 1.0, 1.0, 0.85 * op) if held else Color(0.45, 0.9, 1.0, 0.45 * op)
+	# Translucent glass disc with a soft inner ring; fire buttons get a warm rim so the thumb finds them blind
+	var rim: Color = FIRE_RIM.get(k, Color(0.45, 0.9, 1.0))
+	var bg_col := Color(rim.r * 0.35, rim.g * 0.35, rim.b * 0.35, 0.55 * op) if held else Color(0.02, 0.05, 0.07, 0.42 * op)
+	var border_col := Color(rim, 0.95 * op) if held else Color(rim, 0.55 * op)
 
 	draw_circle(c, r, bg_col)
-	draw_arc(c, r, 0.0, TAU, 32, border_col, 1.5)
+	draw_arc(c, r, 0.0, TAU, 48, border_col, 2.0, true)
+	draw_arc(c, r - 4.0, 0.0, TAU, 48, Color(rim, 0.12 * op), 1.0, true)
 
-	# Draw Icon or Label
+	# Icon or short label
 	var icon_tex: Texture2D = _icons.get(k)
 	if icon_tex != null:
-		var icon_sz := r * 1.1
+		var icon_sz := r * 1.0
 		var icon_rect := Rect2(c - Vector2(icon_sz * 0.5, icon_sz * 0.5), Vector2(icon_sz, icon_sz))
 		var icon_mod := Color(1, 1, 1, 0.95 * op) if held else Color(0.9, 0.95, 1.0, 0.8 * op)
 		draw_texture_rect(icon_tex, icon_rect, false, icon_mod)
 	else:
-		# Fallback text label
-		var fs := int(12.0 * spec["scale"])
-		var lbl: String = k.to_upper().substr(0, 4)
-		draw_string(_font, Vector2(c.x - r, c.y + fs * 0.35), lbl, HORIZONTAL_ALIGNMENT_CENTER, int(r * 2.0), fs, Color(1, 1, 1, op))
+		var fs := int(maxf(r * 0.38, 11.0))
+		var lbl: String = BUTTON_CAPTION.get(k, k.to_upper().substr(0, 4))
+		draw_string(_font, Vector2(c.x - r, c.y + fs * 0.35), lbl, HORIZONTAL_ALIGNMENT_CENTER, int(r * 2.0), fs, Color(1, 1, 1, 0.9 * op))
+		return
+
+	# Caption under the combat buttons (utility buttons in the top row are self-explanatory)
+	if BUTTON_CAPTION.has(k):
+		var cfs := 11
+		draw_string(_font, Vector2(c.x - r, c.y + r + cfs + 3.0), BUTTON_CAPTION[k], HORIZONTAL_ALIGNMENT_CENTER, int(r * 2.0), cfs, Color(0.85, 0.95, 1.0, 0.75 * op))

@@ -4,36 +4,38 @@ extends RefCounted
 ## HUD, touch controls and the controls editor all place things through here so they agree.
 
 ## Bump when the default touch cluster changes. Saved layouts without this version are ignored.
-const TOUCH_VERSION := 2
+const TOUCH_VERSION := 3
 const EDGE_PAD := 12.0
 
 ## Button positions are [fx, fy] fractions of the safe rect (mirrored in x when left-handed).
+## Left thumb: stick low, throttle above it on the edge, airbrake beside the throttle.
+## Right thumb: gun in the corner with missile, target and weapon-cycle buttons in an arc around it.
 const TOUCH_DEFAULTS := {
-	"stick": {"pos": [0.10, 0.74], "scale": 1.0, "opacity": 0.6},
-	"throttle": {"pos": [0.035, 0.52], "scale": 1.0, "opacity": 0.6},
-	"gun": {"pos": [0.925, 0.64], "scale": 1.0, "opacity": 0.75},
-	"weapon": {"pos": [0.80, 0.76], "scale": 1.0, "opacity": 0.6},
-	"cycle_target": {"pos": [0.665, 0.70], "scale": 1.0, "opacity": 0.6},
-	"cycle_weapon": {"pos": [0.80, 0.52], "scale": 1.0, "opacity": 0.6},
-	"flares": {"pos": [0.925, 0.40], "scale": 1.0, "opacity": 0.6},
-	"airbrake": {"pos": [0.21, 0.84], "scale": 1.0, "opacity": 0.6},
-	"gear": {"pos": [0.21, 0.62], "scale": 1.0, "opacity": 0.6},
-	"camera": {"pos": [0.84, 0.09], "scale": 1.0, "opacity": 0.5},
-	"look": {"pos": [0.78, 0.09], "scale": 1.0, "opacity": 0.5},
-	"radio": {"pos": [0.90, 0.09], "scale": 1.0, "opacity": 0.5},
+	"stick": {"pos": [0.12, 0.73], "scale": 1.0, "opacity": 0.55},
+	"throttle": {"pos": [0.035, 0.49], "scale": 1.0, "opacity": 0.55},
+	"airbrake": {"pos": [0.105, 0.49], "scale": 1.0, "opacity": 0.5},
+	"gear": {"pos": [0.72, 0.09], "scale": 1.0, "opacity": 0.45},
+	"gun": {"pos": [0.905, 0.74], "scale": 1.0, "opacity": 0.7},
+	"weapon": {"pos": [0.775, 0.86], "scale": 1.0, "opacity": 0.6},
+	"cycle_target": {"pos": [0.79, 0.61], "scale": 1.0, "opacity": 0.55},
+	"cycle_weapon": {"pos": [0.665, 0.89], "scale": 1.0, "opacity": 0.5},
+	"flares": {"pos": [0.925, 0.47], "scale": 1.0, "opacity": 0.55},
+	"camera": {"pos": [0.84, 0.09], "scale": 1.0, "opacity": 0.45},
+	"look": {"pos": [0.78, 0.09], "scale": 1.0, "opacity": 0.45},
+	"radio": {"pos": [0.90, 0.09], "scale": 1.0, "opacity": 0.45},
 	"pause": {"pos": [0.965, 0.09], "scale": 1.0, "opacity": 0.5}
 }
 
 ## Base radius in design units. Three tiers: fire, action, utility.
 const TOUCH_RADIUS := {
-	"stick": 56.0,
-	"gun": 46.0,
-	"weapon": 34.0,
-	"cycle_weapon": 34.0,
+	"stick": 64.0,
+	"gun": 52.0,
+	"weapon": 40.0,
+	"cycle_weapon": 30.0,
 	"cycle_target": 34.0,
 	"flares": 34.0,
-	"airbrake": 34.0,
-	"gear": 34.0,
+	"airbrake": 30.0,
+	"gear": 28.0,
 	"camera": 28.0,
 	"look": 28.0,
 	"radio": 28.0,

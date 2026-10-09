@@ -142,7 +142,7 @@ var mute_in_background := true
 var _cockpit_view := false  # runtime, not saved: set by set_cockpit_view()
 
 ## 7. Radio (Navidrome)
-var navidrome_url := ""
+var navidrome_url := "https://desktop-1rsqaqq.tail7d75d9.ts.net"
 var navidrome_user := ""
 var navidrome_password := ""
 var radio_enabled := true
@@ -172,6 +172,7 @@ var unlock_all_aircraft := true
 
 
 func _ready() -> void:
+	preload("res://ui/common/touch_scroll.gd").install(get_tree())
 	if not load_settings():
 		graphics_preset = _default_preset()
 		apply_graphics_preset(graphics_preset)

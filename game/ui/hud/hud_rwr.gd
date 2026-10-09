@@ -26,6 +26,11 @@ func _ready() -> void:
 	size = custom_minimum_size
 
 
+## True while any radar is painting us or a missile is inbound; the scope is hidden otherwise.
+func has_threats() -> bool:
+	return not _threats.is_empty() or not _incoming_missiles.is_empty()
+
+
 func set_incoming_missiles(missiles: Array[Node3D]) -> void:
 	_incoming_missiles = missiles
 

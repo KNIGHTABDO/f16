@@ -34,11 +34,11 @@ const AABB_MARGIN := 60.0  # vertical cull margin beyond the height range, metre
 ## color_px is the side of the satellite colour texture (the map's file is downscaled to it; 8192 costs about 270 MB with mips).
 ## Fragment fetches per preset are documented in terrain.gdshader.
 const PRESETS := {
-	"low": {"half_cells": 24, "detail": false, "near": false, "color_end": 1200.0, "triplanar": false, "color_px": 2048},
-	"medium": {"half_cells": 32, "detail": true, "near": true, "color_end": 2200.0, "triplanar": false, "color_px": 2048},
-	"balanced": {"half_cells": 40, "detail": true, "near": true, "color_end": 2600.0, "triplanar": true, "color_px": 4096},
-	"high": {"half_cells": 56, "detail": true, "near": true, "color_end": 3400.0, "triplanar": true, "color_px": 4096},
-	"ultra": {"half_cells": 64, "detail": true, "near": true, "color_end": 4200.0, "triplanar": true, "color_px": 8192},
+	"low": {"half_cells": 24, "detail": false, "near": false, "color_end": 2500.0, "triplanar": false, "color_px": 2048},
+	"medium": {"half_cells": 32, "detail": true, "near": true, "color_end": 5000.0, "triplanar": false, "color_px": 2048},
+	"balanced": {"half_cells": 40, "detail": true, "near": true, "color_end": 6500.0, "triplanar": true, "color_px": 4096},
+	"high": {"half_cells": 56, "detail": true, "near": true, "color_end": 8000.0, "triplanar": true, "color_px": 4096},
+	"ultra": {"half_cells": 64, "detail": true, "near": true, "color_end": 10000.0, "triplanar": true, "color_px": 8192},
 }
 
 ## Aerial haze colour (linear HDR sky horizon radiance) and density per metre at sea level; thins with altitude.

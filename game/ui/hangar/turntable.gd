@@ -9,12 +9,12 @@ const SPIN_PER_PX := 0.01
 const TILT_PER_PX := 0.005
 const TILT_MIN := -0.05
 const TILT_MAX := 0.6
-const DIST_START := 4.0
+const DIST_START := 5.4
 const DIST_MIN := 2.2
 const DIST_MAX := 7.0
 const FIT_RADIUS := 1.1  ## bounding-sphere radius of the fitted model, in world units
 const FLING_DAMP := 1.6  ## how fast a released spin eases back to AUTO_SPIN
-const PLATE_RADIUS := 1.35
+const PLATE_RADIUS := 1.0
 
 var _world: SubViewport
 var _camera: Camera3D
@@ -230,15 +230,30 @@ func _build_world() -> void:
 	disc.bottom_radius = PLATE_RADIUS
 	disc.height = 0.03
 	disc.radial_segments = 48
+	# Unshaded: a lit plate picked up the key light and turned into a bright white slab on the mobile renderer
 	var plate_mat := StandardMaterial3D.new()
-	plate_mat.albedo_color = Color(0.06, 0.13, 0.19, 0.85)
+	plate_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	plate_mat.albedo_color = Color(0.03, 0.08, 0.12, 0.7)
 	plate_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	plate_mat.roughness = 0.5
 	_plate = MeshInstance3D.new()
 	_plate.mesh = disc
 	_plate.material_override = plate_mat
 	_plate.visible = false
 	_yaw_node.add_child(_plate)
+
+	var rim := TorusMesh.new()
+	rim.inner_radius = PLATE_RADIUS - 0.012
+	rim.outer_radius = PLATE_RADIUS + 0.004
+	rim.rings = 64
+	var rim_mat := StandardMaterial3D.new()
+	rim_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	rim_mat.albedo_color = Color(0.25, 0.82, 1.0, 0.8)
+	rim_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	var rim_node := MeshInstance3D.new()
+	rim_node.mesh = rim
+	rim_node.material_override = rim_mat
+	rim_node.position.y = 0.016
+	_plate.add_child(rim_node)
 
 
 func _add_light(rot_deg: Vector3, energy: float, color: Color) -> void:

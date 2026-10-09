@@ -7,6 +7,7 @@ const BRIEF_S := 6.0  ## s the briefing card is up (it fades over the last BRIEF
 const BRIEF_FADE_S := 0.8
 const LIST_TOP := 150.0  ## y below the safe-area top, just under the minimap (HUD margin 12 + 138 tall)
 const LIST_W := 250.0  ## text width before wrapping; keeps the list clear of the speed tape on the left
+const TOP_CARD_Y := 50.0  ## briefing and messages sit under the status line, never over the gunsight
 const PLATE := Color(0.02, 0.05, 0.06, 0.45)
 
 var _level  ## the flight level (untyped: no class_name)
@@ -65,13 +66,13 @@ func _build() -> void:
 	_list_box.add_child(_list)
 	add_child(_list_box)
 
-	_message_box = _plated(PRESET_CENTER_TOP, 80.0)
+	_message_box = _plated(PRESET_CENTER_TOP, TOP_CARD_Y)
 	_message = _label(18, Color("#FFB020"))
 	_message_box.add_child(_message)
 	_message_box.visible = false
 	add_child(_message_box)
 
-	_brief = _plated(PRESET_CENTER, 0.0)
+	_brief = _plated(PRESET_CENTER_TOP, TOP_CARD_Y)
 	_brief_label = _label(16, Color("#E8F6FF"))
 	_brief_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_brief_label.custom_minimum_size = Vector2(440, 0)
@@ -124,6 +125,8 @@ func _process(delta: float) -> void:
 		_brief.modulate.a = clampf(_brief_left / BRIEF_FADE_S, 0.0, 1.0)
 		_brief.visible = _brief_left > 0.0
 	if _message_box.visible:
+		# A message during the briefing stacks under the card instead of covering it
+		_message_box.offset_top = TOP_CARD_Y + (_brief.size.y + 6.0 if _brief.visible else 0.0)
 		_message_left -= delta
 		_message_box.visible = _message_left > 0.0
 	_update_markers()
