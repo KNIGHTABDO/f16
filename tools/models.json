@@ -2462,12 +2462,97 @@
       "origin": "center",
       "max_tex": 2048,
       "max_tris": 60000,
-      "rules": [],
-      "anim": {},
-      "hinges": {},
-      "nozzle": "^NOPE$",
-      "wing": "^NOPE$",
-      "muzzles_raw": []
+      "rules": [
+        [
+          "_drop",
+          "^(Left|Right|Centerline)Carrier"
+        ],
+        [
+          "_drop",
+          "Light"
+        ],
+        [
+          "gear",
+          "^(FrontGear\\w*|FrontAxleBar|FrontWheels|\\w*Shock\\w*|Arm\\d|LiftArm\\d|Hydraulic\\d|\\w*LowerArm|\\w*UpperArm\\w*|\\w*RearWheel|\\w*GearFlap\\w*|\\w*GearBay|MovableHydraulics|Hydraulics\\w*)$"
+        ],
+        [
+          "aileron_l",
+          "^LeftAileron"
+        ],
+        [
+          "aileron_r",
+          "^RightAileron"
+        ],
+        [
+          "flap_l",
+          "^LeftFlap"
+        ],
+        [
+          "flap_r",
+          "^RightFlap"
+        ],
+        [
+          "elevator_l",
+          "^LeftStabilizer$"
+        ],
+        [
+          "elevator_r",
+          "^RightStabilizer$"
+        ],
+        [
+          "rudder_l",
+          "^LeftRudder$"
+        ],
+        [
+          "rudder_r",
+          "^RightRudder$"
+        ],
+        [
+          "speedbrake",
+          "^Airbrake$"
+        ],
+        [
+          "canopy",
+          "^CanopyGlas"
+        ],
+        [
+          "canopy_frame",
+          "^CanopyFrame"
+        ]
+      ],
+      "anim": {
+        "aileron_l": "LeftAileron",
+        "aileron_r": "RightAileron",
+        "flap_l": "LeftFlap",
+        "flap_r": "RightFlap",
+        "elevator_r": "RightStabilizer",
+        "rudder_l": "LeftRudder",
+        "rudder_r": "RightRudder",
+        "speedbrake": "Airbrake",
+        "canopy": "CanopyGlass",
+        "canopy_frame": "CanopyFrame"
+      },
+      "hinges": {
+        "elevator_l": {
+          "center": [
+            6.3299,
+            -1.09,
+            0.03693
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "max_deg": 20,
+          "property": "surface-positions/elevator-pos-norm"
+        }
+      },
+      "nozzle": "^NozzleRing$",
+      "wing": "^(LeftOutboardBody|RightOutboardBody)$",
+      "glass": "^CanopyGlas",
+      "muzzles": "^Guns$",
+      "cockpit": "^CanopyGlas"
     },
     "rafale": {
       "kind": "aircraft",

@@ -252,13 +252,13 @@ class AC3DFile:
         return obj
 
 
-def flatten(obj, R, t, out):
-    """Walk the AC3D tree; yield (obj, R_world, t_world) for every object (affine, AC3D raw frame)."""
+def flatten(obj, R, t, out, anc=()):
+    """Walk the AC3D tree; append (obj, R_world, t_world, ancestor names nearest first) for every object (affine, AC3D raw frame)."""
     Rw = m3mul(R, obj["rot"])
     tw = vadd(m3vec(R, obj["loc"]), t)
-    out.append((obj, Rw, tw))
+    out.append((obj, Rw, tw, anc))
     for k in obj["kids"]:
-        flatten(k, Rw, tw, out)
+        flatten(k, Rw, tw, out, (obj["name"] or "",) + anc)
 
 
 # ---------------------------------------------------------------- FlightGear model XML
@@ -444,7 +444,7 @@ for ac_rel, body_off, _ in components:
     flat = []
     for r in ac.roots:
         flatten(r, I3, (0.0, 0.0, 0.0), flat)
-    for obj, Rw, tw in flat:
+    for obj, Rw, tw, anc in flat:
         if obj["type"] != "poly" or not obj["verts"] or not obj["surfs"]:
             continue
         Rg = m3mul(REMAP, Rw)
@@ -452,6 +452,7 @@ for ac_rel, body_off, _ in components:
         verts = [vadd(m3vec(Rg, v), tg) for v in obj["verts"]]
         geos.append({
             "name": obj["name"] or "obj%d" % len(geos),
+            "anc": tuple(n for n in anc if n),
             "tex": obj["tex"],
             "verts": verts,
             "surfs": obj["surfs"],
@@ -558,6 +559,27 @@ def hinge_for_bucket(bucket, gs=None):
     return h
 
 
+def gear_hinge(key, gs):
+    return manual_hinge(key, gs) if key in MANUAL_HINGES else hinge_for_name(key)
+
+
+def anim_key(g):
+    """Nearest animated AC3D object that moves this geo: the poly itself, then its ancestors. None if static."""
+    for n in (g["name"],) + g["anc"]:
+        if n in MANUAL_HINGES or hinge_for_name(n) is not None:
+            return n
+    return None
+
+
+def gear_groups(gs):
+    """Gear geos grouped into one node per animated object, so a door's inside panel follows its parent's hinge.
+    Static parts (no animation) share one node, gear_static, at the origin."""
+    groups = {}
+    for g in gs:
+        groups.setdefault(anim_key(g) or "static", []).append(g)
+    return sorted(groups.items())
+
+
 # ---------------------------------------------------------------- inspect mode
 
 if INSPECT:
@@ -601,13 +623,12 @@ if INSPECT:
             print("  %-14s %-8s center=(%.2f,%.2f,%.2f) axis=(%.2f,%.2f,%.2f) max=%s prop=%s" % (
                 b, h["type"], h["center"][0], h["center"][1], h["center"][2], h["axis"][0], h["axis"][1],
                 h["axis"][2], h["max_deg"], h["property"]))
-    for g in geos:
-        if g["bucket"] == GEAR_BUCKET:
-            h = manual_hinge(g["name"], [g]) if g["name"] in MANUAL_HINGES else hinge_for_name(g["name"])
-            if h:
-                print("  %-14s %-8s center=(%.2f,%.2f,%.2f) axis=(%.2f,%.2f,%.2f) max=%s prop=%s" % (
-                    g["name"], h["type"], h["center"][0], h["center"][1], h["center"][2], h["axis"][0],
-                    h["axis"][1], h["axis"][2], h["max_deg"], h["property"]))
+    for key, parts in gear_groups([g for g in geos if g["bucket"] == GEAR_BUCKET]):
+        h = gear_hinge(key, parts)
+        if h:
+            print("  %-14s %-8s center=(%.2f,%.2f,%.2f) axis=(%.2f,%.2f,%.2f) max=%s prop=%s" % (
+                key, h["type"], h["center"][0], h["center"][1], h["center"][2], h["axis"][0],
+                h["axis"][1], h["axis"][2], h["max_deg"], h["property"]))
     print("objects matching --objs (final m):")
     for g in geos:
         if re.search(arg_value("--objs", "^$"), g["name"], re.I):
@@ -807,12 +828,12 @@ if GEAR_BUCKET in by_bucket:
 
 for bucket, gs in sorted(by_bucket.items()):
     if bucket == GEAR_BUCKET:
-        for g in gs:
-            node = "gear_" + sanitize(g["name"])
-            # MANUAL_HINGES may override a gear node by its object name (FG's right-gear group has the left-side centre)
-            hinge = manual_hinge(g["name"], [g]) if g["name"] in MANUAL_HINGES else hinge_for_name(g["name"])
+        # MANUAL_HINGES may override a gear node by its object name (FG's right-gear group has the left-side centre)
+        for key, parts in gear_groups(gs):
+            node = "gear_" + sanitize(key)
+            hinge = gear_hinge(key, parts)
             origin = hinge["center"] if hinge else (0.0, 0.0, 0.0)
-            ob = build_mesh(node, [g], origin)
+            ob = build_mesh(node, parts, origin)
             if ob is None:
                 continue
             ob.parent = gear_parent  # gear_parent sits at the origin, so local == world

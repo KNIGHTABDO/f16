@@ -7443,5 +7443,375 @@
       }
     },
     "triangles": 34875
+  },
+  "fa18c": {
+    "source": "https://github.com/FGMEMBERS/F-18C (Models/FA-18C_Hornet.xml, F-18.ac; FGUK Hangar)",
+    "license": "GPL-2.0",
+    "scale_fix": 1.0,
+    "origin": "center",
+    "size_m": {
+      "span": 12.027,
+      "height": 4.558,
+      "length": 17.072
+    },
+    "cockpit_eye": [
+      0.0,
+      0.723,
+      -3.317
+    ],
+    "wingtips": [
+      [
+        -5.844,
+        -0.334,
+        2.567
+      ],
+      [
+        5.83,
+        -0.384,
+        3.232
+      ]
+    ],
+    "nozzles": [
+      {
+        "pos": [
+          -0.001,
+          -0.426,
+          7.378
+        ],
+        "radius": 0.596
+      }
+    ],
+    "muzzles": [
+      [
+        -0.007,
+        -0.066,
+        -6.92
+      ]
+    ],
+    "gear_nodes": [
+      "gear_FrontAxleBar",
+      "gear_LastFrontGearFlap",
+      "gear_LeftFrontGearFlap",
+      "gear_LeftGearFlap1",
+      "gear_LeftGearFlap2",
+      "gear_LeftGearFlap3",
+      "gear_MiddleFrontGearFlap",
+      "gear_RightFrontGearFlap",
+      "gear_RightGearFlap1",
+      "gear_RightGearFlap2",
+      "gear_RightGearFlap3",
+      "gear_static"
+    ],
+    "control_surfaces": {
+      "aileron_l": {
+        "hinge": [
+          -5.828,
+          -0.429,
+          3.417
+        ],
+        "axis": [
+          0.9914,
+          0.0482,
+          -0.1217
+        ],
+        "max_deg": 55.0,
+        "property": "surface-positions/flap-pos-norm"
+      },
+      "aileron_r": {
+        "hinge": [
+          3.985,
+          -0.34,
+          3.193
+        ],
+        "axis": [
+          0.9914,
+          -0.0482,
+          0.1217
+        ],
+        "max_deg": 55.0,
+        "property": "surface-positions/flap-pos-norm"
+      },
+      "canopy": {
+        "hinge": [
+          -0.007,
+          0.7,
+          -1.58
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 30.0,
+        "property": "instrumentation/doors/crew/position-norm"
+      },
+      "canopy_frame": {
+        "hinge": [
+          -0.007,
+          0.7,
+          -1.58
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 30.0,
+        "property": "instrumentation/doors/crew/position-norm"
+      },
+      "elevator_l": {
+        "hinge": [
+          -2.415,
+          -0.463,
+          6.33
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 20.0,
+        "property": "surface-positions/elevator-pos-norm"
+      },
+      "elevator_r": {
+        "hinge": [
+          1.083,
+          -0.463,
+          6.33
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 20.0,
+        "property": "surface-positions/elevator-pos-norm"
+      },
+      "flap_l": {
+        "hinge": [
+          -3.993,
+          -0.34,
+          3.189
+        ],
+        "axis": [
+          0.992,
+          0.0398,
+          -0.12
+        ],
+        "max_deg": 55.0,
+        "property": "surface-positions/flap-pos-norm"
+      },
+      "flap_r": {
+        "hinge": [
+          1.115,
+          -0.225,
+          2.843
+        ],
+        "axis": [
+          0.992,
+          -0.0398,
+          0.12
+        ],
+        "max_deg": 55.0,
+        "property": "surface-positions/flap-pos-norm"
+      },
+      "gear_FrontAxleBar": {
+        "hinge": [
+          -0.007,
+          -1.775,
+          -3.357
+        ],
+        "axis": [
+          -1.0,
+          -0.0,
+          -0.0
+        ],
+        "max_deg": 50.0,
+        "property": "controls/gear/launchbar"
+      },
+      "gear_LastFrontGearFlap": {
+        "hinge": [
+          0.059,
+          -0.917,
+          -1.73
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 31.83,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_LeftFrontGearFlap": {
+        "hinge": [
+          -0.346,
+          -0.801,
+          -4.04
+        ],
+        "axis": [
+          0.0,
+          -0.0066,
+          -1.0
+        ],
+        "max_deg": 85.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_LeftGearFlap1": {
+        "hinge": [
+          -0.257,
+          -0.999,
+          1.648
+        ],
+        "axis": [
+          0.0328,
+          -0.1132,
+          0.993
+        ],
+        "max_deg": 75.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_LeftGearFlap2": {
+        "hinge": [
+          -0.226,
+          -1.104,
+          2.569
+        ],
+        "axis": [
+          -0.0065,
+          -0.0574,
+          0.9983
+        ],
+        "max_deg": 95.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_LeftGearFlap3": {
+        "hinge": [
+          -1.029,
+          -1.205,
+          3.489
+        ],
+        "axis": [
+          0.0,
+          0.019,
+          -0.9998
+        ],
+        "max_deg": 95.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_MiddleFrontGearFlap": {
+        "hinge": [
+          0.17,
+          -0.889,
+          -4.04
+        ],
+        "axis": [
+          0.0,
+          -0.0041,
+          1.0
+        ],
+        "max_deg": 120.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_RightFrontGearFlap": {
+        "hinge": [
+          0.332,
+          -0.806,
+          -4.801
+        ],
+        "axis": [
+          0.0,
+          0.0066,
+          1.0
+        ],
+        "max_deg": 85.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_RightGearFlap1": {
+        "hinge": [
+          0.213,
+          -1.104,
+          2.569
+        ],
+        "axis": [
+          0.0328,
+          0.1132,
+          -0.993
+        ],
+        "max_deg": 75.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_RightGearFlap2": {
+        "hinge": [
+          0.218,
+          -1.157,
+          3.49
+        ],
+        "axis": [
+          -0.0065,
+          0.0574,
+          -0.9983
+        ],
+        "max_deg": 95.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_RightGearFlap3": {
+        "hinge": [
+          1.015,
+          -1.189,
+          2.645
+        ],
+        "axis": [
+          0.0,
+          -0.019,
+          0.9998
+        ],
+        "max_deg": 95.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "rudder_l": {
+        "hinge": [
+          -1.567,
+          1.517,
+          6.07
+        ],
+        "axis": [
+          0.4016,
+          -0.8454,
+          -0.3523
+        ],
+        "max_deg": 35.0,
+        "property": "surface-positions/rudder-pos-norm"
+      },
+      "rudder_r": {
+        "hinge": [
+          1.553,
+          1.517,
+          6.07
+        ],
+        "axis": [
+          -0.4016,
+          -0.8454,
+          -0.3523
+        ],
+        "max_deg": 35.0,
+        "property": "surface-positions/rudder-pos-norm"
+      },
+      "speedbrake": {
+        "hinge": [
+          0.221,
+          0.188,
+          4.641
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 60.0,
+        "property": "surface-positions/speedbrake-pos-norm"
+      }
+    },
+    "triangles": 56971
   }
 }
