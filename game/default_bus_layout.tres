@@ -1,4 +1,4 @@
-[gd_resource type="AudioBusLayout" format=3]
+[gd_resource type="AudioBusLayout" format=3 uid="uid://dfsbmy6lcl4e8"]
 
 [sub_resource type="AudioEffectLowPassFilter" id="AudioEffectLowPassFilter_sfx_cockpit"]
 cutoff_hz = 1600.0

@@ -4,15 +4,15 @@ Goal (from the user): ONE finished, polished game to play daily, not an MVP. Bes
 huge real Morocco maps, targets, Arcade + Realistic flight, Navidrome radio. Public repo while building. Personal use only.
 Work model: Claude = architect/reviewer/integrator; coding by Haiku 5.5 (xhigh) agents in worktrees, + Gemini (agy) when its quota resets.
 
-## Wave 1 (running)
-- [ ] flight_core: FlightModel, Aircraft, Instructor, PlayerController, FlightCamera, test_flight scene
-- [ ] map_pipeline: tools/build_map.py -> gibraltar + atlas maps (DEM, WorldCover, Sentinel-2 colour, airports, places, roads)
-- [ ] terrain: GPU clipmap terrain + ocean + test map
-- [ ] audio: Sfx, EngineAudio, sound library, Navidrome Radio
-- [ ] models: FlightGear aircraft + ground units -> GLB, model_info.json
+## Wave 1 (merged 2026-10-09)
+- [x] flight_core: FlightModel, Aircraft, Instructor, PlayerController, FlightCamera, test_flight scene
+- [x] map_pipeline: tools/build_map.py -> gibraltar + atlas maps (DEM, WorldCover, Sentinel-2 colour, airports, places, roads)
+- [x] terrain: GPU clipmap terrain + ocean + test map
+- [x] audio: Sfx, EngineAudio, sound library, Navidrome Radio
+- [~] models (f16c, ef2000, f35a done; models2 agent converting the rest): FlightGear aircraft + ground units -> GLB, model_info.json
 - [x] iOS CI (Godot export on macos-26 runner -> unsigned IPA artifact; tags -> Release + SideStore source)
 
-## Wave 2 (after integration of wave 1)
+## Wave 2 (running: weapons, world dressing, roster, aircraft integration + playable level, models2; vfx merged)
 - weapons: WeaponSystem, guns (pooled tracers, ray hits), IR/radar/AG missiles (PN guidance, flares/chaff), bombs, GBU, rockets, lock/target cycling
 - vfx: explosions, smoke, fire, contrails, vapor cones, wingtip vortices, heat haze, muzzle flash, impacts, water splashes, wreck debris
 - combat units: GroundUnit (vehicles on roads/convoys), SAM site (search/track/launch), AAA, ships, structures, airbase objects

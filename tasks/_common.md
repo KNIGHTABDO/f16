@@ -24,3 +24,7 @@ If you believe a file outside your scope must change, do not change it: describe
 5. Commit your work in your worktree with a clear message (git add only your files). Do not push.
 6. Final report (max 25 lines): files created/changed, public API you exposed, how you tested, known limitations,
    and any change you need in files outside your scope.
+
+## Speed over testing (user, 2026-10-09)
+The machine is very slow. Build features completely, but keep verification to one `godot --headless --path game --import` parse check
+at the end (fix any script errors it prints). No screenshots, no long test scenes, no repeated runs.
