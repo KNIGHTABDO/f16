@@ -471,8 +471,13 @@ def bucket_of(name):
     return "airframe"
 
 
+# drop_groups: regexes on AC3D ancestor names. Drops whole groups of generic-named polys (e.g. a cockpit
+# interior whose parts are all called "object") that name rules cannot separate.
+DROP_GROUP_RES = [re.compile(rx, re.I) for rx in CFG.get("drop_groups", [])]
+
 for g in geos:
-    g["bucket"] = FORCED_BUCKET.get(os.path.normpath(g["src"])) or bucket_of(g["name"])
+    dropped = any(rx.search(n) for n in g["anc"] for rx in DROP_GROUP_RES)
+    g["bucket"] = FORCED_BUCKET.get(os.path.normpath(g["src"])) or ("_drop" if dropped else bucket_of(g["name"]))
 live = [g for g in geos if not g["bucket"].startswith("_")]
 
 
@@ -529,6 +534,7 @@ def hinge_for_name(name):
     if pick["factor"] < 0:
         ax = vscale(ax, -1.0)
     return {"center": c, "axis": ax, "max_deg": round(abs(pick["factor"]), 2),
+            "offset_deg": round(float(pick["offset"]), 2),
             "property": pick["property"], "anim": name, "type": pick["type"]}
 
 
@@ -930,6 +936,9 @@ for k, h in sorted(info_controls.items()):
         "max_deg": h["max_deg"],
         "property": h["property"],
     }
+    if h.get("offset_deg"):
+        # Rest-position offset of the FG animation (e.g. Rafale landing gear -90): input 0 sits at this angle
+        info["control_surfaces"][k]["offset_deg"] = h["offset_deg"]
 if info_rotors:
     info["rotors"] = {k: {"hub": [round(c, 3) for c in h["center"]], "axis": [round(c, 4) for c in h["axis"]],
                           "property": h["property"]} for k, h in sorted(info_rotors.items())}

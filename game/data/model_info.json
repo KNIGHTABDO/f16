@@ -7813,5 +7813,186 @@
       }
     },
     "triangles": 56971
+  },
+  "rafale": {
+    "source": "https://github.com/FGMEMBERS/RafaleB (Models/RafaleB17-model.xml, RafaleB17.ac)",
+    "license": "GPL-2.0",
+    "scale_fix": 1.0,
+    "origin": "center",
+    "size_m": {
+      "span": 9.01,
+      "height": 4.758,
+      "length": 13.003
+    },
+    "cockpit_eye": [
+      0.0,
+      0.07,
+      -2.775
+    ],
+    "wingtips": [
+      [
+        -4.364,
+        -0.733,
+        3.732
+      ],
+      [
+        4.364,
+        -0.733,
+        3.732
+      ]
+    ],
+    "muzzles": [],
+    "gear_nodes": [
+      "gear_static",
+      "gear_train_avant",
+      "gear_train_droit",
+      "gear_train_gauche"
+    ],
+    "control_surfaces": {
+      "aileron_l": {
+        "hinge": [
+          -4.364,
+          -0.733,
+          3.732
+        ],
+        "axis": [
+          0.9991,
+          0.0431,
+          0.0
+        ],
+        "max_deg": 25.0,
+        "property": "surface-positions/left-aileron-pos-norm"
+      },
+      "aileron_r": {
+        "hinge": [
+          4.363,
+          -0.733,
+          3.732
+        ],
+        "axis": [
+          -0.9991,
+          0.0431,
+          0.0
+        ],
+        "max_deg": 25.0,
+        "property": "surface-positions/right-aileron-pos-norm"
+      },
+      "elevator_l": {
+        "hinge": [
+          -2.234,
+          -0.345,
+          -1.183
+        ],
+        "axis": [
+          -0.9144,
+          0.0495,
+          0.4017
+        ],
+        "max_deg": 20.0,
+        "property": "surface-positions/elevator-pos-norm"
+      },
+      "elevator_r": {
+        "hinge": [
+          1.02,
+          -0.411,
+          -1.719
+        ],
+        "axis": [
+          -0.9144,
+          -0.0495,
+          -0.4017
+        ],
+        "max_deg": 20.0,
+        "property": "surface-positions/elevator-pos-norm"
+      },
+      "flap_l": {
+        "hinge": [
+          -2.278,
+          -0.643,
+          3.732
+        ],
+        "axis": [
+          0.9979,
+          0.0649,
+          0.0
+        ],
+        "max_deg": 40.0,
+        "property": "surface-positions/flap-pos-norm"
+      },
+      "flap_r": {
+        "hinge": [
+          2.284,
+          -0.643,
+          3.732
+        ],
+        "axis": [
+          0.9979,
+          -0.0649,
+          -0.0
+        ],
+        "max_deg": 40.0,
+        "property": "surface-positions/flap-pos-norm"
+      },
+      "gear_train_avant": {
+        "hinge": [
+          0.003,
+          -1.14,
+          -2.208
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 90.0,
+        "property": "gear/gear[0]/position-norm",
+        "offset_deg": -90.0
+      },
+      "gear_train_droit": {
+        "hinge": [
+          0.754,
+          -0.876,
+          1.769
+        ],
+        "axis": [
+          -0.9433,
+          0.0,
+          0.3319
+        ],
+        "max_deg": 90.0,
+        "property": "gear/gear[0]/position-norm",
+        "offset_deg": -90.0
+      },
+      "gear_train_gauche": {
+        "hinge": [
+          0.754,
+          -0.876,
+          2.298
+        ],
+        "axis": [
+          -0.9433,
+          0.0,
+          -0.3319
+        ],
+        "max_deg": 90.0,
+        "property": "gear/gear[0]/position-norm",
+        "offset_deg": -90.0
+      },
+      "rudder": {
+        "hinge": [
+          0.003,
+          0.092,
+          4.658
+        ],
+        "axis": [
+          0.0,
+          0.8407,
+          0.5415
+        ],
+        "max_deg": 30.0,
+        "property": "surface-positions/rudder-pos-norm"
+      }
+    },
+    "triangles": 17083
   }
 }

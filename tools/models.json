@@ -2582,11 +2582,33 @@
       "origin": "center",
       "max_tex": 2048,
       "max_tris": 60000,
-      "rules": [],
-      "anim": {},
-      "hinges": {},
+      "rules": [
+        ["_drop", "^(pilots|nav_light|scalp|paveway|bidon|mistral)"],
+        ["gear", "^(train_\\w+|trappe\\w*)$"],
+        ["aileron_l", "^aileron_gauche$"],
+        ["aileron_r", "^aileron_droit$"],
+        ["flap_l", "^volet_gauche$"],
+        ["flap_r", "^volet_droit$"],
+        ["elevator_l", "^canard_gauche$"],
+        ["elevator_r", "^canard_droit$"],
+        ["rudder", "^derive$"],
+        ["canopy", "^canopy$"]
+      ],
+      "drop_groups": ["^cockpit$", "^(landing_lights|afterburner)$"],
+      "glass": "^canopy$",
+      "cockpit": "^canopy$",
+      "wing": "^(aileron_gauche|aileron_droit)$",
       "nozzle": "^NOPE$",
-      "wing": "^NOPE$",
+      "anim": {
+        "aileron_l": "aileron_gauche",
+        "aileron_r": "aileron_droit",
+        "flap_l": "volet_gauche",
+        "flap_r": "volet_droit",
+        "elevator_l": "canard_gauche",
+        "elevator_r": "canard_droit",
+        "rudder": "derive"
+      },
+      "hinges": {},
       "muzzles_raw": []
     },
     "ah64": {
