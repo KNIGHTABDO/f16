@@ -55,10 +55,11 @@ func _draw() -> void:
 	if not Settings.hud_show_damage:
 		return
 
+	# Bottom edge of the bar sits on the same baseline as the weapons panel (HUDWeapons)
 	var center_x := vp_size.x * 0.5
-	var bar_y := vp_size.y - 36.0 * hud_scale
 	var bar_w := 180.0 * hud_scale
-	var bar_h := 8.0 * hud_scale
+	var bar_h := 6.0 * hud_scale
+	var bar_y := HUDLayout.safe_rect(vp_size).end.y - bar_h
 
 	var hp_frac := clampf(aircraft.health / maxf(aircraft.max_health, 1.0), 0.0, 1.0)
 	var hp_col := Color("#3CFF6A").lerp(Color("#FF2020"), 1.0 - hp_frac)

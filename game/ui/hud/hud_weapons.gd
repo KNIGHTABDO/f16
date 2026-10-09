@@ -89,9 +89,9 @@ func _draw() -> void:
 	var h := size.y * hud_scale
 	var col := hud_color
 
-	# Glass background panel
-	draw_rect(Rect2(0, 0, w, h), Color(0.02, 0.05, 0.04, 0.75), true)
-	draw_rect(Rect2(0, 0, w, h), Color(col.r, col.g, col.b, 0.45), false, 1.5)
+	# Translucent glass panel, thin rim (matches the touch buttons and integrity bar)
+	draw_rect(Rect2(0, 0, w, h), Color(0.02, 0.05, 0.04, 0.42), true)
+	draw_rect(Rect2(0, 0, w, h), Color(col.r, col.g, col.b, 0.3), false, 1.0)
 
 	# 1. Selected Weapon Header & Count
 	var fs_title := int(15.0 * hud_scale)

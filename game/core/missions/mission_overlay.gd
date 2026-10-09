@@ -1,17 +1,23 @@
 class_name MissionOverlay
 extends Control
-## In-flight mission HUD: title, lives, clock and score across the top, the objective list on the left, a briefing card
-## when the sortie starts, world markers for open objectives and short mission messages at the bottom.
+## In-flight mission HUD: a small status line at top-center, the objective list under the minimap, a briefing card
+## that fades after the sortie starts, world markers for open objectives and short mission messages at top-center.
 
-const BRIEF_S := 13.0  ## s the briefing card stays up
+const BRIEF_S := 6.0  ## s the briefing card is up (it fades over the last BRIEF_FADE_S)
+const BRIEF_FADE_S := 0.8
+const LIST_TOP := 150.0  ## y below the safe-area top, just under the minimap (HUD margin 12 + 138 tall)
+const PLATE := Color(0.02, 0.05, 0.06, 0.45)
 
 var _level  ## the flight level (untyped: no class_name)
 var _mission: Mission
+var _status: PanelContainer
 var _top: Label
+var _list_box: PanelContainer
 var _list: VBoxContainer
 var _brief: PanelContainer
 var _brief_label: Label
 var _brief_left := BRIEF_S
+var _message_box: PanelContainer
 var _message: Label
 var _message_left := 0.0
 var _markers: Array[Label] = []
@@ -27,9 +33,12 @@ func setup(level: Node, mission: Mission) -> void:
 	var note := String(mission.plan.get("note", ""))
 	_brief_label.text = brief if note == "" else "%s\n%s" % [brief, note]
 	_brief.visible = _brief_label.text != ""
+	_brief_left = BRIEF_S
 	Events.objective_updated.connect(_on_objectives)
 	Events.mission_message.connect(_on_message)
+	get_viewport().size_changed.connect(_place)
 	_on_objectives(mission.objectives.to_array())
+	_place()
 
 
 func _exit_tree() -> void:
@@ -37,38 +46,65 @@ func _exit_tree() -> void:
 		Events.objective_updated.disconnect(_on_objectives)
 	if Events.mission_message.is_connected(_on_message):
 		Events.mission_message.disconnect(_on_message)
+	var vp := get_viewport()
+	if vp != null and vp.size_changed.is_connected(_place):
+		vp.size_changed.disconnect(_place)
 
 
 func _build() -> void:
-	_top = _label(20, Color("#E8F6FF"))
-	_top.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
-	_top.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	_top.offset_top = 14.0
-	add_child(_top)
+	_status = _plated(PRESET_CENTER_TOP, 8.0)
+	_top = _label(13, Color("#CFEFFF"))
+	_status.add_child(_top)
+	add_child(_status)
 
+	_list_box = _plated(PRESET_TOP_LEFT, 0.0)
 	_list = VBoxContainer.new()
-	_list.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
-	_list.offset_left = 24.0
-	_list.offset_top = 92.0
-	add_child(_list)
+	_list.add_theme_constant_override("separation", 2)
+	_list_box.add_child(_list)
+	add_child(_list_box)
 
-	_message = _label(22, Color("#FFB020"))
-	_message.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
-	_message.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	_message.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	_message.offset_bottom = -150.0
-	_message.visible = false
-	add_child(_message)
+	_message_box = _plated(PRESET_CENTER_TOP, 80.0)
+	_message = _label(18, Color("#FFB020"))
+	_message_box.add_child(_message)
+	_message_box.visible = false
+	add_child(_message_box)
 
-	_brief = PanelContainer.new()
-	_brief.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
-	_brief.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	_brief.grow_vertical = Control.GROW_DIRECTION_BOTH
-	_brief_label = _label(18, Color("#E8F6FF"))
+	_brief = _plated(PRESET_CENTER, 0.0)
+	_brief_label = _label(16, Color("#E8F6FF"))
 	_brief_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_brief_label.custom_minimum_size = Vector2(540, 0)
+	_brief_label.custom_minimum_size = Vector2(440, 0)
 	_brief.add_child(_brief_label)
 	add_child(_brief)
+
+
+## A label-holding translucent card anchored by preset; top_offset moves it down from the top edge.
+func _plated(preset: int, top_offset: float) -> PanelContainer:
+	var panel := PanelContainer.new()
+	panel.set_anchors_and_offsets_preset(preset)
+	panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	panel.grow_vertical = Control.GROW_DIRECTION_BOTH
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if preset == PRESET_CENTER_TOP:
+		panel.offset_top = top_offset
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = PLATE
+	sb.set_corner_radius_all(6)
+	sb.content_margin_left = 10.0
+	sb.content_margin_right = 10.0
+	sb.content_margin_top = 3.0
+	sb.content_margin_bottom = 3.0
+	sb.border_width_left = 1
+	sb.border_width_right = 1
+	sb.border_width_top = 1
+	sb.border_width_bottom = 1
+	sb.border_color = Color(0.45, 0.9, 1.0, 0.25)
+	panel.add_theme_stylebox_override("panel", sb)
+	return panel
+
+
+func _place() -> void:
+	var r := HUDLayout.safe_rect(get_viewport_rect().size)
+	_list_box.position = r.position + Vector2(0.0, LIST_TOP)
 
 
 func _process(delta: float) -> void:
@@ -77,10 +113,11 @@ func _process(delta: float) -> void:
 	_top.text = _top_text()
 	if _brief.visible:
 		_brief_left -= delta
+		_brief.modulate.a = clampf(_brief_left / BRIEF_FADE_S, 0.0, 1.0)
 		_brief.visible = _brief_left > 0.0
-	if _message.visible:
+	if _message_box.visible:
 		_message_left -= delta
-		_message.visible = _message_left > 0.0
+		_message_box.visible = _message_left > 0.0
 	_update_markers()
 
 
@@ -90,7 +127,7 @@ func _top_text() -> String:
 	var clock := _clock(m.elapsed)
 	if m.time_limit > 0.0:
 		clock = "%s left" % _clock(maxf(0.0, m.time_limit - m.elapsed))
-	return "%s   ·   Lives %s   ·   %s   ·   Score %s" % [
+	return "%s  ·  Lives %s  ·  %s  ·  Score %s" % [
 		String(m.plan["title"]), lives, clock, Progression.format_int(int(m.score))]
 
 
@@ -107,14 +144,14 @@ func _on_objectives(list: Array) -> void:
 		if text == "":
 			continue
 		var done: bool = entry["done"]
-		var lbl := _label(16, Color(0.6, 0.7, 0.8, 0.55) if done else Color("#E8F6FF"))
+		var lbl := _label(13, Color(0.6, 0.7, 0.8, 0.55) if done else Color("#CFEFFF"))
 		lbl.text = ("✓ " if done else "• ") + text
 		_list.add_child(lbl)
 
 
 func _on_message(text: String, duration: float) -> void:
 	_message.text = text
-	_message.visible = true
+	_message_box.visible = true
 	_message_left = duration
 
 
@@ -153,7 +190,7 @@ func _world_pos(entry: Dictionary) -> Vector3:
 
 func _marker_label(i: int) -> Label:
 	if i >= _markers.size():
-		var lbl := _label(16, Color("#FFB020"))
+		var lbl := _label(14, Color("#FFB020"))
 		add_child(lbl)
 		_markers.append(lbl)
 	return _markers[i]
