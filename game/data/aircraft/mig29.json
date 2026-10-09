@@ -1,0 +1,134 @@
+{
+    "id": "mig29",
+    "name": "MiG-29 Fulcrum-A",
+    "short_name": "MiG-29",
+    "category": "fighter",
+    "nation": "USSR",
+    "era": "modern",
+    "description": "Twin-engine air superiority fighter with leading-edge root extensions. Renowned for off-boresight R-73 missile lethality.",
+    "model": "res://assets/models/aircraft/mig29/mig29.glb",
+    "model_scale": 1.0,
+    "model_rotation_deg": [
+        0,
+        0,
+        0
+    ],
+    "model_offset": [
+        0,
+        0,
+        0
+    ],
+    "cockpit_eye": [
+        0.0,
+        0.754,
+        -3.115
+    ],
+    "chase_distance": 18.0,
+    "chase_height": 3.8,
+    "length": 17.24,
+    "wing_span": 11.45,
+    "hit_radius": 6.5,
+    "engine": "jet",
+    "engine_sound": "engine_jet",
+    "mass_empty": 11000,
+    "mass_fuel": 3500,
+    "fuel_burn_dry": 1.5,
+    "fuel_burn_ab": 7.5,
+    "thrust_dry": 98800,
+    "thrust_ab": 162800,
+    "thrust_altitude_lapse": 0.7,
+    "engine_spool_s": 2.8,
+    "prop_power_kw": 0,
+    "prop_efficiency": 0.0,
+    "wing_area": 38.0,
+    "cl0": 0.05,
+    "cl_alpha": 4.4,
+    "cl_max": 1.58,
+    "alpha_stall_deg": 28,
+    "cd0": 0.01384,
+    "induced_k": 0.125,
+    "cd_wave_mach": 0.9,
+    "cd_wave_max": 0.0219,
+    "cd_gear": 0.02,
+    "cd_airbrake": 0.06,
+    "side_force": 1.2,
+    "max_g": 9.0,
+    "min_g": -3.0,
+    "max_aoa_deg": 28,
+    "roll_rate_deg": 260,
+    "pitch_rate_deg": 28,
+    "yaw_rate_deg": 12,
+    "control_response": 6.0,
+    "stability": 1.0,
+    "fly_by_wire": false,
+    "max_speed_kmh": 2400,
+    "vne_kmh": 2550,
+    "stall_speed_kmh": 220,
+    "takeoff_speed_kmh": 260,
+    "landing_speed_kmh": 240,
+    "service_ceiling_m": 18000,
+    "has_gear": true,
+    "has_hook": false,
+    "has_afterburner": true,
+    "health": 110,
+    "gun": {
+        "weapon": "gsh301",
+        "ammo": 150,
+        "muzzles": [
+            [
+                -1.2,
+                0.2,
+                -3.5
+            ]
+        ]
+    },
+    "flares": 60,
+    "hardpoints": 7,
+    "default_loadout": "air_superiority",
+    "loadouts": {
+        "air_superiority": [
+            {
+                "weapon": "r27er",
+                "count": 2
+            },
+            {
+                "weapon": "r73",
+                "count": 4
+            }
+        ],
+        "bvr": [
+            {
+                "weapon": "r77",
+                "count": 4
+            },
+            {
+                "weapon": "r73",
+                "count": 2
+            }
+        ],
+        "strike": [
+            {
+                "weapon": "r73",
+                "count": 2
+            },
+            {
+                "weapon": "fab250",
+                "count": 4
+            }
+        ],
+        "cas": [
+            {
+                "weapon": "r73",
+                "count": 2
+            },
+            {
+                "weapon": "s8",
+                "count": 40
+            },
+            {
+                "weapon": "kh25",
+                "count": 2
+            }
+        ]
+    }
+}

@@ -1,0 +1,108 @@
+{
+    "id": "spitfire",
+    "name": "Supermarine Spitfire Mk IX",
+    "short_name": "Spitfire",
+    "category": "prop",
+    "nation": "UK",
+    "era": "ww2",
+    "description": "Iconic British fighter renowned for its beautiful elliptical wing and tight turning circle. Powered by the supercharged Rolls-Royce Merlin engine.",
+    "model": "",
+    "model_scale": 1.0,
+    "model_rotation_deg": [
+        0,
+        0,
+        0
+    ],
+    "model_offset": [
+        0,
+        0,
+        0
+    ],
+    "cockpit_eye": [
+        0.0,
+        0.5,
+        -0.7
+    ],
+    "chase_distance": 13.0,
+    "chase_height": 2.8,
+    "length": 9.47,
+    "wing_span": 11.23,
+    "hit_radius": 4.5,
+    "engine": "prop",
+    "engine_sound": "engine_prop",
+    "mass_empty": 2630,
+    "mass_fuel": 400,
+    "fuel_burn_dry": 0.11,
+    "fuel_burn_ab": 0.11,
+    "thrust_dry": 0,
+    "thrust_ab": 0,
+    "thrust_altitude_lapse": 0.8,
+    "engine_spool_s": 2.0,
+    "prop_power_kw": 1280,
+    "prop_efficiency": 0.82,
+    "wing_area": 22.48,
+    "cl0": 0.1,
+    "cl_alpha": 5.0,
+    "cl_max": 1.55,
+    "alpha_stall_deg": 19,
+    "cd0": 0.01548,
+    "induced_k": 0.045,
+    "cd_wave_mach": 0.7,
+    "cd_wave_max": 0.05,
+    "cd_gear": 0.03,
+    "cd_airbrake": 0.05,
+    "side_force": 1.25,
+    "max_g": 8.5,
+    "min_g": -3.0,
+    "max_aoa_deg": 20,
+    "roll_rate_deg": 120,
+    "pitch_rate_deg": 26,
+    "yaw_rate_deg": 14,
+    "control_response": 5.0,
+    "stability": 1.1,
+    "fly_by_wire": false,
+    "max_speed_kmh": 657,
+    "vne_kmh": 750,
+    "stall_speed_kmh": 145,
+    "takeoff_speed_kmh": 165,
+    "landing_speed_kmh": 155,
+    "service_ceiling_m": 13000,
+    "has_gear": true,
+    "has_hook": false,
+    "has_afterburner": false,
+    "health": 75,
+    "gun": {
+        "weapon": "hispano_mk2",
+        "ammo": 240,
+        "muzzles": [
+            [
+                -2.2,
+                0.0,
+                -1.0
+            ],
+            [
+                2.2,
+                0.0,
+                -1.0
+            ]
+        ]
+    },
+    "flares": 0,
+    "hardpoints": 2,
+    "default_loadout": "air_superiority",
+    "loadouts": {
+        "air_superiority": [],
+        "fighter_bomber": [
+            {
+                "weapon": "mk82",
+                "count": 1
+            }
+        ],
+        "light_strike": [
+            {
+                "weapon": "mk82",
+                "count": 2
+            }
+        ]
+    }
+}

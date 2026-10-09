@@ -1,0 +1,130 @@
+{
+    "id": "f35a",
+    "name": "F-35A Lightning II",
+    "short_name": "F-35A",
+    "category": "multirole",
+    "nation": "USA",
+    "era": "fifth_gen",
+    "description": "Fifth-generation stealth multirole strike fighter with advanced sensor fusion. Features the most powerful single jet engine in military aviation.",
+    "model": "res://assets/models/aircraft/f35a/f35a.glb",
+    "model_scale": 1.0,
+    "model_rotation_deg": [
+        0,
+        0,
+        0
+    ],
+    "model_offset": [
+        0,
+        0,
+        0
+    ],
+    "cockpit_eye": [
+        0.0,
+        0.898,
+        -4.748
+    ],
+    "chase_distance": 17.5,
+    "chase_height": 3.8,
+    "length": 15.67,
+    "wing_span": 10.75,
+    "hit_radius": 6.2,
+    "engine": "jet",
+    "engine_sound": "engine_jet",
+    "mass_empty": 13170,
+    "mass_fuel": 8278,
+    "fuel_burn_dry": 1.4,
+    "fuel_burn_ab": 7.2,
+    "thrust_dry": 125000,
+    "thrust_ab": 191000,
+    "thrust_altitude_lapse": 0.76,
+    "engine_spool_s": 2.8,
+    "prop_power_kw": 0,
+    "prop_efficiency": 0.0,
+    "wing_area": 42.7,
+    "cl0": 0.05,
+    "cl_alpha": 4.5,
+    "cl_max": 1.6,
+    "alpha_stall_deg": 30,
+    "cd0": 0.0168,
+    "induced_k": 0.125,
+    "cd_wave_mach": 0.92,
+    "cd_wave_max": 0.0273,
+    "cd_gear": 0.02,
+    "cd_airbrake": 0.06,
+    "side_force": 1.2,
+    "max_g": 9.0,
+    "min_g": -3.0,
+    "max_aoa_deg": 30,
+    "roll_rate_deg": 240,
+    "pitch_rate_deg": 26,
+    "yaw_rate_deg": 10,
+    "control_response": 6.2,
+    "stability": 0.96,
+    "fly_by_wire": true,
+    "max_speed_kmh": 1960,
+    "vne_kmh": 2100,
+    "stall_speed_kmh": 225,
+    "takeoff_speed_kmh": 270,
+    "landing_speed_kmh": 250,
+    "service_ceiling_m": 15240,
+    "has_gear": true,
+    "has_hook": false,
+    "has_afterburner": true,
+    "health": 115,
+    "gun": {
+        "weapon": "m61a1",
+        "ammo": 182,
+        "muzzles": [
+            [
+                -0.9,
+                0.5,
+                -4.0
+            ]
+        ]
+    },
+    "flares": 60,
+    "hardpoints": 10,
+    "default_loadout": "stealth_air",
+    "loadouts": {
+        "stealth_air": [
+            {
+                "weapon": "aim120c",
+                "count": 4
+            }
+        ],
+        "stealth_strike": [
+            {
+                "weapon": "aim120c",
+                "count": 2
+            },
+            {
+                "weapon": "gbu12",
+                "count": 2
+            }
+        ],
+        "strike": [
+            {
+                "weapon": "aim120c",
+                "count": 2
+            },
+            {
+                "weapon": "aim9x",
+                "count": 2
+            },
+            {
+                "weapon": "gbu12",
+                "count": 4
+            }
+        ],
+        "air_superiority": [
+            {
+                "weapon": "aim120c",
+                "count": 4
+            },
+            {
+                "weapon": "aim9x",
+                "count": 2
+            }
+        ]
+    }
+}

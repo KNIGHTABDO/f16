@@ -1,0 +1,126 @@
+{
+    "id": "mig21bis",
+    "name": "MiG-21bis Fishbed-L",
+    "short_name": "MiG-21bis",
+    "category": "fighter",
+    "nation": "USSR",
+    "era": "cold_war",
+    "description": "Supersonic second-generation delta-wing interceptor. Highly agile in gunfights with impressive Mach 2 acceleration.",
+    "model": "res://assets/models/aircraft/mig21bis/mig21bis.glb",
+    "model_scale": 1.0,
+    "model_rotation_deg": [
+        0,
+        0,
+        0
+    ],
+    "model_offset": [
+        0,
+        0,
+        0
+    ],
+    "cockpit_eye": [
+        0.0,
+        0.611,
+        -2.797
+    ],
+    "chase_distance": 16.0,
+    "chase_height": 3.2,
+    "length": 16.45,
+    "wing_span": 7.45,
+    "hit_radius": 5.5,
+    "engine": "jet",
+    "engine_sound": "engine_jet",
+    "mass_empty": 5350,
+    "mass_fuel": 2390,
+    "fuel_burn_dry": 0.85,
+    "fuel_burn_ab": 4.8,
+    "thrust_dry": 40200,
+    "thrust_ab": 72000,
+    "thrust_altitude_lapse": 0.66,
+    "engine_spool_s": 3.5,
+    "prop_power_kw": 0,
+    "prop_efficiency": 0.0,
+    "wing_area": 23.0,
+    "cl0": 0.04,
+    "cl_alpha": 3.8,
+    "cl_max": 1.4,
+    "alpha_stall_deg": 24,
+    "cd0": 0.01397,
+    "induced_k": 0.15,
+    "cd_wave_mach": 0.9,
+    "cd_wave_max": 0.0191,
+    "cd_gear": 0.02,
+    "cd_airbrake": 0.055,
+    "side_force": 1.1,
+    "max_g": 8.5,
+    "min_g": -3.0,
+    "max_aoa_deg": 25,
+    "roll_rate_deg": 200,
+    "pitch_rate_deg": 22,
+    "yaw_rate_deg": 9,
+    "control_response": 5.0,
+    "stability": 1.1,
+    "fly_by_wire": false,
+    "max_speed_kmh": 2175,
+    "vne_kmh": 2300,
+    "stall_speed_kmh": 240,
+    "takeoff_speed_kmh": 300,
+    "landing_speed_kmh": 280,
+    "service_ceiling_m": 17500,
+    "has_gear": true,
+    "has_hook": false,
+    "has_afterburner": true,
+    "health": 90,
+    "gun": {
+        "weapon": "gsh23",
+        "ammo": 200,
+        "muzzles": [
+            [
+                0.0,
+                -0.6,
+                -1.5
+            ]
+        ]
+    },
+    "flares": 60,
+    "hardpoints": 5,
+    "default_loadout": "air_superiority",
+    "loadouts": {
+        "air_superiority": [
+            {
+                "weapon": "r60",
+                "count": 4
+            }
+        ],
+        "dogfight": [
+            {
+                "weapon": "r60",
+                "count": 2
+            },
+            {
+                "weapon": "aim9b",
+                "count": 2
+            }
+        ],
+        "strike": [
+            {
+                "weapon": "r60",
+                "count": 2
+            },
+            {
+                "weapon": "fab250",
+                "count": 2
+            }
+        ],
+        "rockets": [
+            {
+                "weapon": "r60",
+                "count": 2
+            },
+            {
+                "weapon": "s5",
+                "count": 32
+            }
+        ]
+    }
+}

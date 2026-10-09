@@ -1,0 +1,138 @@
+{
+    "id": "f14b",
+    "name": "F-14B Tomcat",
+    "short_name": "F-14B",
+    "category": "interceptor",
+    "nation": "USA",
+    "era": "cold_war",
+    "description": "Variable-sweep wing fleet defense interceptor. Armed with long-range AIM-54 Phoenix missiles for BVR dominance.",
+    "model": "",
+    "model_scale": 1.0,
+    "model_rotation_deg": [
+        0,
+        0,
+        0
+    ],
+    "model_offset": [
+        0,
+        0,
+        0
+    ],
+    "cockpit_eye": [
+        0.0,
+        0.9,
+        -4.5
+    ],
+    "chase_distance": 22.0,
+    "chase_height": 4.5,
+    "length": 19.1,
+    "wing_span": 19.55,
+    "hit_radius": 8.0,
+    "engine": "jet",
+    "engine_sound": "engine_jet",
+    "mass_empty": 19800,
+    "mass_fuel": 7350,
+    "fuel_burn_dry": 2.2,
+    "fuel_burn_ab": 10.8,
+    "thrust_dry": 147800,
+    "thrust_ab": 249200,
+    "thrust_altitude_lapse": 0.71,
+    "engine_spool_s": 3.2,
+    "prop_power_kw": 0,
+    "prop_efficiency": 0.0,
+    "wing_area": 52.5,
+    "cl0": 0.05,
+    "cl_alpha": 4.1,
+    "cl_max": 1.55,
+    "alpha_stall_deg": 26,
+    "cd0": 0.01466,
+    "induced_k": 0.115,
+    "cd_wave_mach": 0.88,
+    "cd_wave_max": 0.0237,
+    "cd_gear": 0.022,
+    "cd_airbrake": 0.065,
+    "side_force": 1.15,
+    "max_g": 7.5,
+    "min_g": -2.5,
+    "max_aoa_deg": 28,
+    "roll_rate_deg": 180,
+    "pitch_rate_deg": 22,
+    "yaw_rate_deg": 8,
+    "control_response": 5.0,
+    "stability": 1.1,
+    "fly_by_wire": false,
+    "max_speed_kmh": 2485,
+    "vne_kmh": 2650,
+    "stall_speed_kmh": 225,
+    "takeoff_speed_kmh": 270,
+    "landing_speed_kmh": 240,
+    "service_ceiling_m": 16000,
+    "has_gear": true,
+    "has_hook": true,
+    "has_afterburner": true,
+    "health": 140,
+    "gun": {
+        "weapon": "m61a1",
+        "ammo": 675,
+        "muzzles": [
+            [
+                -0.65,
+                -0.3,
+                -5.5
+            ]
+        ]
+    },
+    "flares": 60,
+    "hardpoints": 10,
+    "default_loadout": "fleet_defense",
+    "loadouts": {
+        "fleet_defense": [
+            {
+                "weapon": "aim54c",
+                "count": 6
+            },
+            {
+                "weapon": "aim9x",
+                "count": 2
+            }
+        ],
+        "interceptor": [
+            {
+                "weapon": "aim54c",
+                "count": 4
+            },
+            {
+                "weapon": "aim7m",
+                "count": 2
+            },
+            {
+                "weapon": "aim9x",
+                "count": 2
+            }
+        ],
+        "air_superiority": [
+            {
+                "weapon": "aim7m",
+                "count": 4
+            },
+            {
+                "weapon": "aim9x",
+                "count": 4
+            }
+        ],
+        "strike": [
+            {
+                "weapon": "aim9x",
+                "count": 2
+            },
+            {
+                "weapon": "aim120c",
+                "count": 2
+            },
+            {
+                "weapon": "gbu12",
+                "count": 4
+            }
+        ]
+    }
+}

@@ -1,0 +1,138 @@
+{
+    "id": "f22a",
+    "name": "F-22A Raptor",
+    "short_name": "F-22A",
+    "category": "fighter",
+    "nation": "USA",
+    "era": "fifth_gen",
+    "description": "Premier stealth air superiority fighter with 2D thrust vectoring nozzles. Supercruises at Mach 1.82 with unparalleled radar stealth.",
+    "model": "",
+    "model_scale": 1.0,
+    "model_rotation_deg": [
+        0,
+        0,
+        0
+    ],
+    "model_offset": [
+        0,
+        0,
+        0
+    ],
+    "cockpit_eye": [
+        0.0,
+        0.95,
+        -4.9
+    ],
+    "chase_distance": 21.0,
+    "chase_height": 4.2,
+    "length": 18.92,
+    "wing_span": 13.56,
+    "hit_radius": 7.5,
+    "engine": "jet",
+    "engine_sound": "engine_jet",
+    "mass_empty": 19700,
+    "mass_fuel": 8200,
+    "fuel_burn_dry": 2.4,
+    "fuel_burn_ab": 11.5,
+    "thrust_dry": 232000,
+    "thrust_ab": 312000,
+    "thrust_altitude_lapse": 0.72,
+    "engine_spool_s": 2.5,
+    "prop_power_kw": 0,
+    "prop_efficiency": 0.0,
+    "wing_area": 78.0,
+    "cl0": 0.05,
+    "cl_alpha": 4.6,
+    "cl_max": 1.7,
+    "alpha_stall_deg": 35,
+    "cd0": 0.01244,
+    "induced_k": 0.11,
+    "cd_wave_mach": 0.95,
+    "cd_wave_max": 0.0197,
+    "cd_gear": 0.02,
+    "cd_airbrake": 0.06,
+    "side_force": 1.25,
+    "max_g": 9.5,
+    "min_g": -3.5,
+    "max_aoa_deg": 35,
+    "roll_rate_deg": 280,
+    "pitch_rate_deg": 30,
+    "yaw_rate_deg": 12,
+    "control_response": 6.8,
+    "stability": 0.95,
+    "fly_by_wire": true,
+    "max_speed_kmh": 2414,
+    "vne_kmh": 2600,
+    "stall_speed_kmh": 210,
+    "takeoff_speed_kmh": 250,
+    "landing_speed_kmh": 230,
+    "service_ceiling_m": 20000,
+    "has_gear": true,
+    "has_hook": true,
+    "has_afterburner": true,
+    "health": 130,
+    "gun": {
+        "weapon": "m61a1",
+        "ammo": 480,
+        "muzzles": [
+            [
+                1.2,
+                0.6,
+                -4.8
+            ]
+        ]
+    },
+    "flares": 120,
+    "hardpoints": 8,
+    "default_loadout": "stealth_air",
+    "loadouts": {
+        "stealth_air": [
+            {
+                "weapon": "aim120c",
+                "count": 6
+            },
+            {
+                "weapon": "aim9x",
+                "count": 2
+            }
+        ],
+        "air_superiority": [
+            {
+                "weapon": "aim120c",
+                "count": 6
+            },
+            {
+                "weapon": "aim9x",
+                "count": 2
+            }
+        ],
+        "strike": [
+            {
+                "weapon": "aim120c",
+                "count": 2
+            },
+            {
+                "weapon": "aim9x",
+                "count": 2
+            },
+            {
+                "weapon": "gbu12",
+                "count": 4
+            }
+        ],
+        "mixed": [
+            {
+                "weapon": "aim120c",
+                "count": 4
+            },
+            {
+                "weapon": "aim9x",
+                "count": 2
+            },
+            {
+                "weapon": "gbu12",
+                "count": 2
+            }
+        ]
+    }
+}

@@ -1,0 +1,139 @@
+{
+    "id": "mirage2000",
+    "name": "Mirage 2000-5",
+    "short_name": "Mirage 2000",
+    "category": "multirole",
+    "nation": "France",
+    "era": "modern",
+    "description": "French tailless delta multirole fighter with fly-by-wire agility. Armed with twin DEFA 30mm cannons and versatile MICA missiles.",
+    "model": "",
+    "model_scale": 1.0,
+    "model_rotation_deg": [
+        0,
+        0,
+        0
+    ],
+    "model_offset": [
+        0,
+        0,
+        0
+    ],
+    "cockpit_eye": [
+        0.0,
+        0.75,
+        -3.5
+    ],
+    "chase_distance": 16.5,
+    "chase_height": 3.4,
+    "length": 14.36,
+    "wing_span": 9.13,
+    "hit_radius": 5.8,
+    "engine": "jet",
+    "engine_sound": "engine_jet",
+    "mass_empty": 7500,
+    "mass_fuel": 3160,
+    "fuel_burn_dry": 1.1,
+    "fuel_burn_ab": 5.2,
+    "thrust_dry": 64300,
+    "thrust_ab": 95100,
+    "thrust_altitude_lapse": 0.62,
+    "engine_spool_s": 2.9,
+    "prop_power_kw": 0,
+    "prop_efficiency": 0.0,
+    "wing_area": 41.0,
+    "cl0": 0.05,
+    "cl_alpha": 4.2,
+    "cl_max": 1.5,
+    "alpha_stall_deg": 28,
+    "cd0": 0.011,
+    "induced_k": 0.13,
+    "cd_wave_mach": 0.92,
+    "cd_wave_max": 0.012,
+    "cd_gear": 0.02,
+    "cd_airbrake": 0.06,
+    "side_force": 1.2,
+    "max_g": 9.0,
+    "min_g": -3.2,
+    "max_aoa_deg": 28,
+    "roll_rate_deg": 270,
+    "pitch_rate_deg": 26,
+    "yaw_rate_deg": 10,
+    "control_response": 6.0,
+    "stability": 0.96,
+    "fly_by_wire": true,
+    "max_speed_kmh": 2336,
+    "vne_kmh": 2500,
+    "stall_speed_kmh": 220,
+    "takeoff_speed_kmh": 270,
+    "landing_speed_kmh": 250,
+    "service_ceiling_m": 17060,
+    "has_gear": true,
+    "has_hook": true,
+    "has_afterburner": true,
+    "health": 100,
+    "gun": {
+        "weapon": "defa554",
+        "ammo": 250,
+        "muzzles": [
+            [
+                -0.6,
+                -0.4,
+                -3.0
+            ],
+            [
+                0.6,
+                -0.4,
+                -3.0
+            ]
+        ]
+    },
+    "flares": 60,
+    "hardpoints": 9,
+    "default_loadout": "air_superiority",
+    "loadouts": {
+        "air_superiority": [
+            {
+                "weapon": "mica_em",
+                "count": 4
+            },
+            {
+                "weapon": "magic2",
+                "count": 2
+            }
+        ],
+        "interceptor": [
+            {
+                "weapon": "mica_em",
+                "count": 2
+            },
+            {
+                "weapon": "mica_ir",
+                "count": 2
+            },
+            {
+                "weapon": "magic2",
+                "count": 2
+            }
+        ],
+        "strike": [
+            {
+                "weapon": "magic2",
+                "count": 2
+            },
+            {
+                "weapon": "mk82",
+                "count": 4
+            }
+        ],
+        "precision": [
+            {
+                "weapon": "magic2",
+                "count": 2
+            },
+            {
+                "weapon": "gbu12",
+                "count": 2
+            }
+        ]
+    }
+}

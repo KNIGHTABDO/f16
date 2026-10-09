@@ -1,0 +1,108 @@
+{
+    "id": "p51d",
+    "name": "P-51D Mustang",
+    "short_name": "P-51D",
+    "category": "prop",
+    "nation": "USA",
+    "era": "ww2",
+    "description": "Legendary long-range piston fighter powered by the Packard Merlin V-12 engine. Outstanding speed, range, and high-altitude escort performance.",
+    "model": "",
+    "model_scale": 1.0,
+    "model_rotation_deg": [
+        0,
+        0,
+        0
+    ],
+    "model_offset": [
+        0,
+        0,
+        0
+    ],
+    "cockpit_eye": [
+        0.0,
+        0.55,
+        -0.8
+    ],
+    "chase_distance": 13.0,
+    "chase_height": 2.8,
+    "length": 9.83,
+    "wing_span": 11.28,
+    "hit_radius": 4.5,
+    "engine": "prop",
+    "engine_sound": "engine_prop",
+    "mass_empty": 3465,
+    "mass_fuel": 1000,
+    "fuel_burn_dry": 0.12,
+    "fuel_burn_ab": 0.12,
+    "thrust_dry": 0,
+    "thrust_ab": 0,
+    "thrust_altitude_lapse": 0.8,
+    "engine_spool_s": 2.0,
+    "prop_power_kw": 1300,
+    "prop_efficiency": 0.82,
+    "wing_area": 21.83,
+    "cl0": 0.08,
+    "cl_alpha": 4.8,
+    "cl_max": 1.45,
+    "alpha_stall_deg": 18,
+    "cd0": 0.01261,
+    "induced_k": 0.05,
+    "cd_wave_mach": 0.7,
+    "cd_wave_max": 0.05,
+    "cd_gear": 0.03,
+    "cd_airbrake": 0.05,
+    "side_force": 1.2,
+    "max_g": 8.0,
+    "min_g": -3.0,
+    "max_aoa_deg": 18,
+    "roll_rate_deg": 140,
+    "pitch_rate_deg": 22,
+    "yaw_rate_deg": 12,
+    "control_response": 4.5,
+    "stability": 1.15,
+    "fly_by_wire": false,
+    "max_speed_kmh": 703,
+    "vne_kmh": 810,
+    "stall_speed_kmh": 160,
+    "takeoff_speed_kmh": 180,
+    "landing_speed_kmh": 170,
+    "service_ceiling_m": 12800,
+    "has_gear": true,
+    "has_hook": false,
+    "has_afterburner": false,
+    "health": 80,
+    "gun": {
+        "weapon": "m2_50cal",
+        "ammo": 1880,
+        "muzzles": [
+            [
+                -2.5,
+                0.0,
+                -1.0
+            ],
+            [
+                2.5,
+                0.0,
+                -1.0
+            ]
+        ]
+    },
+    "flares": 0,
+    "hardpoints": 2,
+    "default_loadout": "escort",
+    "loadouts": {
+        "escort": [],
+        "fighter_bomber": [
+            {
+                "weapon": "mk82",
+                "count": 2
+            }
+        ],
+        "rockets": [
+            {
+                "weapon": "hydra70",
+                "count": 10
+            }
+        ]
+    }
+}

@@ -1,0 +1,138 @@
+{
+    "id": "su57",
+    "name": "Su-57 Felon",
+    "short_name": "Su-57",
+    "category": "fighter",
+    "nation": "Russia",
+    "era": "fifth_gen",
+    "description": "Fifth-generation stealth multirole fighter equipped with 3D thrust vectoring. Supercruise capable with extreme post-stall supermaneuverability.",
+    "model": "",
+    "model_scale": 1.0,
+    "model_rotation_deg": [
+        0,
+        0,
+        0
+    ],
+    "model_offset": [
+        0,
+        0,
+        0
+    ],
+    "cockpit_eye": [
+        0.0,
+        0.85,
+        -4.8
+    ],
+    "chase_distance": 22.0,
+    "chase_height": 4.5,
+    "length": 19.8,
+    "wing_span": 14.0,
+    "hit_radius": 7.8,
+    "engine": "jet",
+    "engine_sound": "engine_jet",
+    "mass_empty": 18000,
+    "mass_fuel": 10300,
+    "fuel_burn_dry": 2.2,
+    "fuel_burn_ab": 11.0,
+    "thrust_dry": 186200,
+    "thrust_ab": 294200,
+    "thrust_altitude_lapse": 0.68,
+    "engine_spool_s": 2.6,
+    "prop_power_kw": 0,
+    "prop_efficiency": 0.0,
+    "wing_area": 78.8,
+    "cl0": 0.06,
+    "cl_alpha": 4.6,
+    "cl_max": 1.7,
+    "alpha_stall_deg": 35,
+    "cd0": 0.011,
+    "induced_k": 0.11,
+    "cd_wave_mach": 0.94,
+    "cd_wave_max": 0.0168,
+    "cd_gear": 0.02,
+    "cd_airbrake": 0.06,
+    "side_force": 1.3,
+    "max_g": 9.5,
+    "min_g": -3.5,
+    "max_aoa_deg": 35,
+    "roll_rate_deg": 270,
+    "pitch_rate_deg": 30,
+    "yaw_rate_deg": 14,
+    "control_response": 6.5,
+    "stability": 0.95,
+    "fly_by_wire": true,
+    "max_speed_kmh": 2600,
+    "vne_kmh": 2750,
+    "stall_speed_kmh": 210,
+    "takeoff_speed_kmh": 250,
+    "landing_speed_kmh": 230,
+    "service_ceiling_m": 20000,
+    "has_gear": true,
+    "has_hook": false,
+    "has_afterburner": true,
+    "health": 140,
+    "gun": {
+        "weapon": "gsh301",
+        "ammo": 150,
+        "muzzles": [
+            [
+                1.2,
+                0.2,
+                -4.5
+            ]
+        ]
+    },
+    "flares": 120,
+    "hardpoints": 10,
+    "default_loadout": "air_superiority",
+    "loadouts": {
+        "stealth_air": [
+            {
+                "weapon": "r77",
+                "count": 4
+            },
+            {
+                "weapon": "r73",
+                "count": 2
+            }
+        ],
+        "air_superiority": [
+            {
+                "weapon": "r77",
+                "count": 6
+            },
+            {
+                "weapon": "r73",
+                "count": 4
+            }
+        ],
+        "strike": [
+            {
+                "weapon": "r73",
+                "count": 2
+            },
+            {
+                "weapon": "r77",
+                "count": 2
+            },
+            {
+                "weapon": "kh29",
+                "count": 2
+            }
+        ],
+        "multirole": [
+            {
+                "weapon": "r77",
+                "count": 4
+            },
+            {
+                "weapon": "r73",
+                "count": 2
+            },
+            {
+                "weapon": "kh25",
+                "count": 2
+            }
+        ]
+    }
+}

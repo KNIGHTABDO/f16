@@ -1,0 +1,126 @@
+{
+    "id": "ah64",
+    "name": "AH-64D Apache Longbow",
+    "short_name": "AH-64",
+    "category": "helicopter",
+    "nation": "USA",
+    "era": "modern",
+    "description": "Twin-turboshaft attack helicopter featuring a mast-mounted fire-control radar. Armed with Hellfire anti-armor missiles and a 30mm chain gun.",
+    "model": "",
+    "model_scale": 1.0,
+    "model_rotation_deg": [
+        0,
+        0,
+        0
+    ],
+    "model_offset": [
+        0,
+        0,
+        0
+    ],
+    "cockpit_eye": [
+        0.0,
+        0.6,
+        -3.2
+    ],
+    "chase_distance": 18.0,
+    "chase_height": 3.5,
+    "length": 17.73,
+    "wing_span": 14.63,
+    "hit_radius": 6.5,
+    "engine": "jet",
+    "engine_sound": "engine_heli",
+    "mass_empty": 5165,
+    "mass_fuel": 1108,
+    "fuel_burn_dry": 0.25,
+    "fuel_burn_ab": 0.25,
+    "thrust_dry": 26000,
+    "thrust_ab": 0,
+    "thrust_altitude_lapse": 0.8,
+    "engine_spool_s": 2.5,
+    "prop_power_kw": 0,
+    "prop_efficiency": 0.0,
+    "wing_area": 168.0,
+    "cl0": 0.2,
+    "cl_alpha": 3.0,
+    "cl_max": 2.2,
+    "alpha_stall_deg": 35,
+    "cd0": 0.04256,
+    "induced_k": 0.08,
+    "cd_wave_mach": 0.5,
+    "cd_wave_max": 0.08,
+    "cd_gear": 0.02,
+    "cd_airbrake": 0.05,
+    "side_force": 1.8,
+    "max_g": 3.5,
+    "min_g": -0.5,
+    "max_aoa_deg": 35,
+    "roll_rate_deg": 90,
+    "pitch_rate_deg": 40,
+    "yaw_rate_deg": 45,
+    "control_response": 5.0,
+    "stability": 1.2,
+    "fly_by_wire": true,
+    "max_speed_kmh": 293,
+    "vne_kmh": 365,
+    "stall_speed_kmh": 40,
+    "takeoff_speed_kmh": 50,
+    "landing_speed_kmh": 45,
+    "service_ceiling_m": 6400,
+    "has_gear": true,
+    "has_hook": false,
+    "has_afterburner": false,
+    "health": 120,
+    "gun": {
+        "weapon": "m230",
+        "ammo": 1200,
+        "muzzles": [
+            [
+                0.0,
+                -1.2,
+                -2.5
+            ]
+        ]
+    },
+    "flares": 60,
+    "hardpoints": 6,
+    "default_loadout": "anti_armor",
+    "loadouts": {
+        "anti_armor": [
+            {
+                "weapon": "hellfire",
+                "count": 16
+            }
+        ],
+        "cas": [
+            {
+                "weapon": "hellfire",
+                "count": 8
+            },
+            {
+                "weapon": "hydra70",
+                "count": 38
+            }
+        ],
+        "rockets": [
+            {
+                "weapon": "hydra70",
+                "count": 76
+            }
+        ],
+        "mixed": [
+            {
+                "weapon": "hellfire",
+                "count": 8
+            },
+            {
+                "weapon": "hydra70",
+                "count": 19
+            },
+            {
+                "weapon": "aim9x",
+                "count": 2
+            }
+        ]
+    }
+}

@@ -1,0 +1,134 @@
+{
+    "id": "ja37",
+    "name": "Saab JA 37 Viggen",
+    "short_name": "JA 37",
+    "category": "interceptor",
+    "nation": "Sweden",
+    "era": "cold_war",
+    "description": "Swedish canard delta interceptor designed for short runway dispersal operations. Fitted with a powerful afterburning turbofan with thrust reverser.",
+    "model": "",
+    "model_scale": 1.0,
+    "model_rotation_deg": [
+        0,
+        0,
+        0
+    ],
+    "model_offset": [
+        0,
+        0,
+        0
+    ],
+    "cockpit_eye": [
+        0.0,
+        0.8,
+        -3.8
+    ],
+    "chase_distance": 18.0,
+    "chase_height": 3.8,
+    "length": 16.4,
+    "wing_span": 10.6,
+    "hit_radius": 6.5,
+    "engine": "jet",
+    "engine_sound": "engine_jet",
+    "mass_empty": 9500,
+    "mass_fuel": 4500,
+    "fuel_burn_dry": 1.3,
+    "fuel_burn_ab": 6.9,
+    "thrust_dry": 72100,
+    "thrust_ab": 125000,
+    "thrust_altitude_lapse": 0.65,
+    "engine_spool_s": 3.0,
+    "prop_power_kw": 0,
+    "prop_efficiency": 0.0,
+    "wing_area": 46.0,
+    "cl0": 0.05,
+    "cl_alpha": 4.3,
+    "cl_max": 1.55,
+    "alpha_stall_deg": 28,
+    "cd0": 0.01104,
+    "induced_k": 0.125,
+    "cd_wave_mach": 0.9,
+    "cd_wave_max": 0.017,
+    "cd_gear": 0.022,
+    "cd_airbrake": 0.065,
+    "side_force": 1.2,
+    "max_g": 8.5,
+    "min_g": -3.0,
+    "max_aoa_deg": 28,
+    "roll_rate_deg": 220,
+    "pitch_rate_deg": 24,
+    "yaw_rate_deg": 10,
+    "control_response": 5.8,
+    "stability": 1.05,
+    "fly_by_wire": false,
+    "max_speed_kmh": 2231,
+    "vne_kmh": 2400,
+    "stall_speed_kmh": 220,
+    "takeoff_speed_kmh": 250,
+    "landing_speed_kmh": 230,
+    "service_ceiling_m": 18000,
+    "has_gear": true,
+    "has_hook": false,
+    "has_afterburner": true,
+    "health": 115,
+    "gun": {
+        "weapon": "mauser_bk27",
+        "ammo": 150,
+        "muzzles": [
+            [
+                0.0,
+                -0.6,
+                -2.5
+            ]
+        ]
+    },
+    "flares": 48,
+    "hardpoints": 7,
+    "default_loadout": "air_superiority",
+    "loadouts": {
+        "air_superiority": [
+            {
+                "weapon": "aim7m",
+                "count": 2
+            },
+            {
+                "weapon": "rb74",
+                "count": 4
+            }
+        ],
+        "interceptor": [
+            {
+                "weapon": "aim120c",
+                "count": 2
+            },
+            {
+                "weapon": "rb74",
+                "count": 4
+            }
+        ],
+        "strike": [
+            {
+                "weapon": "rb74",
+                "count": 2
+            },
+            {
+                "weapon": "mk82",
+                "count": 4
+            }
+        ],
+        "cas": [
+            {
+                "weapon": "rb74",
+                "count": 2
+            },
+            {
+                "weapon": "hydra70",
+                "count": 38
+            },
+            {
+                "weapon": "mk82",
+                "count": 2
+            }
+        ]
+    }
+}

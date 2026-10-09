@@ -1,0 +1,103 @@
+{
+    "id": "bf109",
+    "name": "Messerschmitt Bf 109 K-4",
+    "short_name": "Bf 109",
+    "category": "prop",
+    "nation": "Germany",
+    "era": "ww2",
+    "description": "Final wartime production variant of the iconic German fighter. Features incredible climb rates and high-altitude energy fighting power.",
+    "model": "",
+    "model_scale": 1.0,
+    "model_rotation_deg": [
+        0,
+        0,
+        0
+    ],
+    "model_offset": [
+        0,
+        0,
+        0
+    ],
+    "cockpit_eye": [
+        0.0,
+        0.48,
+        -0.6
+    ],
+    "chase_distance": 12.5,
+    "chase_height": 2.6,
+    "length": 8.95,
+    "wing_span": 9.92,
+    "hit_radius": 4.2,
+    "engine": "prop",
+    "engine_sound": "engine_prop",
+    "mass_empty": 2670,
+    "mass_fuel": 350,
+    "fuel_burn_dry": 0.12,
+    "fuel_burn_ab": 0.12,
+    "thrust_dry": 0,
+    "thrust_ab": 0,
+    "thrust_altitude_lapse": 0.8,
+    "engine_spool_s": 2.0,
+    "prop_power_kw": 1470,
+    "prop_efficiency": 0.83,
+    "wing_area": 16.05,
+    "cl0": 0.08,
+    "cl_alpha": 4.8,
+    "cl_max": 1.48,
+    "alpha_stall_deg": 18,
+    "cd0": 0.0185,
+    "induced_k": 0.052,
+    "cd_wave_mach": 0.7,
+    "cd_wave_max": 0.05,
+    "cd_gear": 0.03,
+    "cd_airbrake": 0.05,
+    "side_force": 1.2,
+    "max_g": 8.0,
+    "min_g": -3.0,
+    "max_aoa_deg": 18,
+    "roll_rate_deg": 110,
+    "pitch_rate_deg": 24,
+    "yaw_rate_deg": 12,
+    "control_response": 4.8,
+    "stability": 1.15,
+    "fly_by_wire": false,
+    "max_speed_kmh": 710,
+    "vne_kmh": 820,
+    "stall_speed_kmh": 165,
+    "takeoff_speed_kmh": 185,
+    "landing_speed_kmh": 175,
+    "service_ceiling_m": 12500,
+    "has_gear": true,
+    "has_hook": false,
+    "has_afterburner": false,
+    "health": 75,
+    "gun": {
+        "weapon": "mg151",
+        "ammo": 300,
+        "muzzles": [
+            [
+                0.0,
+                0.2,
+                -1.8
+            ]
+        ]
+    },
+    "flares": 0,
+    "hardpoints": 2,
+    "default_loadout": "interceptor",
+    "loadouts": {
+        "interceptor": [],
+        "fighter_bomber": [
+            {
+                "weapon": "fab250",
+                "count": 1
+            }
+        ],
+        "strike": [
+            {
+                "weapon": "fab250",
+                "count": 1
+            }
+        ]
+    }
+}
