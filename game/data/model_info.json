@@ -3120,5 +3120,695 @@
       }
     },
     "triangles": 21503
+  },
+  "a10c": {
+    "source": "https://github.com/l0k1/A-10 (Models/A-10-model.xml, Models/A10-004-015l3.ac, Models/A-10-000.png, Models/A-10-000B.png; fetched with tools/ghget.py)",
+    "license": "GPL-2.0 (COPYING in repo)",
+    "scale_fix": 1.0,
+    "origin": "center",
+    "size_m": {
+      "span": 17.904,
+      "height": 3.74,
+      "length": 16.255
+    },
+    "cockpit_eye": [
+      0.0,
+      0.673,
+      -4.518
+    ],
+    "wingtips": [
+      [
+        -8.904,
+        -0.403,
+        0.653
+      ],
+      [
+        8.904,
+        -0.403,
+        0.653
+      ]
+    ],
+    "nozzles": [
+      {
+        "pos": [
+          0.0,
+          -0.059,
+          5.587
+        ],
+        "radius": 0.446
+      }
+    ],
+    "muzzles": [],
+    "gear_nodes": [
+      "gear_UC_LeftWHousingSide_details",
+      "gear_UC_LeftWHousingSide",
+      "gear_UC_LeftWHousingTop",
+      "gear_UC_LeftWHousingECM",
+      "gear_UC_LeftWSponson",
+      "gear_UC_LeftECMCanisters",
+      "gear_UC_LeftMainJack_Top",
+      "gear_UC_LeftWHousingDoor",
+      "gear_UC_LeftMainTop_details",
+      "gear_UC_LeftFrontMainUpperDamper",
+      "gear_UC_LeftMainTop_details",
+      "gear_UC_LeftMainTop",
+      "gear_UC_LeftAftMainUpperDamper",
+      "gear_UC_LeftWHousingDoor_Lower",
+      "gear_UC_LeftMainTopJShaft",
+      "gear_UC_LeftWHousingDoorJonction",
+      "gear_UC_LeftMainJack_Bottom",
+      "gear_UC_LeftMainBottom",
+      "gear_UC_LeftFrontMainLowerDamper",
+      "gear_UC_LeftAftMainLowerDamper",
+      "gear_UC_LeftTyre",
+      "gear_UC_Left_DoorLower",
+      "gear_UC_RightECMCanisters",
+      "gear_UC_RightWSponson",
+      "gear_UC_RightWHousingECM",
+      "gear_UC_RightWHousingTop",
+      "gear_UC_RightWHousingSide",
+      "gear_UC_RightWHousingSide_details",
+      "gear_UC_RightMainJack_Top",
+      "gear_UC_RightWHousingDoor",
+      "gear_UC_RightMainTop_details",
+      "gear_UC_RightFrontMainUpperDamper",
+      "gear_UC_RightMainTop_details",
+      "gear_UC_RightMainTop",
+      "gear_UC_RightAftMainUpperDamper",
+      "gear_UC_RightWHousingDoor_Lower",
+      "gear_UC_RightMainTopJShaft",
+      "gear_UC_RightWHousingDoorJonction",
+      "gear_UC_RightMainJack_Bottom",
+      "gear_UC_RightMainBottom",
+      "gear_UC_RightFrontMainLowerDamper",
+      "gear_UC_RightAftMainLowerDamper",
+      "gear_UC_RightTyre",
+      "gear_UC_Right_DoorLower",
+      "gear_UC_NoseWheelDoorFront",
+      "gear_UC_NFD_Arm",
+      "gear_UC_NoseWheelDoorRear",
+      "gear_UC_NoseWhell_details",
+      "gear_UC_NoseWell",
+      "gear_UC_NoseWhell_details_balast",
+      "gear_UC_NFD_assembly",
+      "gear_UC_NFD_lock_0",
+      "gear_UC_NFD_lock_1",
+      "gear_UC_NFD_main_axis",
+      "gear_UC_NFD_secondary_axis",
+      "gear_UC_NFD_rod",
+      "gear_UC_NoseStrutUpperBrace",
+      "gear_UC_NoseStrutTop_light_on",
+      "gear_UC_NoseStrutTop_light_off",
+      "gear_UC_NoseStrutTop_details",
+      "gear_UC_NoseStrutUpperBraceShaft",
+      "gear_UC_NoseStrutTop",
+      "gear_UC_NoseDoorJonction",
+      "gear_UC_NoseStrutSteerRing",
+      "gear_UC_NoseStrutUpperDamper",
+      "gear_UC_NoseStrutSteerRing_light_off",
+      "gear_UC_NoseStrutSteerRing_light_on",
+      "gear_UC_NoseStrutSteerRing_details",
+      "gear_UC_NoseStrutBottom",
+      "gear_UC_NoseStrutBottom_details",
+      "gear_UC_NoseStrutLowerDamper",
+      "gear_UC_NoseTyre"
+    ],
+    "control_surfaces": {
+      "aileron_l": {
+        "hinge": [
+          -6.329,
+          -0.587,
+          0.939
+        ],
+        "axis": [
+          0.9935,
+          -0.1142,
+          0.0
+        ],
+        "max_deg": 30.0,
+        "property": "surface-positions/left-aileron-pos-norm"
+      },
+      "aileron_r": {
+        "hinge": [
+          6.329,
+          -0.587,
+          0.939
+        ],
+        "axis": [
+          0.9935,
+          0.1142,
+          0.0
+        ],
+        "max_deg": 30.0,
+        "property": "surface-positions/right-aileron-pos-norm"
+      },
+      "canopy": {
+        "hinge": [
+          0.0,
+          0.516,
+          -3.311
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 35.0,
+        "property": "canopy/position-norm"
+      },
+      "canopy_frame": {
+        "hinge": [
+          0.0,
+          0.516,
+          -3.311
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 35.0,
+        "property": "canopy/position-norm"
+      },
+      "elevator_l": {
+        "hinge": [
+          -1.762,
+          -0.484,
+          7.309
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 30.0,
+        "property": "surface-positions/left-elevator-pos-norm"
+      },
+      "elevator_r": {
+        "hinge": [
+          1.762,
+          -0.484,
+          7.309
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 30.0,
+        "property": "surface-positions/right-elevator-pos-norm"
+      },
+      "flap_l": {
+        "hinge": [
+          -2.863,
+          -0.784,
+          0.939
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 30.0,
+        "property": "surface-positions/left-flap-pos-norm"
+      },
+      "flap_r": {
+        "hinge": [
+          2.862,
+          -0.784,
+          0.939
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 30.0,
+        "property": "surface-positions/left-flap-pos-norm"
+      },
+      "gear_UC_LeftAftMainLowerDamper": {
+        "hinge": [
+          0.0,
+          -1.492,
+          -1.531
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[1]/compression-norm"
+      },
+      "gear_UC_LeftAftMainUpperDamper": {
+        "hinge": [
+          0.0,
+          -1.448,
+          -0.981
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[1]/compression-norm"
+      },
+      "gear_UC_LeftFrontMainLowerDamper": {
+        "hinge": [
+          0.0,
+          -1.259,
+          -1.551
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[1]/compression-norm"
+      },
+      "gear_UC_LeftFrontMainUpperDamper": {
+        "hinge": [
+          0.0,
+          -1.204,
+          -1.003
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[1]/compression-norm"
+      },
+      "gear_UC_LeftMainJack_Bottom": {
+        "hinge": [
+          0.0,
+          -1.415,
+          -0.551
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_UC_LeftMainJack_Top": {
+        "hinge": [
+          0.0,
+          -1.337,
+          0.399
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_UC_LeftTyre": {
+        "hinge": [
+          0.0,
+          -1.374,
+          -1.529
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 17.0,
+        "property": "gear/gear[1]/rollspeed-ms"
+      },
+      "gear_UC_LeftWHousingDoor": {
+        "hinge": [
+          0.0,
+          -1.386,
+          0.419
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_UC_LeftWHousingDoorJonction": {
+        "hinge": [
+          0.0,
+          -1.206,
+          -0.515
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_UC_Left_DoorLower": {
+        "hinge": [
+          0.0,
+          -1.492,
+          -1.531
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[1]/compression-norm"
+      },
+      "gear_UC_NFD_Arm": {
+        "hinge": [
+          0.532,
+          -1.148,
+          -7.961
+        ],
+        "axis": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_UC_NFD_main_axis": {
+        "hinge": [
+          0.0,
+          -0.766,
+          -6.108
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_UC_NFD_rod": {
+        "hinge": [
+          0.0,
+          -0.915,
+          -6.108
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_UC_NFD_secondary_axis": {
+        "hinge": [
+          0.0,
+          -0.915,
+          -6.108
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_UC_NoseDoorJonction": {
+        "hinge": [
+          0.0,
+          -1.045,
+          -5.634
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_UC_NoseStrutLowerDamper": {
+        "hinge": [
+          0.0,
+          -0.968,
+          -6.286
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[0]/compression-norm"
+      },
+      "gear_UC_NoseStrutUpperBrace": {
+        "hinge": [
+          0.0,
+          -1.22,
+          -4.578
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_UC_NoseStrutUpperBraceShaft": {
+        "hinge": [
+          0.0,
+          -1.083,
+          -5.588
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_UC_NoseStrutUpperDamper": {
+        "hinge": [
+          0.0,
+          -1.034,
+          -5.865
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[0]/compression-norm"
+      },
+      "gear_UC_NoseTyre": {
+        "hinge": [
+          0.0,
+          -0.836,
+          -6.735
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 30.0,
+        "property": "gear/gear/rollspeed-ms"
+      },
+      "gear_UC_NoseWheelDoorRear": {
+        "hinge": [
+          0.0,
+          -1.251,
+          -4.435
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_UC_RightAftMainLowerDamper": {
+        "hinge": [
+          0.0,
+          -1.492,
+          -1.531
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[2]/compression-norm"
+      },
+      "gear_UC_RightAftMainUpperDamper": {
+        "hinge": [
+          0.0,
+          -1.448,
+          -0.981
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[2]/compression-norm"
+      },
+      "gear_UC_RightFrontMainLowerDamper": {
+        "hinge": [
+          0.0,
+          -1.259,
+          -1.551
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[2]/compression-norm"
+      },
+      "gear_UC_RightFrontMainUpperDamper": {
+        "hinge": [
+          0.0,
+          -1.204,
+          -1.003
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[2]/compression-norm"
+      },
+      "gear_UC_RightMainJack_Bottom": {
+        "hinge": [
+          0.0,
+          -1.415,
+          -0.551
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_UC_RightMainJack_Top": {
+        "hinge": [
+          0.0,
+          -1.337,
+          0.399
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_UC_RightTyre": {
+        "hinge": [
+          0.0,
+          -1.374,
+          -1.529
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 17.0,
+        "property": "gear/gear[2]/rollspeed-ms"
+      },
+      "gear_UC_RightWHousingDoor": {
+        "hinge": [
+          0.0,
+          -1.386,
+          0.419
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_UC_RightWHousingDoorJonction": {
+        "hinge": [
+          0.0,
+          -1.206,
+          -0.515
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_UC_Right_DoorLower": {
+        "hinge": [
+          0.0,
+          -1.492,
+          -1.531
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[2]/compression-norm"
+      },
+      "rudder_l": {
+        "hinge": [
+          -2.87,
+          1.124,
+          7.032
+        ],
+        "axis": [
+          0.0,
+          -0.995,
+          0.0995
+        ],
+        "max_deg": 20.0,
+        "property": "surface-positions/rudder-pos-norm"
+      },
+      "rudder_r": {
+        "hinge": [
+          2.87,
+          1.124,
+          7.032
+        ],
+        "axis": [
+          0.0,
+          -0.995,
+          0.0995
+        ],
+        "max_deg": 20.0,
+        "property": "surface-positions/rudder-pos-norm"
+      }
+    },
+    "triangles": 47986
   }
 }
