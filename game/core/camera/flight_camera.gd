@@ -148,7 +148,9 @@ func _process(delta: float) -> void:
 	if _target == null or not is_instance_valid(_target):
 		_cam.position = Vector3.ZERO
 		return
-	var xf := _target.get_global_transform_interpolated()
+	# The plain transform, not the physics-interpolated one: after spawn_in_air the interpolated origin
+	# sat ~56 km from the body, so the chase camera followed empty air and the aircraft was a speck.
+	var xf := _target.global_transform
 	var k_pos := 1.0 - exp(-CHASE_POS_RATE * delta)
 	var k_rot := 1.0 - exp(-CHASE_ROT_RATE * delta)
 	var speed := _target.get_speed_kmh()
