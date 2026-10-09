@@ -25,6 +25,12 @@ var _respawn_left := -1.0  ## s until respawn while the player is down, -1 while
 
 
 func _ready() -> void:
+	if world == null:
+		world = get_node_or_null("World")
+	if world == null:
+		world = Node3D.new()
+		world.name = "World"
+		add_child(world)
 	WorldOrigin.reset()
 	GameState.level = self
 	map_id = GameState.selected_map
@@ -60,8 +66,13 @@ func _ready() -> void:
 	layer.add_child(overlay)
 
 	if Settings.radio_enabled:
-		Radio.cockpit_fx = Settings.radio_cockpit_fx
+		Radio.cockpit_fx = (camera.get_mode() == FlightCamera.Mode.COCKPIT) and Settings.radio_cockpit_fx
 		Radio.start()
+
+
+func _exit_tree() -> void:
+	if Settings.radio_enabled:
+		Radio.stop()
 
 
 func _process(delta: float) -> void:
@@ -96,6 +107,11 @@ func _build_environment() -> void:
 	env.sky = sky
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
 	env.ambient_light_sky_contribution = 1.0
+	env.fog_enabled = true
+	env.fog_light_color = HAZE
+	env.fog_density = 0.000018
+	env.fog_sky_affect = 0.5
+	env.fog_aerial_perspective = 0.6
 	var world_env := WorldEnvironment.new()
 	world_env.name = "WorldEnvironment"
 	world_env.environment = env

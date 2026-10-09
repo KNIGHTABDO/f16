@@ -58,6 +58,7 @@ var _model: Node3D
 var _root_xf := Transform3D.IDENTITY  ## model root transform (scale, rotation, offset) into body space
 var _info: Dictionary = {}  ## model_info.json entry for this aircraft
 var _parts: Array[Part] = []
+var _scale_gear_nodes: Array[Node3D] = []
 var _fx: Node3D
 var _plumes: Array[AfterburnerFx] = []
 var _glows: Array[MeshInstance3D] = []
@@ -115,9 +116,21 @@ func stop_effects() -> void:
 	set_state(0.0, false)
 
 
+## Returns whether the gear is down, delegated to the bound aircraft (true if unlinked).
+func is_gear_down() -> bool:
+	if _aircraft != null and is_instance_valid(_aircraft):
+		return _aircraft.is_gear_down()
+	return true
+
+
 func _process(delta: float) -> void:
 	_time += delta
-	_ab_mix = move_toward(_ab_mix, 1.0 if afterburner else 0.0, delta * AB_EASE_RATE)
+	var target_ab := 0.0
+	if afterburner:
+		target_ab = 1.0
+	elif throttle > 0.85:
+		target_ab = (throttle - 0.85) / 0.15 * 0.25
+	_ab_mix = move_toward(_ab_mix, target_ab, delta * AB_EASE_RATE)
 	var mach := 0.0
 	var g := 1.0
 	var aoa := 0.0
@@ -133,6 +146,8 @@ func _process(delta: float) -> void:
 	var lit := _ab_mix > 0.01
 	for glow in _glows:
 		glow.visible = lit
+		if lit:
+			glow.scale = Vector3.ONE * lerpf(0.85, 1.15, _ab_mix)
 	if _tail_light != null:
 		_tail_light.visible = fmod(_time, STROBE_PERIOD) < STROBE_ON
 	_update_parts(delta)
@@ -193,71 +208,102 @@ func _to_body(p: Vector3) -> Vector3:
 
 func _collect_parts() -> void:
 	var cs := _cs()
-	if cs.is_empty():
-		return
-	# Control surfaces: rotation axis from the model; dir from the aft (+Z) point moving toward the
-	# trailing-edge direction that a positive command should produce.
-	var surfaces := {
-		"aileron_l": ["roll", Vector3(0, -1, 0)],
-		"aileron_r": ["roll", Vector3(0, 1, 0)],
-		"elevator_l": ["pitch", Vector3(0, -1, 0)],
-		"elevator_r": ["pitch", Vector3(0, -1, 0)],
-		"rudder": ["yaw", Vector3(-1, 0, 0)],
-		"flap_l": ["flap", Vector3(0, -1, 0)],
-		"flap_r": ["flap", Vector3(0, -1, 0)],
-		"speedbrake_l": ["brake", Vector3(0, 1, 0)],
-		"speedbrake_r": ["brake", Vector3(0, 1, 0)],
-	}
-	for key in surfaces:
-		var node := _model.find_child(key, true, false) as Node3D
-		if node == null or not cs.has(key):
-			continue
-		var info: Dictionary = cs[key]
-		var p := Part.new()
-		p.node = node
-		p.role = ROLE_SURFACE
-		p.cmd = surfaces[key][0]
-		p.pivot = _vec(info["hinge"])
-		p.rest_pos = p.pivot
-		p.axis = _vec(info["axis"]).normalized()
-		p.max_rad = deg_to_rad(float(info["max_deg"]))
-		p.dir = _sign_for(p.axis, Vector3(0, 0, 1), surfaces[key][1])
-		_parts.append(p)
+	if not cs.is_empty():
+		# Control surfaces: rotation axis from the model; dir from the aft (+Z) point moving toward the
+		# trailing-edge direction that a positive command should produce.
+		# When no dedicated ailerons exist, elevators/stabilators act as tailerons (combining pitch and roll).
+		var has_ailerons := cs.has("aileron_l") or cs.has("aileron_r") or cs.has("aileron")
+		var elev_l_cmd := "pitch" if has_ailerons else "taileron_l"
+		var elev_r_cmd := "pitch" if has_ailerons else "taileron_r"
 
-	# Gear legs. Each chain shares one direction, taken from its reference (wheel or lower brace).
-	var front_axis := _vec(cs["gear_FrontUpperStrut"]["axis"]).normalized() if cs.has("gear_FrontUpperStrut") else Vector3.RIGHT
-	var front_pivot := _hinge("gear_FrontUpperStrut")
-	_add_chain(["gear_FrontAftStrut", "gear_FrontUpperStrut", "gear_FrontLowerStrut", "gear_FrontTire"],
-			"gear_FrontTire", front_pivot, front_axis, 112.0, FRONT_RETRACT_DESIRED,
-			["gear_FrontLowerStrut", "gear_FrontTire"])
-	for side in ["Left", "Right"]:
-		var lower := "gear_%sLowerMainStrut" % side
-		var axis := _vec(cs[lower]["axis"]).normalized() if cs.has(lower) else Vector3.RIGHT
-		_add_chain(["gear_%sLowerMainStrut" % side, "gear_%sUpperMainStrut" % side, "gear_%sMainTire" % side],
-				"gear_%sMainTire" % side, _hinge(lower), axis, 95.0, FRONT_RETRACT_DESIRED, [])
-		_add_chain(["gear_%sInnerStrut" % side], "gear_%sInnerStrut" % side,
-				_hinge("gear_%sInnerStrut" % side), _axis_of("gear_%sInnerStrut" % side), 20.0,
-				INNER_OUTER_DESIRED, [])
-		var outer := "gear_%sOuterLowerStrut" % side
-		_add_chain(["gear_%sOuterLowerStrut" % side, "gear_%sOuterUpperStrut" % side], outer,
-				_hinge(outer), _axis_of(outer), 10.0, INNER_OUTER_DESIRED, [])
+		var surfaces := {
+			"aileron_l": ["roll", Vector3(0, -1, 0)],
+			"aileron_r": ["roll", Vector3(0, 1, 0)],
+			"elevator_l": [elev_l_cmd, Vector3(0, 1, 0)],
+			"elevator_r": [elev_r_cmd, Vector3(0, 1, 0)],
+			"stabilator_l": [elev_l_cmd, Vector3(0, 1, 0)],
+			"stabilator_r": [elev_r_cmd, Vector3(0, 1, 0)],
+			"elevon_l": ["taileron_l", Vector3(0, 1, 0)],
+			"elevon_r": ["taileron_r", Vector3(0, 1, 0)],
+			"rudder": ["yaw", Vector3(1, 0, 0)],
+			"rudder_l": ["yaw", Vector3(1, 0, 0)],
+			"rudder_r": ["yaw", Vector3(1, 0, 0)],
+			"flap_l": ["flap", Vector3(0, -1, 0)],
+			"flap_r": ["flap", Vector3(0, -1, 0)],
+			"speedbrake": ["brake", Vector3(0, 1, 0)],
+			"speedbrake_l": ["brake", Vector3(0, 1, 0)],
+			"speedbrake_r": ["brake", Vector3(0, 1, 0)],
+			"canopy": ["canopy", Vector3(0, 1, 0)],
+		}
+		for key in surfaces:
+			var node := _model.find_child(key, true, false) as Node3D
+			if node == null or not cs.has(key):
+				continue
+			var info: Dictionary = cs[key]
+			var p := Part.new()
+			p.node = node
+			p.role = ROLE_SURFACE
+			p.cmd = surfaces[key][0]
+			p.pivot = _vec(info["hinge"])
+			p.rest_pos = p.pivot
+			p.axis = _vec(info["axis"]).normalized()
+			p.max_rad = deg_to_rad(float(info["max_deg"]))
+			p.dir = _sign_for(p.axis, Vector3(0, 0, 1), surfaces[key][1])
+			_parts.append(p)
 
-	# Gear doors swing open at mid-transit and are shut when the gear is fully up or down.
-	for door in ["gear_ExternalFrontGearDoor", "gear_InternalFrontGearDoor",
-			"gear_ExternalLeftMainDoor", "gear_ExternalRightMainDoor"]:
-		var node := _model.find_child(door, true, false) as Node3D
-		if node == null or not cs.has(door):
-			continue
-		var hinge := _hinge(door)
-		var p := Part.new()
-		p.node = node
-		p.role = ROLE_DOOR
-		p.pivot = hinge
-		p.rest_pos = hinge
-		p.axis = _axis_of(door)
-		p.max_rad = DOOR_OPEN_RAD
-		p.dir = _sign_for(p.axis, _local_center(node), Vector3(signf(hinge.x), -1.0, 0.0))
-		_parts.append(p)
+		# Gear legs. Each chain shares one direction, taken from its reference (wheel or lower brace).
+		var front_axis := _vec(cs["gear_FrontUpperStrut"]["axis"]).normalized() if cs.has("gear_FrontUpperStrut") else Vector3.RIGHT
+		var front_pivot := _hinge("gear_FrontUpperStrut")
+		_add_chain(["gear_FrontAftStrut", "gear_FrontUpperStrut", "gear_FrontLowerStrut", "gear_FrontTire"],
+				"gear_FrontTire", front_pivot, front_axis, 112.0, FRONT_RETRACT_DESIRED,
+				["gear_FrontLowerStrut", "gear_FrontTire"])
+		for side in ["Left", "Right"]:
+			var lower := "gear_%sLowerMainStrut" % side
+			var axis := _vec(cs[lower]["axis"]).normalized() if cs.has(lower) else Vector3.RIGHT
+			_add_chain(["gear_%sLowerMainStrut" % side, "gear_%sUpperMainStrut" % side, "gear_%sMainTire" % side],
+					"gear_%sMainTire" % side, _hinge(lower), axis, 95.0, FRONT_RETRACT_DESIRED, [])
+			_add_chain(["gear_%sInnerStrut" % side], "gear_%sInnerStrut" % side,
+					_hinge("gear_%sInnerStrut" % side), _axis_of("gear_%sInnerStrut" % side), 20.0,
+					INNER_OUTER_DESIRED, [])
+			var outer := "gear_%sOuterLowerStrut" % side
+			_add_chain(["gear_%sOuterLowerStrut" % side, "gear_%sOuterUpperStrut" % side], outer,
+					_hinge(outer), _axis_of(outer), 10.0, INNER_OUTER_DESIRED, [])
+
+		# Gear doors swing open at mid-transit and are shut when the gear is fully up or down.
+		for door in ["gear_ExternalFrontGearDoor", "gear_InternalFrontGearDoor",
+				"gear_ExternalLeftMainDoor", "gear_ExternalRightMainDoor"]:
+			var node := _model.find_child(door, true, false) as Node3D
+			if node == null or not cs.has(door):
+				continue
+			var hinge := _hinge(door)
+			var p := Part.new()
+			p.node = node
+			p.role = ROLE_DOOR
+			p.pivot = hinge
+			p.rest_pos = hinge
+			p.axis = _axis_of(door)
+			p.max_rad = DOOR_OPEN_RAD
+			p.dir = _sign_for(p.axis, _local_center(node), Vector3(signf(hinge.x), -1.0, 0.0))
+			_parts.append(p)
+
+	# Collect any gear nodes without hinge data to scale-hide them smoothly over the gear cycle.
+	_scale_gear_nodes.clear()
+	var animated_nodes: Array[Node3D] = []
+	for p in _parts:
+		animated_nodes.append(p.node)
+	if _info.has("gear_nodes"):
+		for gname in _info["gear_nodes"]:
+			var node := _model.find_child(String(gname), true, false) as Node3D
+			if node != null and not animated_nodes.has(node) and not _scale_gear_nodes.has(node):
+				_scale_gear_nodes.append(node)
+	for child in _model.find_children("gear_*", "Node3D", true, false):
+		var node := child as Node3D
+		if node != null and not animated_nodes.has(node) and not _scale_gear_nodes.has(node):
+			_scale_gear_nodes.append(node)
+	for child in _model.find_children("Gear_*", "Node3D", true, false):
+		var node := child as Node3D
+		if node != null and not animated_nodes.has(node) and not _scale_gear_nodes.has(node):
+			_scale_gear_nodes.append(node)
 
 
 func _axis_of(node_name: String) -> Vector3:
@@ -307,17 +353,30 @@ func _cmd_value(cmd: String, g: float) -> float:
 			return clampf(_aircraft.controls.pitch, -1.0, 1.0)
 		"yaw":
 			return clampf(_aircraft.controls.yaw, -1.0, 1.0)
+		"taileron_l":
+			return clampf(_aircraft.controls.pitch - _aircraft.controls.roll, -1.0, 1.0)
+		"taileron_r":
+			return clampf(_aircraft.controls.pitch + _aircraft.controls.roll, -1.0, 1.0)
 		"brake":
 			return _aircraft.flight.airbrake_pos
+		"canopy":
+			return 0.0
 		"flap":
-			return FLAP_CMD_GEAR * g
+			var low_speed := 0.0
+			if _aircraft.data != null and _aircraft.data.stall_speed_ms() > 0.0:
+				low_speed = clampf(1.0 - _aircraft.flight.ias_ms / (_aircraft.data.stall_speed_ms() * 1.5), 0.0, 1.0)
+			return FLAP_CMD_GEAR * maxf(g, low_speed)
 	return 0.0
 
 
 func _update_parts(delta: float) -> void:
+	var g := _gear_pos()
+	for node in _scale_gear_nodes:
+		if is_instance_valid(node):
+			node.scale = Vector3.ONE * clampf(g, 0.0, 1.0)
+			node.visible = g > 0.005
 	if _parts.is_empty():
 		return
-	var g := _gear_pos()
 	var k := 1.0 - exp(-SURFACE_RATE * delta)
 	var steer_in := 0.0
 	if _aircraft != null and is_instance_valid(_aircraft) and _aircraft.is_on_ground():
@@ -453,11 +512,20 @@ func _build_effects() -> void:
 	var left_tip := Vector3(-0.5 * s, 0.05, -0.02 * l)
 	var right_tip := Vector3(0.5 * s, 0.05, -0.02 * l)
 	var tail := Vector3(0.0, 0.30 * l + 0.05, 0.44 * l)
-	if has_info and _info.has("wingtips"):
-		var tips: Array = _info["wingtips"]
-		left_tip = _to_body(_vec(tips[0]))
-		right_tip = _to_body(_vec(tips[1]))
-		tail = _to_body(Vector3(0.0, 2.3, 6.4))
+	if has_info:
+		if _info.has("wingtips"):
+			var tips: Array = _info["wingtips"]
+			left_tip = _to_body(_vec(tips[0]))
+			right_tip = _to_body(_vec(tips[1]))
+		var cs := _cs()
+		if cs.has("rudder"):
+			var rh: Vector3 = _vec(cs["rudder"]["hinge"])
+			tail = _to_body(Vector3(0.0, rh.y + 0.9, rh.z + 0.2))
+		elif cs.has("rudder_l"):
+			var rh: Vector3 = _vec(cs["rudder_l"]["hinge"])
+			tail = _to_body(Vector3(0.0, rh.y + 0.9, rh.z + 0.2))
+		else:
+			tail = _to_body(Vector3(0.0, 2.3, 6.4))
 	var red := _mesh_inst(lamp_mesh, _lamp(RED_COLOR), _fx, left_tip, Vector3.ZERO)
 	var green := _mesh_inst(lamp_mesh, _lamp(GREEN_COLOR), _fx, right_tip, Vector3.ZERO)
 	red.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF

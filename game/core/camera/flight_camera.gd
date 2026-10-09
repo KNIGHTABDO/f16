@@ -49,6 +49,8 @@ func _ready() -> void:
 	add_to_group("floating")
 	physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF  # moved every render frame in _process
 	Sfx.set_cockpit(mode == Mode.COCKPIT)
+	if Radio != null and Settings.radio_cockpit_fx:
+		Radio.cockpit_fx = (mode == Mode.COCKPIT)
 	_cam = Camera3D.new()
 	_cam.name = "Camera"
 	_cam.near = NEAR
@@ -71,6 +73,8 @@ func _exit_tree() -> void:
 		Events.explosion.disconnect(_on_explosion)
 	if mode == Mode.COCKPIT:
 		Sfx.set_cockpit(false)
+		if Radio != null:
+			Radio.cockpit_fx = false
 
 
 func get_camera() -> Camera3D:
@@ -110,6 +114,8 @@ func set_mode(m: Mode) -> void:
 	_orbit_yaw = 0.0
 	_orbit_pitch = 0.25
 	Sfx.set_cockpit(mode == Mode.COCKPIT)
+	if Radio != null and Settings.radio_cockpit_fx:
+		Radio.cockpit_fx = (mode == Mode.COCKPIT)
 
 
 func set_look_back(on: bool) -> void:

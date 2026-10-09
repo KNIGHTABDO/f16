@@ -40,6 +40,9 @@ var _free_timer := WRECK_FREE_DELAY
 var _rng := RandomNumberGenerator.new()
 var _engine_audio: EngineAudio  ## engine layers, child of this node; freed on destruction
 var _contrail: Contrail  ## condensation trail, a child of the World node (floating), retired on destruction
+var _prev_gear_down := true
+var _gear_initialized := false
+var _stall_audio: AudioStreamPlayer
 
 
 ## Builds an aircraft from data/aircraft/<aircraft_id>.json. Returns null if the data cannot be loaded.
@@ -98,6 +101,10 @@ func _ready() -> void:
 	_engine_audio.name = "EngineAudio"
 	add_child(_engine_audio)
 	_engine_audio.setup(self)
+	if is_player:
+		_stall_audio = Sfx.loop_2d("stall_warning", -60.0)
+	_prev_gear_down = flight.gear_down
+	_gear_initialized = true
 	var world := get_parent()
 	if world != null:
 		_contrail = Contrail.new()
@@ -107,6 +114,10 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
+	if _stall_audio != null and is_instance_valid(_stall_audio):
+		_stall_audio.stop()
+		_stall_audio.queue_free()
+		_stall_audio = null
 	if _contrail != null and is_instance_valid(_contrail):
 		_contrail.retire()
 
@@ -145,6 +156,15 @@ func _physics_process(delta: float) -> void:
 	_sync_transform()
 	visual.set_state(controls.throttle, flight.afterburner)
 	_check_overg(delta)
+	if _gear_initialized and flight.gear_down != _prev_gear_down:
+		if is_player:
+			Sfx.play_2d("gear")
+		else:
+			Sfx.play_3d("gear", global_position)
+		_prev_gear_down = flight.gear_down
+	if _stall_audio != null:
+		var target_db := 0.0 if flight.stalled else -60.0
+		_stall_audio.volume_db = lerpf(_stall_audio.volume_db, target_db, 1.0 - exp(-12.0 * delta))
 	if _contrail != null:
 		_contrail.update(flight.mach, flight.g_load, flight.alpha, position.y)
 	if weapons and weapons.has_method("tick"):
@@ -299,6 +319,10 @@ func _die(killer: Node) -> void:
 		_rng.randf_range(-2.0, 2.0), _rng.randf_range(-1.0, 1.0), _rng.randf_range(-3.0, 3.0))
 	_smoke.emitting = true
 	visual.stop_effects()
+	if _stall_audio != null and is_instance_valid(_stall_audio):
+		_stall_audio.stop()
+		_stall_audio.queue_free()
+		_stall_audio = null
 	if _engine_audio != null:
 		_engine_audio.queue_free()
 		_engine_audio = null
