@@ -6,7 +6,8 @@ extends Node
 ## - height.r16  : N*N little-endian uint16, row-major, row 0 = north edge, col 0 = west edge.
 ##                 height_m = height_min + v / 65535 * (height_max - height_min)
 ## - landcover.u8: L*L uint8 land-cover classes (Ground.LC_*), same orientation.
-## - color.png   : satellite colour for the whole map (used by the terrain shader only).
+## - color.jpg   : satellite colour for the whole map (`color_file` in the map JSON). Terrain decodes it and
+##                 downscales it per quality preset; the terrain shader is the only reader.
 ## Map metadata in res://data/maps/<id>.json (see Ground.load_map).
 
 const LC_WATER := 0
