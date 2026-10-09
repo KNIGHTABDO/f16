@@ -20,6 +20,9 @@ var _hud: CanvasLayer
 var _pause_menu: PauseMenu
 var _spawn: Dictionary = {}  ## map spawn {x, z, alt_m, heading_deg} in world coordinates
 var _respawn_left := -1.0  ## s until respawn while the player is down, -1 while flying
+var _plan: Dictionary = {}  ## sortie plan from MissionGenerator: start, units, objectives inputs
+var _mission: Mission
+var _overlay: MissionOverlay
 
 
 func _ready() -> void:
@@ -55,6 +58,7 @@ func _ready() -> void:
 	terrain = built["terrain"]
 	ocean = built["ocean"]
 
+	_plan = _make_plan()
 	_spawn_player()
 
 	_hud = CanvasLayer.new()
@@ -64,6 +68,7 @@ func _ready() -> void:
 	hud.name = "HUD"
 	hud.setup(controller, camera)
 	_hud.add_child(hud)
+	_start_mission()
 
 	if Settings.radio_enabled:
 		Radio.cockpit_fx = (camera.get_mode() == FlightCamera.Mode.COCKPIT) and Settings.radio_cockpit_fx
@@ -83,6 +88,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _process(delta: float) -> void:
 	WorldBuilder.update(delta)
+	if _mission != null:
+		_mission.update(delta)
 	if controller.pause_requested:
 		controller.pause_requested = false
 		_open_pause()
@@ -122,11 +129,12 @@ func _spawn_player() -> void:
 		push_error("level: could not create aircraft '%s'" % GameState.selected_aircraft)
 		return
 	world.add_child(a)
-	var x := float(_spawn.get("x", 0.0))
-	var z := float(_spawn.get("z", 0.0))
-	var alt := float(_spawn.get("alt_m", 2000.0))
-	var heading := float(_spawn.get("heading_deg", 0.0))
-	a.spawn_in_air(WorldOrigin.to_local(Vector3(x, alt, z)), heading, SPAWN_KMH)
+	var start := _start_spec()
+	var local: Vector3 = WorldOrigin.to_local(start["pos"])
+	if bool(start.get("ground", false)):
+		a.spawn_on_ground(local, float(start["heading"]))
+	else:
+		a.spawn_in_air(local, float(start["heading"]), float(start["speed_kmh"]))
 	a.destroyed.connect(_on_player_destroyed)
 	player = a
 	GameState.player = a
@@ -136,4 +144,66 @@ func _spawn_player() -> void:
 
 
 func _on_player_destroyed(_killer: Node) -> void:
-	_respawn_left = RESPAWN_DELAY
+	if _mission == null or _mission.on_player_destroyed():
+		_respawn_left = RESPAWN_DELAY
+
+
+## The sortie plan for the selected mode, map and difficulty. The seed is kept in GameState so RETRY flies it again.
+func _make_plan() -> Dictionary:
+	var seed_value := GameState.mission_seed
+	if seed_value < 0:
+		seed_value = randi()
+	GameState.mission_seed = seed_value
+	var carrier: Node = null
+	for child in world.get_children():
+		if child is Carrier:
+			carrier = child
+			break
+	return MissionGenerator.generate(GameState.selected_mode, map_id, GameState.difficulty, GameState.mission_options,
+			seed_value, {"carrier": carrier})
+
+
+## Where the player starts: the plan's start when there is one, otherwise the map spawn point in the air.
+func _start_spec() -> Dictionary:
+	var start: Dictionary = _plan.get("start", {})
+	if start.has("pos"):
+		return start
+	return {
+		"pos": Vector3(float(_spawn.get("x", 0.0)), float(_spawn.get("alt_m", 2000.0)), float(_spawn.get("z", 0.0))),
+		"heading": float(_spawn.get("heading_deg", 0.0)),
+		"speed_kmh": SPAWN_KMH,
+		"ground": false,
+	}
+
+
+## Creates the mission, spawns its units and starts the clock. The loading screen goes away first, so an
+## immediate result is not hidden behind it.
+func _start_mission() -> void:
+	_mission = Mission.create(String(_plan["mode"]))
+	add_child(_mission)
+	var spawned := MissionSpawner.spawn_all(world, _plan)
+	_mission.finished.connect(_on_mission_finished)
+	_mission.setup(self, _plan, spawned)
+	_overlay = MissionOverlay.new()
+	_overlay.name = "MissionOverlay"
+	_hud.add_child(_overlay)
+	_overlay.setup(self, _mission)
+	LoadingScreen.dismiss()
+	_mission.begin()
+
+
+func _on_mission_finished(result: Dictionary) -> void:
+	GameState.record_result(result)
+	_open_results(result)
+
+
+func _open_results(result: Dictionary) -> void:
+	var screen := ResultsScreen.new()
+	screen.name = "ResultsScreen"
+	screen.setup(result)
+	screen.retry.connect(GameState.restart_mission)
+	screen.next_mission.connect(GameState.next_mission)
+	screen.menu.connect(GameState.goto_menu)
+	screen.process_mode = Node.PROCESS_MODE_ALWAYS
+	_hud.add_child(screen)
+	get_tree().paused = true
