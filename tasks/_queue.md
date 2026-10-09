@@ -22,10 +22,10 @@ Run Gemini AND Haiku (job.sh haiku = Haiku 5.5 xhigh) in parallel; both are prim
 - [x] perf-ipa | haiku | tasks/perf_ipa.md | main | needs: - (parallel)
 - [x] smoke-v1 | haiku | tasks/smoke_v1.md | .claude/worktrees/hk-smoke-v1 | needs: all features (merged)
 - [x] fix-v1 | haiku | tasks/fix_v1.md | .claude/worktrees/hk-fix-v1 | needs: smoke-v1
-- [~] vis-world | haiku | tasks/vis_world.md | .claude/worktrees/hk-vis-world | needs: -
+- [x] vis-world | haiku | tasks/vis_world.md | .claude/worktrees/hk-vis-world | needs: - (merged)
 - [~] vis-hud | haiku | tasks/vis_hud.md | .claude/worktrees/hk-vis-hud | needs: -
 - [~] smoke-v2 | haiku | tasks/smoke_v2.md | .claude/worktrees/hk-smoke-v2 | needs: -
-- [~] polish-a | haiku | tasks/polish_a.md | .claude/worktrees/hk-polish-a | needs: -
+- [x] polish-a | haiku | tasks/polish_a.md | .claude/worktrees/hk-polish-a | needs: - (merged)
 - [~] f35-compress | gemini | tasks/f35_compress.md | main | needs: -
 - [ ] playtest-v1 | lead | full headless playthrough, fix, tag v1.0 | main | needs: everything
 
