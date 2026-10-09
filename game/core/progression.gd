@@ -66,7 +66,7 @@ func entry(aircraft_id: String) -> Dictionary:
 
 
 func is_unlocked(aircraft_id: String) -> bool:
-	if Settings.unlock_all_aircraft:
+	if Settings.unlock_all_aircraft or _config.get("all_unlocked", false):
 		return true
 	if aircraft_id in _config.get("starter_aircraft", []):
 		return true

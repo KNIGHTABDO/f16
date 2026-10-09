@@ -1,5 +1,6 @@
 {
 	"version": 1,
+	"all_unlocked": true,
 	"starter_aircraft": ["f16c", "mirage2000", "p51d"],
 	"price_overrides": {
 		"mig21bis": 20000

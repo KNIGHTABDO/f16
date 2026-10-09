@@ -168,7 +168,7 @@ var gameplay_tutorial_hints := true
 
 ## 9. Account / Data
 var pilot_callsign := "Viper"
-var unlock_all_aircraft := false
+var unlock_all_aircraft := true
 
 
 func _ready() -> void:
@@ -471,7 +471,7 @@ func reset_to_defaults() -> void:
 	gameplay_tutorial_hints = true
 
 	pilot_callsign = "Viper"
-	unlock_all_aircraft = false
+	unlock_all_aircraft = true
 
 	save()
 	apply()
