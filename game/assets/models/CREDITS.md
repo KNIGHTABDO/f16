@@ -12,6 +12,7 @@ fetched by `tools/fetch_models.sh` into `tools/cache/models/` (not committed).
 | ef2000 | Eurofighter EF-2000 Typhoon | https://github.com/IAHM-COL/EF-Typhoon | GPL-2.0 (LICENSE file in repo) | `aircraft/ef2000/ef2000.glb` |
 | f35a | Lockheed Martin F-35A | https://github.com/PaoloAmoroso/F-35A | GPL-2.0 (LICENSE file in repo) | `aircraft/f35a/f35a.glb` |
 | su27 | Sukhoi Su-27SK (Flanker) | https://github.com/yanes19/SU-27SK | GPL-2.0 (LICENSE header) | `aircraft/su27/su27.glb` |
+| mig29 | Mikoyan MiG-29 (FlightGear FGAddon) | https://svn.code.sf.net/p/flightgear/fgaddon/trunk/Aircraft/Mig-29 | GPL-2.0 (COPYING.txt) | `aircraft/mig29/mig29.glb` |
 
 The GLB files embed the original FlightGear textures. The original authors are listed in each
 repository's history and README. Models are redistributed under the GPL with the licence
