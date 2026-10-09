@@ -12,6 +12,7 @@ const RTB_RADIUS_M := 1800.0  ## a touchdown counts within this distance of a ba
 const RTB_MAX_KMH := 150.0  ## speed under which a touchdown counts as a landing
 const RTB_BONUS := 1500.0  ## score bonus for landing at base, before the difficulty multiplier
 const GROUND_PTS := 150.0  ## points for a ground kill the mode did not track
+const CRASH_CREDIT_S := 10.0  ## s after the player last engaged an aircraft that still counts as the player's kill if it crashes
 const MODE_DIR := "res://core/missions/modes/"
 const FALLBACK_MODE := "free_flight"
 
@@ -42,6 +43,7 @@ var _victory_reason := ""
 var _bases: Array = []  ## friendly runway midpoints, world Vector3
 var _points := {}  ## instance id -> points for a tracked target
 var _down := {}  ## instance id -> true once the target has been destroyed
+var _engaged := {}  ## instance id -> elapsed s of the player's last shot at, or hit on, the aircraft
 var _signature := ""
 var _last_shot_frame := -1
 var _last_hit_frame := -1
@@ -261,7 +263,8 @@ func _handle_down(node: Node, killer: Node, air: bool) -> void:
 	if _down.has(id):
 		return
 	_down[id] = true
-	var by_player := _is_player(killer)
+	# A crash has no killer. It counts for the player only if the player was engaging the aircraft just before it went in.
+	var by_player := _is_player(killer) or (killer == null and air and _recently_engaged(id))
 	if by_player:
 		var pts := _points_for(node, float(tuning.get("air_kill", 500.0)) if air else GROUND_PTS)
 		if air:
@@ -275,6 +278,7 @@ func _handle_down(node: Node, killer: Node, air: bool) -> void:
 func _on_damaged(victim: Node3D, _amount: float, source: Node) -> void:
 	if over or not _is_player(source) or _is_player(victim):
 		return
+	_engaged[victim.get_instance_id()] = elapsed
 	var frame := Engine.get_physics_frames()
 	if frame != _last_hit_frame:
 		_last_hit_frame = frame
@@ -285,10 +289,18 @@ func _on_damaged(victim: Node3D, _amount: float, source: Node) -> void:
 func _on_weapon_fired(shooter: Node3D, _weapon_id: String) -> void:
 	if over or not _is_player(shooter):
 		return
+	var weapons := (shooter as Aircraft).weapons as WeaponSystem
+	var target: Node3D = weapons.get_target() if weapons != null else null
+	if target != null:
+		_engaged[target.get_instance_id()] = elapsed
 	var frame := Engine.get_physics_frames()
 	if frame != _last_shot_frame:
 		_last_shot_frame = frame
 		shots += 1
+
+
+func _recently_engaged(id: int) -> bool:
+	return _engaged.has(id) and elapsed - float(_engaged[id]) <= CRASH_CREDIT_S
 
 
 func _points_for(node: Node, fallback: float) -> float:
