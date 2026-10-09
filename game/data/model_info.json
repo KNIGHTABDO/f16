@@ -1,0 +1,1267 @@
+{
+  "f16c": {
+    "source": "https://github.com/NikolaiVChr/f16 (Models/F-16.xml, f16.ac, nozzle-GE.ac, irst-b60.ac)",
+    "license": "GPL-2.0",
+    "scale_fix": 1.0,
+    "origin": "center",
+    "size_m": {
+      "span": 9.589,
+      "height": 5.167,
+      "length": 14.307
+    },
+    "cockpit_eye": [
+      0.0,
+      0.128,
+      -2.916
+    ],
+    "wingtips": [
+      [
+        -4.795,
+        -0.632,
+        2.0
+      ],
+      [
+        4.795,
+        -0.632,
+        1.996
+      ]
+    ],
+    "nozzles": [
+      {
+        "pos": [
+          -0.0,
+          -0.666,
+          6.594
+        ],
+        "radius": 0.469
+      }
+    ],
+    "muzzles": [
+      [
+        -0.9,
+        0.6,
+        -4.5
+      ]
+    ],
+    "gear_nodes": [
+      "gear_ExternalFrontGearDoor",
+      "gear_ExternalLeftMainDoor",
+      "gear_ExternalRightMainDoor",
+      "gear_InternalFrontGearDoor",
+      "gear_FrontAftStrut",
+      "gear_FrontLowerStrut",
+      "gear_FrontTire",
+      "gear_FrontUpperStrut",
+      "gear_LeftLowerMainStrut",
+      "gear_LeftInnerStrut",
+      "gear_LeftOuterLowerStrut",
+      "gear_LeftOuterUpperStrut",
+      "gear_LeftMainTire",
+      "gear_LeftUpperMainStrut",
+      "gear_RightLowerMainStrut",
+      "gear_RightInnerStrut",
+      "gear_RightOuterLowerStrut",
+      "gear_RightOuterUpperStrut",
+      "gear_RightMainTire",
+      "gear_RightUpperMainStrut"
+    ],
+    "control_surfaces": {
+      "aileron_l": {
+        "hinge": [
+          -4.06,
+          -0.611,
+          3.053
+        ],
+        "axis": [
+          0.9873,
+          0.038,
+          -0.1543
+        ],
+        "max_deg": 21.5,
+        "property": "surface-positions/left-aileron-pos-norm"
+      },
+      "aileron_r": {
+        "hinge": [
+          4.087,
+          -0.612,
+          3.058
+        ],
+        "axis": [
+          -0.9873,
+          0.038,
+          -0.1543
+        ],
+        "max_deg": 21.5,
+        "property": "surface-positions/right-aileron-pos-norm"
+      },
+      "canopy": {
+        "hinge": [
+          -0.0,
+          -0.066,
+          -2.041
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 30.0,
+        "property": "canopy/position-norm"
+      },
+      "elevator_l": {
+        "hinge": [
+          -1.965,
+          -0.766,
+          5.619
+        ],
+        "axis": [
+          -0.9816,
+          -0.1907,
+          0.0
+        ],
+        "max_deg": 57.3,
+        "property": "surface-positions/elevator-pos-norm"
+      },
+      "elevator_r": {
+        "hinge": [
+          1.965,
+          -0.766,
+          5.619
+        ],
+        "axis": [
+          0.9816,
+          -0.1907,
+          0.0
+        ],
+        "max_deg": 57.3,
+        "property": "sim/multiplay/generic/float[4]"
+      },
+      "flap_l": {
+        "hinge": [
+          -2.35,
+          -0.546,
+          2.799
+        ],
+        "axis": [
+          -0.9879,
+          -0.0395,
+          0.1502
+        ],
+        "max_deg": 20.0,
+        "property": "sim/multiplay/generic/float[5]"
+      },
+      "flap_r": {
+        "hinge": [
+          2.35,
+          -0.546,
+          2.799
+        ],
+        "axis": [
+          0.9879,
+          -0.0395,
+          0.1502
+        ],
+        "max_deg": 20.0,
+        "property": "sim/multiplay/generic/float[6]"
+      },
+      "gear_ExternalFrontGearDoor": {
+        "hinge": [
+          0.28,
+          -1.471,
+          -1.241
+        ],
+        "axis": [
+          0.0159,
+          0.0079,
+          0.9998
+        ],
+        "max_deg": 420.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_ExternalLeftMainDoor": {
+        "hinge": [
+          -0.76,
+          -1.096,
+          0.504
+        ],
+        "axis": [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        "max_deg": 460.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_ExternalRightMainDoor": {
+        "hinge": [
+          0.76,
+          -1.096,
+          0.504
+        ],
+        "axis": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "max_deg": 460.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_FrontAftStrut": {
+        "hinge": [
+          -0.0,
+          -1.471,
+          -1.711
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 112.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_FrontLowerStrut": {
+        "hinge": [
+          -0.0,
+          -0.666,
+          -1.711
+        ],
+        "axis": [
+          -0.0,
+          -1.0,
+          -0.0
+        ],
+        "max_deg": 32.0,
+        "property": "sim/multiplay/generic/float[7]"
+      },
+      "gear_FrontTire": {
+        "hinge": [
+          -0.0,
+          -0.666,
+          -1.711
+        ],
+        "axis": [
+          -0.0,
+          -1.0,
+          -0.0
+        ],
+        "max_deg": 32.0,
+        "property": "sim/multiplay/generic/float[7]"
+      },
+      "gear_FrontUpperStrut": {
+        "hinge": [
+          -0.0,
+          -1.471,
+          -1.711
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 112.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_InternalFrontGearDoor": {
+        "hinge": [
+          0.28,
+          -1.471,
+          -1.241
+        ],
+        "axis": [
+          0.0159,
+          0.0079,
+          0.9998
+        ],
+        "max_deg": 420.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_LeftInnerStrut": {
+        "hinge": [
+          -0.41,
+          -1.236,
+          1.259
+        ],
+        "axis": [
+          0.263,
+          -0.2011,
+          -0.9436
+        ],
+        "max_deg": 20.0,
+        "property": "gear/gear[2]/compression-norm"
+      },
+      "gear_LeftLowerMainStrut": {
+        "hinge": [
+          -0.44,
+          -1.326,
+          1.899
+        ],
+        "axis": [
+          -0.8682,
+          0.4961,
+          -0.0
+        ],
+        "max_deg": 95.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_LeftMainTire": {
+        "hinge": [
+          -0.44,
+          -1.326,
+          1.899
+        ],
+        "axis": [
+          -0.8682,
+          0.4961,
+          -0.0
+        ],
+        "max_deg": 95.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_LeftOuterLowerStrut": {
+        "hinge": [
+          -1.1,
+          -2.086,
+          1.819
+        ],
+        "axis": [
+          -0.0995,
+          0.0,
+          0.995
+        ],
+        "max_deg": 10.0,
+        "property": "gear/gear[2]/compression-norm"
+      },
+      "gear_LeftOuterUpperStrut": {
+        "hinge": [
+          -1.1,
+          -2.086,
+          1.819
+        ],
+        "axis": [
+          -0.0995,
+          0.0,
+          0.995
+        ],
+        "max_deg": 10.0,
+        "property": "gear/gear[2]/compression-norm"
+      },
+      "gear_LeftUpperMainStrut": {
+        "hinge": [
+          -0.44,
+          -1.326,
+          1.899
+        ],
+        "axis": [
+          -0.8682,
+          0.4961,
+          -0.0
+        ],
+        "max_deg": 95.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_RightInnerStrut": {
+        "hinge": [
+          0.41,
+          -1.236,
+          1.259
+        ],
+        "axis": [
+          0.263,
+          0.2011,
+          0.9436
+        ],
+        "max_deg": 20.0,
+        "property": "gear/gear[1]/compression-norm"
+      },
+      "gear_RightLowerMainStrut": {
+        "hinge": [
+          0.44,
+          -1.326,
+          1.899
+        ],
+        "axis": [
+          -0.8682,
+          -0.4961,
+          0.0
+        ],
+        "max_deg": 95.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_RightMainTire": {
+        "hinge": [
+          0.44,
+          -1.326,
+          1.899
+        ],
+        "axis": [
+          -0.8682,
+          -0.4961,
+          0.0
+        ],
+        "max_deg": 95.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_RightOuterLowerStrut": {
+        "hinge": [
+          1.1,
+          -2.086,
+          1.819
+        ],
+        "axis": [
+          -0.0995,
+          -0.0,
+          -0.995
+        ],
+        "max_deg": 10.0,
+        "property": "gear/gear[1]/compression-norm"
+      },
+      "gear_RightOuterUpperStrut": {
+        "hinge": [
+          1.1,
+          -2.086,
+          1.819
+        ],
+        "axis": [
+          -0.0995,
+          -0.0,
+          -0.995
+        ],
+        "max_deg": 10.0,
+        "property": "gear/gear[1]/compression-norm"
+      },
+      "gear_RightUpperMainStrut": {
+        "hinge": [
+          0.44,
+          -1.326,
+          1.899
+        ],
+        "axis": [
+          -0.8682,
+          -0.4961,
+          0.0
+        ],
+        "max_deg": 95.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "rudder": {
+        "hinge": [
+          -0.0,
+          1.429,
+          6.174
+        ],
+        "axis": [
+          0.0,
+          0.8369,
+          0.5474
+        ],
+        "max_deg": 30.0,
+        "property": "surface-positions/rudder-pos-norm"
+      },
+      "speedbrake_l": {
+        "hinge": [
+          0.88,
+          -0.516,
+          5.809
+        ],
+        "axis": [
+          -0.999,
+          -0.0454,
+          -0.0
+        ],
+        "max_deg": 60.0,
+        "property": "surface-positions/speedbrake-pos-norm"
+      },
+      "speedbrake_r": {
+        "hinge": [
+          -0.88,
+          -0.516,
+          5.809
+        ],
+        "axis": [
+          -0.999,
+          0.0454,
+          -0.0
+        ],
+        "max_deg": 60.0,
+        "property": "surface-positions/speedbrake-pos-norm"
+      }
+    },
+    "triangles": 19820
+  },
+  "ef2000": {
+    "source": "https://github.com/IAHM-COL/EF-Typhoon (Models/EF-Typhoon.xml, EF-Typhoon.ac)",
+    "license": "GPL-2.0",
+    "scale_fix": 1.0,
+    "origin": "center",
+    "size_m": {
+      "span": 11.234,
+      "height": 5.651,
+      "length": 16.106
+    },
+    "cockpit_eye": [
+      0.0,
+      0.516,
+      -3.534
+    ],
+    "wingtips": [
+      [
+        -5.388,
+        -0.987,
+        4.115
+      ],
+      [
+        5.346,
+        -1.003,
+        3.691
+      ]
+    ],
+    "nozzles": [
+      {
+        "pos": [
+          0.0,
+          -0.743,
+          6.967
+        ],
+        "radius": 0.584
+      }
+    ],
+    "muzzles": [],
+    "gear_nodes": [
+      "gear_gear1_L",
+      "gear_gear2_L",
+      "gear_gear3_L",
+      "gear_gear4_L",
+      "gear_wheel1_L",
+      "gear_wheel2_L",
+      "gear_gear1_R",
+      "gear_gear2_R",
+      "gear_gear3_R",
+      "gear_gear4_R",
+      "gear_wheel1_R",
+      "gear_wheel2_R",
+      "gear_nosegear_1",
+      "gear_nosegear_2",
+      "gear_nosegear3",
+      "gear_nosegear4",
+      "gear_nosewheel",
+      "gear_nosewheel_2",
+      "gear_nosewheel_3",
+      "gear_nosewheel_4",
+      "gear_geardoor1_L",
+      "gear_geardoor1_R",
+      "gear_geardoor2_L",
+      "gear_geardoor2_R",
+      "gear_gearlight_L",
+      "gear_gearlight_R",
+      "gear_nosegeardoor"
+    ],
+    "control_surfaces": {
+      "aileron_l": {
+        "hinge": [
+          -4.333,
+          -1.006,
+          4.225
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 20.0,
+        "property": "surface-positions/left-aileron-pos-norm"
+      },
+      "aileron_r": {
+        "hinge": [
+          4.343,
+          -1.016,
+          4.225
+        ],
+        "axis": [
+          1.0,
+          -0.0,
+          -0.0
+        ],
+        "max_deg": 20.0,
+        "property": "surface-positions/right-aileron-pos-norm"
+      },
+      "canopy": {
+        "hinge": [
+          0.0,
+          0.518,
+          -1.915
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 35.0,
+        "property": "/controls/canopy/position-norm"
+      },
+      "elevator_l": {
+        "hinge": [
+          0.0,
+          -0.554,
+          -5.001
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 20.0,
+        "property": "surface-positions/elevator-pos-norm"
+      },
+      "elevator_r": {
+        "hinge": [
+          0.0,
+          -0.554,
+          -5.001
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 20.0,
+        "property": "surface-positions/elevator-pos-norm"
+      },
+      "gear_geardoor1_L": {
+        "hinge": [
+          -2.157,
+          -1.105,
+          1.431
+        ],
+        "axis": [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_geardoor1_R": {
+        "hinge": [
+          2.157,
+          -1.105,
+          1.431
+        ],
+        "axis": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_geardoor2_L": {
+        "hinge": [
+          -0.458,
+          -1.512,
+          1.34
+        ],
+        "axis": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_geardoor2_R": {
+        "hinge": [
+          0.458,
+          -1.512,
+          1.34
+        ],
+        "axis": [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_gearlight_L": {
+        "hinge": [
+          -2.157,
+          -1.105,
+          1.431
+        ],
+        "axis": [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_gearlight_R": {
+        "hinge": [
+          2.157,
+          -1.105,
+          1.431
+        ],
+        "axis": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_nosegeardoor": {
+        "hinge": [
+          0.181,
+          -1.531,
+          -1.374
+        ],
+        "axis": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "rudder": {
+        "hinge": [
+          0.0,
+          1.321,
+          6.554
+        ],
+        "axis": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 15.0,
+        "property": "surface-positions/rudder-pos-norm"
+      },
+      "speedbrake": {
+        "hinge": [
+          0.0,
+          0.223,
+          -1.54
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 65.0,
+        "property": "surface-positions/speedbrake-pos-norm"
+      }
+    },
+    "triangles": 29902
+  },
+  "f35a": {
+    "source": "https://github.com/PaoloAmoroso/F-35A (Models/F-35A.xml, F-35A.ac)",
+    "license": "GPL-2.0",
+    "scale_fix": 1.0,
+    "origin": "center",
+    "size_m": {
+      "span": 10.75,
+      "height": 4.337,
+      "length": 15.668
+    },
+    "cockpit_eye": [
+      0.0,
+      0.898,
+      -4.748
+    ],
+    "wingtips": [
+      [
+        -3.66,
+        0.274,
+        7.178
+      ],
+      [
+        3.663,
+        0.281,
+        7.176
+      ]
+    ],
+    "muzzles": [],
+    "gear_nodes": [
+      "gear_GearBays",
+      "gear_NoseActuator",
+      "gear_NoseGearBit3",
+      "gear_NoseGearUpperSpring",
+      "gear_NoseLowerSpring",
+      "gear_NoseLowerStrut",
+      "gear_NoseUpperStrut",
+      "gear_NoseWheel",
+      "gear_NoseWheel_001",
+      "gear_PortDoorActuator",
+      "gear_PortFrontGearDoor",
+      "gear_PortFrontGearDoor_001",
+      "gear_PortGearActuator",
+      "gear_PortLowerSpring",
+      "gear_PortLowerStrut",
+      "gear_PortNoseGearDoor",
+      "gear_PortNoseGearDoor_001",
+      "gear_PortRearGearDoor",
+      "gear_PortRearGearDoor_001",
+      "gear_PortSpring3",
+      "gear_PortSpring4",
+      "gear_PortUpperSpring",
+      "gear_PortUpperStrut",
+      "gear_PortWheel",
+      "gear_StarDoorActuator",
+      "gear_StarFrontGearDoor",
+      "gear_StarFrontGearDoor_001",
+      "gear_StarGearActuator",
+      "gear_StarLowerSpring",
+      "gear_StarLowerStrut",
+      "gear_StarNoseGearDoor",
+      "gear_StarNoseGearDoor_001",
+      "gear_StarRearGearDoor",
+      "gear_StarRearGearDoor_001",
+      "gear_StarSpring3",
+      "gear_StarSpring4",
+      "gear_StarUpperSpring",
+      "gear_StarUpperStrut",
+      "gear_StarWheel",
+      "gear_TailhookActuator"
+    ],
+    "control_surfaces": {
+      "aileron_l": {
+        "hinge": [
+          -1.965,
+          0.027,
+          5.029
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 20.0,
+        "property": "sim/multiplay/generic/float[4]"
+      },
+      "aileron_r": {
+        "hinge": [
+          1.968,
+          0.027,
+          5.029
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 20.0,
+        "property": "sim/multiplay/generic/float[4]"
+      },
+      "canopy": {
+        "hinge": [
+          -0.0,
+          0.737,
+          -5.901
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 35.0,
+        "property": "sim/model/door-positions/canopy/position-norm"
+      },
+      "flap_l": {
+        "hinge": [
+          -2.984,
+          -0.013,
+          3.149
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 35.0,
+        "property": "surface-positions/flap-pos-norm"
+      },
+      "flap_r": {
+        "hinge": [
+          3.003,
+          -0.013,
+          3.149
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 35.0,
+        "property": "surface-positions/flap-pos-norm"
+      },
+      "gear_NoseActuator": {
+        "hinge": [
+          -0.0,
+          -0.093,
+          -3.741
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_NoseGearBit3": {
+        "hinge": [
+          -0.0,
+          -0.093,
+          -3.741
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_NoseGearUpperSpring": {
+        "hinge": [
+          -0.0,
+          -0.093,
+          -3.741
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_NoseLowerSpring": {
+        "hinge": [
+          -0.0,
+          -0.093,
+          -3.741
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_NoseLowerStrut": {
+        "hinge": [
+          -0.0,
+          -0.093,
+          -3.741
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_NoseUpperStrut": {
+        "hinge": [
+          -0.0,
+          -0.093,
+          -3.741
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_NoseWheel": {
+        "hinge": [
+          -0.0,
+          -0.093,
+          -3.741
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_NoseWheel_001": {
+        "hinge": [
+          -0.0,
+          -0.093,
+          -3.741
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_PortGearActuator": {
+        "hinge": [
+          -1.964,
+          -0.113,
+          2.532
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_PortLowerSpring": {
+        "hinge": [
+          -1.964,
+          -0.113,
+          2.532
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_PortLowerStrut": {
+        "hinge": [
+          -1.964,
+          -0.113,
+          2.532
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_PortSpring3": {
+        "hinge": [
+          -1.964,
+          -0.113,
+          2.532
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_PortSpring4": {
+        "hinge": [
+          -1.964,
+          -0.113,
+          2.532
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_PortUpperSpring": {
+        "hinge": [
+          -1.964,
+          -0.113,
+          2.532
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_PortUpperStrut": {
+        "hinge": [
+          -1.964,
+          -0.113,
+          2.532
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_PortWheel": {
+        "hinge": [
+          -1.964,
+          -0.113,
+          2.532
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_StarGearActuator": {
+        "hinge": [
+          1.964,
+          -0.113,
+          2.532
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_StarLowerSpring": {
+        "hinge": [
+          1.964,
+          -0.113,
+          2.532
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_StarLowerStrut": {
+        "hinge": [
+          1.964,
+          -0.113,
+          2.532
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_StarSpring3": {
+        "hinge": [
+          1.964,
+          -0.113,
+          2.532
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_StarSpring4": {
+        "hinge": [
+          1.964,
+          -0.113,
+          2.532
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_StarUpperSpring": {
+        "hinge": [
+          1.964,
+          -0.113,
+          2.532
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_StarUpperStrut": {
+        "hinge": [
+          1.964,
+          -0.113,
+          2.532
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_StarWheel": {
+        "hinge": [
+          1.964,
+          -0.113,
+          2.532
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "rudder_l": {
+        "hinge": [
+          -1.76,
+          1.497,
+          5.619
+        ],
+        "axis": [
+          0.0,
+          -1.0,
+          0.0
+        ],
+        "max_deg": 35.0,
+        "property": "surface-positions/rudder-pos-norm"
+      },
+      "rudder_r": {
+        "hinge": [
+          1.74,
+          1.503,
+          5.609
+        ],
+        "axis": [
+          0.0,
+          -1.0,
+          0.0
+        ],
+        "max_deg": 35.0,
+        "property": "surface-positions/rudder-pos-norm"
+      }
+    },
+    "triangles": 56961
+  }
+}
