@@ -21,7 +21,7 @@ void vertex() {
 	v_seed = INSTANCE_CUSTOM.r;
 	vec3 centre = MODEL_MATRIX[3].xyz;
 	// Billboard: the quad faces the camera, centred on the puff.
-	MODELVIEW_MATRIX = VIEW_MATRIX * mat4(CAMERA_MATRIX[0], CAMERA_MATRIX[1], CAMERA_MATRIX[2], vec4(centre, 1.0));
+	MODELVIEW_MATRIX = VIEW_MATRIX * mat4(INV_VIEW_MATRIX[0], INV_VIEW_MATRIX[1], INV_VIEW_MATRIX[2], vec4(centre, 1.0));
 	VERTEX.xy *= r;
 	v_L = (VIEW_MATRIX * vec4(sun_dir, 0.0)).xyz;
 }

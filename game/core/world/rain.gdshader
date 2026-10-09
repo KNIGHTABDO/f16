@@ -18,8 +18,8 @@ void vertex() {
 	vec3 p = mod(INSTANCE_CUSTOM.rgb * box + fall * TIME, box) - box * 0.5;
 	vec3 fdir = normalize(fall);
 	vec3 wpos = (MODEL_MATRIX * vec4(p, 1.0)).xyz;
-	vec3 right = CAMERA_MATRIX[0].xyz;
-	vec3 fwd = CAMERA_MATRIX[2].xyz;
+	vec3 right = INV_VIEW_MATRIX[0].xyz;
+	vec3 fwd = INV_VIEW_MATRIX[2].xyz;
 	// Billboard around the fall axis: quad X = camera right, quad Y = fall direction.
 	MODELVIEW_MATRIX = VIEW_MATRIX * mat4(vec4(right * width, 0.0), vec4(fdir * streak * 0.5, 0.0),
 		vec4(fwd, 0.0), vec4(wpos, 1.0));
