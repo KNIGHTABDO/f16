@@ -1,0 +1,22 @@
+{
+  "maps": [
+    {
+      "id": "gibraltar",
+      "name": "Strait of Gibraltar",
+      "description": "Strait of Gibraltar: Tangier, Tetouan, Chefchaouen and the Rif, Ceuta, Gibraltar, Cadiz, Jerez, Rota, Malaga, the Atlantic and the Mediterranean.",
+      "center_lat": 35.80,
+      "center_lon": -5.55,
+      "size_m": 256000,
+      "spawn": { "lat": 35.80, "lon": -6.20, "alt_m": 2500, "heading_deg": 63 }
+    },
+    {
+      "id": "atlas",
+      "name": "High Atlas",
+      "description": "High Atlas: Marrakech, Jbel Toubkal (4167 m), Ouarzazate and the desert edge.",
+      "center_lat": 31.25,
+      "center_lon": -7.55,
+      "size_m": 256000,
+      "spawn": { "lat": 31.00, "lon": -8.40, "alt_m": 4700, "heading_deg": 55 }
+    }
+  ]
+}
