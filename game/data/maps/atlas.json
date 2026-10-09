@@ -12,7 +12,7 @@
  "height_max": 4150.0,
  "landcover_file": "res://assets/maps/atlas/landcover.u8",
  "landcover_n": 4096,
- "color_file": "res://assets/maps/atlas/color.jpg",
+ "color_file": "res://assets/maps/atlas/color.jpg.bin",
  "airports": [
   {
    "name": "Ben Guerir Air Base",

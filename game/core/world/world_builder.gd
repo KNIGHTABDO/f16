@@ -115,7 +115,18 @@ static func build(world: Node3D, map_id: String, time_of_day: String, weather_na
 	carrier.setup(carrier_pos, 280.0)
 	world.add_child(carrier)
 
+	# 11. Performance: frame-time render scale, live HUD (shown when Settings.show_perf_hud), shader warmup
+	var governor := PerfGovernor.new()
+	governor.name = "PerfGovernor"
+	world.add_child(governor)
+	var hud := PerfHud.new()
+	hud.name = "PerfHud"
+	hud.governor = governor
+	world.add_child(hud)
+	ShaderWarmup.run(world, camera)
+
 	_instance_data = {
+		"governor": governor,
 		"terrain": terrain,
 		"ocean": ocean,
 		"sky": sky,

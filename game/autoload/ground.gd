@@ -6,8 +6,10 @@ extends Node
 ## - height.r16  : N*N little-endian uint16, row-major, row 0 = north edge, col 0 = west edge.
 ##                 height_m = height_min + v / 65535 * (height_max - height_min)
 ## - landcover.u8: L*L uint8 land-cover classes (Ground.LC_*), same orientation.
-## - color.jpg   : satellite colour for the whole map (`color_file` in the map JSON). Terrain decodes it and
-##                 downscales it per quality preset; the terrain shader is the only reader.
+##                 Both are Godot zstd containers in shipped builds (see read_map_bytes); raw files still load.
+## - color.jpg.bin: satellite JPEG for the whole map (`color_file` in the map JSON). Raw, never imported, so it
+##                 is small in the IPA. Terrain decodes it and downscales it per quality preset; UI uses
+##                 get_color_texture().
 ## Map metadata in res://data/maps/<id>.json (see Ground.load_map).
 
 const LC_WATER := 0
@@ -31,6 +33,7 @@ var landcover_n := 0
 var _heights := PackedByteArray()
 var _landcover := PackedByteArray()
 var _height_tex: ImageTexture = null
+var _color_tex: ImageTexture = null
 
 
 func is_loaded() -> bool:
@@ -42,6 +45,17 @@ func get_height_bytes() -> PackedByteArray:
 	return _heights
 
 
+## Reads a map binary. Shipped maps are Godot zstd containers (tools/perf/pack_map_binaries.gd); raw files
+## (the dev test map) are read as they are.
+static func read_map_bytes(path: String) -> PackedByteArray:
+	var f := FileAccess.open_compressed(path, FileAccess.READ, FileAccess.COMPRESSION_ZSTD)
+	if f != null:
+		var data := f.get_buffer(f.get_length())
+		f.close()
+		return data
+	return FileAccess.get_file_as_bytes(path)
+
+
 ## GPU ImageTexture created from _heights (cached, shared by Terrain and Ocean).
 func get_height_texture() -> ImageTexture:
 	if _height_tex == null and height_n > 0 and not _heights.is_empty():
@@ -50,9 +64,22 @@ func get_height_texture() -> ImageTexture:
 	return _height_tex
 
 
+## Satellite colour for UI (minimap), decoded once and capped at 2048 px. Terrain decodes its own copy.
+func get_color_texture() -> ImageTexture:
+	if _color_tex == null and meta.has("color_file"):
+		var img := Image.new()
+		if img.load_jpg_from_buffer(FileAccess.get_file_as_bytes(String(meta.color_file))) == OK:
+			var s := minf(1.0, 2048.0 / maxi(img.get_width(), img.get_height()))
+			if s < 1.0:
+				img.resize(roundi(img.get_width() * s), roundi(img.get_height() * s), Image.INTERPOLATE_LANCZOS)
+			_color_tex = ImageTexture.create_from_image(img)
+	return _color_tex
+
+
 ## Loads data/maps/<id>.json and the binary files it references. Returns false on error.
 func load_map(id: String) -> bool:
 	_height_tex = null
+	_color_tex = null
 	var f := FileAccess.open("res://data/maps/%s.json" % id, FileAccess.READ)
 	if f == null:
 		push_error("Ground: missing map %s" % id)
@@ -65,13 +92,13 @@ func load_map(id: String) -> bool:
 	height_max = float(meta.height_max)
 	height_n = int(meta.height_n)
 	landcover_n = int(meta.get("landcover_n", 0))
-	_heights = FileAccess.get_file_as_bytes(meta.height_file)
+	_heights = read_map_bytes(meta.height_file)
 	if _heights.size() != height_n * height_n * 2:
 		push_error("Ground: height file size mismatch")
 		height_n = 0
 		return false
 	if landcover_n > 0:
-		_landcover = FileAccess.get_file_as_bytes(meta.landcover_file)
+		_landcover = read_map_bytes(meta.landcover_file)
 	return true
 
 

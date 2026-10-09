@@ -35,10 +35,10 @@ const WEATHER := {
 	"haze": {"turb": 3.0, "cover": 0.25, "haze": 4.5},
 }
 const PRESETS := {
-	"low": {"shadows": false, "shadow_dist": 0.0, "glow": false, "radiance": Sky.RADIANCE_SIZE_128},
-	"balanced": {"shadows": true, "shadow_dist": 1500.0, "glow": true, "radiance": Sky.RADIANCE_SIZE_256},
-	"high": {"shadows": true, "shadow_dist": 2500.0, "glow": true, "radiance": Sky.RADIANCE_SIZE_256},
-	"ultra": {"shadows": true, "shadow_dist": 3000.0, "glow": true, "radiance": Sky.RADIANCE_SIZE_256},
+	"low": {"shadows": false, "glow": false, "radiance": Sky.RADIANCE_SIZE_128},
+	"balanced": {"shadows": true, "glow": true, "radiance": Sky.RADIANCE_SIZE_256},
+	"high": {"shadows": true, "glow": true, "radiance": Sky.RADIANCE_SIZE_256},
+	"ultra": {"shadows": true, "glow": true, "radiance": Sky.RADIANCE_SIZE_256},
 }
 
 var env: Environment
@@ -84,13 +84,14 @@ func setup(world_env: WorldEnvironment, sun_light: DirectionalLight3D, preset: S
 	set_conditions(hours, weather)
 
 
-## Shadow distance, glow and radiance resolution by preset ("low", "balanced", "high", "ultra").
+## Shadows on/off, glow and radiance resolution by preset ("low", "balanced", "high", "ultra").
+## Shadow distance is Settings.shadow_distance (set per preset in Settings.apply_graphics_preset, or by the user).
 func set_quality(preset: String) -> void:
 	_preset = preset if PRESETS.has(preset) else "balanced"
 	var cfg: Dictionary = PRESETS[_preset]
 	_shadows_on = bool(cfg["shadows"])
 	sun.shadow_enabled = _shadows_on
-	sun.directional_shadow_max_distance = float(cfg["shadow_dist"])
+	sun.directional_shadow_max_distance = Settings.shadow_distance
 	env.glow_enabled = bool(cfg["glow"])
 	_sky.radiance_size = int(cfg["radiance"])
 	_sky.process_mode = Sky.PROCESS_MODE_INCREMENTAL

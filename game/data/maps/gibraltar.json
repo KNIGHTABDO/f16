@@ -12,7 +12,7 @@
  "height_max": 2445.0,
  "landcover_file": "res://assets/maps/gibraltar/landcover.u8",
  "landcover_n": 4096,
- "color_file": "res://assets/maps/gibraltar/color.jpg",
+ "color_file": "res://assets/maps/gibraltar/color.jpg.bin",
  "airports": [
   {
    "name": "Jerez Airport",
