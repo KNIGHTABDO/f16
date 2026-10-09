@@ -8,7 +8,8 @@ Gemini is the primary coder (check quota: scripts/job.sh gemini fails fast if ag
 - [~] models2 | gemini | tasks/cont_models2.md | worktree-agent-a5708db0613eb7421 | needs: -
 - [~] weapons | claude | tasks/cont_weapons.md | .claude/worktrees/agent-ad75bf9a6376f65fc | needs: -
 - [~] integration | claude | tasks/cont_aircraft_integration.md | .claude/worktrees/agent-a6259d2058290c99b | needs: -
-- [~] art | gemini | tasks/art.md | main | needs: -
+- [x] art | gemini | tasks/art.md | main | needs: -
+- [~] art2 | gemini | tasks/art2.md | main | needs: art
 - [ ] combat-units | gemini | tasks/combat_units.md | main | needs: weapons, integration
 - [ ] ai | claude | tasks/ai.md | main | needs: combat-units
 - [ ] hud-touch | gemini | tasks/hud_touch.md | main | needs: weapons, integration, settings-menus
