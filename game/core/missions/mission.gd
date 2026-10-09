@@ -300,8 +300,9 @@ func _player() -> Aircraft:
 	return p if is_instance_valid(p) and p.alive else null
 
 
+## The flag, not the node: a respawn makes a new player Aircraft, and shots the old one fired must still count for the player.
 func _is_player(node: Variant) -> bool:
-	return is_instance_valid(node) and _level != null and node == _level.player
+	return is_instance_valid(node) and node is Aircraft and (node as Aircraft).is_player
 
 
 func _nearest_base(from: Vector3) -> Vector3:
