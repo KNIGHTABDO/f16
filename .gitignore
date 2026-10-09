@@ -6,3 +6,5 @@
 *.tmp
 __pycache__/
 /tools/cache/
+game/**/*.import
+game/assets/models/**/*.png
