@@ -18,3 +18,7 @@
 - 14:05 tick: nothing finished; running smoke-v1, art3 (2/5), both just started.
   No merges/launches; playtest-v1 waits on them.
   Overall % unchanged.
+
+- 15:06 tick: nothing finished; running vis-world, vis-hud (2/5), both committing/editing WIP.
+  No merges/launches; art3 deferred, playtest-v1 waits on vis jobs.
+  Overall % unchanged.
