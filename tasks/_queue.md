@@ -10,7 +10,7 @@ Gemini is the primary coder (check quota: scripts/job.sh gemini fails fast if ag
 - [~] weapons | claude | tasks/cont_weapons.md | .claude/worktrees/agent-ad75bf9a6376f65fc | needs: -
 - [~] integration | haiku | tasks/cont2_integration.md | .claude/worktrees/gem-gem-integration | needs: -
 - [x] art | gemini | tasks/art.md | main | needs: -
-- [ ] art2 | gemini ONLY (image generation) | tasks/art2.md | main | needs: Gemini quota back (429 at 11:19 2026-10-09)
+- [~] art2 | gemini | tasks/art2.md | main | needs: art
 - [ ] combat-units | gemini | tasks/combat_units.md | main | needs: weapons, integration
 - [ ] ai | claude | tasks/ai.md | main | needs: combat-units
 - [ ] hud-touch | gemini | tasks/hud_touch.md | main | needs: weapons, integration, settings-menus
@@ -20,4 +20,4 @@ Gemini is the primary coder (check quota: scripts/job.sh gemini fails fast if ag
 - [ ] perf-ipa | claude | tasks/perf_ipa.md | main | needs: modes-missions
 - [ ] playtest-v1 | lead | full headless playthrough, fix, tag v1.0 | main | needs: everything
 
-NOTE 2026-10-09 11:20: Gemini credits exhausted (429). Use `scripts/job.sh haiku` (non-weapons) / `claude` (weapons) until `agy -p "Reply with just OK"` works again.
+NOTE 2026-10-09 11:20: Gemini credits exhausted on 2 accounts; 11:40 agy now signed in as abdo.knight7@gmail.com (works). If 429 again: Use `scripts/job.sh haiku` (non-weapons) / `claude` (weapons) until `agy -p "Reply with just OK"` works again.
