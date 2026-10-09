@@ -7,7 +7,7 @@ ammo, targets), `game/core/controls/player_controller.gd` + `control_input.gd`, 
 `game/core/missions/level.gd` (how the overlay is added).
 
 ## Files you own
-`game/ui/hud/` (hud.gd + sub-scripts), `game/ui/touch/` (touch controls), `game/ui/pause_menu.gd`, `game/ui/radio_panel.gd`; in `level.gd` only
+`game/ui/hud/` (hud.gd + sub-scripts), `game/ui/touch/` (touch controls), `game/ui/radio_panel.gd` (reuse the existing `game/ui/menu/pause_menu.gd`; only wire it); in `level.gd` only
 replace the flight_overlay instantiation with the HUD (keep everything else). Delete `flight_overlay.gd` when unused.
 
 ## HUD
