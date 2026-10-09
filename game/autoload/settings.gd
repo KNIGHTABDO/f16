@@ -139,6 +139,7 @@ var volume_ui := 0.8
 var cockpit_muffle := true
 var warning_voice := "female"  # "female", "male", "tones"
 var mute_in_background := true
+var _cockpit_view := false  # runtime, not saved: set by set_cockpit_view()
 
 ## 7. Radio (Navidrome)
 var navidrome_url := ""
@@ -152,7 +153,7 @@ var radio_shuffle := true
 var radio_autostart := true
 var volume_radio := 0.8
 var radio_duck_during_warnings := true
-var radio_cockpit_fx := false
+var radio_cockpit_fx := true  # band-pass on the music radio while in cockpit view
 var radio_show_toast := true
 
 ## 8. Gameplay
@@ -254,10 +255,23 @@ func apply() -> void:
 		if idx >= 0:
 			AudioServer.set_bus_volume_db(idx, linear_to_db(maxf(bus[1], 0.0001)))
 
-	if has_node("/root/Radio"):
-		var radio_node = get_node("/root/Radio")
-		if "cockpit_fx" in radio_node:
-			radio_node.cockpit_fx = radio_cockpit_fx
+	_apply_cockpit_audio()
+
+
+## Called by FlightCamera on each view change. Cockpit audio follows it, and so does a setting changed in cockpit view.
+func set_cockpit_view(on: bool) -> void:
+	_cockpit_view = on
+	_apply_cockpit_audio()
+
+
+## Exterior-sound muffle (Sfx) and the radio band-pass (Radio): each needs cockpit view and its own setting.
+func _apply_cockpit_audio() -> void:
+	var sfx_node = get_node_or_null("/root/Sfx")
+	if sfx_node != null:
+		sfx_node.set_cockpit(_cockpit_view and cockpit_muffle)
+	var radio_node = get_node_or_null("/root/Radio")
+	if radio_node != null:
+		radio_node.cockpit_fx = _cockpit_view and radio_cockpit_fx
 
 
 func apply_graphics_preset(preset: String) -> void:
@@ -444,7 +458,7 @@ func reset_to_defaults() -> void:
 	radio_autostart = true
 	volume_radio = 0.8
 	radio_duck_during_warnings = true
-	radio_cockpit_fx = false
+	radio_cockpit_fx = true
 	radio_show_toast = true
 
 	gameplay_difficulty = "normal"
@@ -488,6 +502,7 @@ func import_from_json(json_str: String) -> bool:
 func _keys() -> Array:
 	var out := []
 	for p in get_property_list():
-		if p.usage & PROPERTY_USAGE_SCRIPT_VARIABLE:
+		# Runtime state (names starting with _) is not saved.
+		if p.usage & PROPERTY_USAGE_SCRIPT_VARIABLE and not p.name.begins_with("_"):
 			out.append(p.name)
 	return out

@@ -736,9 +736,10 @@ func _build_audio_tab() -> void:
 	_content_box.add_child(SettingSlider.new("Radio Chatter & Warnings", "AWACS, wingmen calls, and cockpit voice warnings.", 0.0, 1.0, 0.05, Settings.volume_radio_chatter, "volume_radio_chatter", "%.0f%%", 100.0))
 	_content_box.add_child(SettingSlider.new("User Interface Sounds", "Button clicks, confirmation beeps, and tactical alerts.", 0.0, 1.0, 0.05, Settings.volume_ui, "volume_ui", "%.0f%%", 100.0))
 
-	_content_box.add_child(SectionHeader.new("Cockpit Acoustics & Voice", "Cockpit canopy muffling and voice warning system."))
+	_content_box.add_child(SectionHeader.new("Cockpit Acoustics & Voice", "Cockpit canopy muffling, radio filter and voice warning system."))
 
 	_content_box.add_child(SettingToggle.new("Cockpit Acoustic Muffle", "Low-pass filters exterior engine sounds in cockpit view.", Settings.cockpit_muffle, "cockpit_muffle"))
+	_content_box.add_child(SettingToggle.new("Cockpit Radio Effect", "Military band-pass filter on the music radio in cockpit view.", Settings.radio_cockpit_fx, "radio_cockpit_fx"))
 
 	var voice_choice := SettingChoice.new(
 		"Voice Warning System (VWS)", "Cockpit audible alarm voice style.",
@@ -815,7 +816,7 @@ func _build_radio_tab() -> void:
 	)
 	hbox_test.add_child(test_btn)
 
-	_content_box.add_child(SectionHeader.new("Music Source & Playlists", "Select playback mode, playlist, and audio effects."))
+	_content_box.add_child(SectionHeader.new("Music Source & Playlists", "Select playback mode and playlist."))
 
 	var source_choice := SettingChoice.new(
 		"Radio Source", "Source selection for continuous playback queue.",
@@ -846,7 +847,6 @@ func _build_radio_tab() -> void:
 	_content_box.add_child(SettingToggle.new("Auto-Start When Flying", "Start music radio automatically once wheels leave runway.", Settings.radio_autostart, "radio_autostart"))
 	_content_box.add_child(SettingSlider.new("Radio Volume", "Music radio playback level.", 0.0, 1.0, 0.05, Settings.volume_radio, "volume_radio", "%.0f%%", 100.0))
 	_content_box.add_child(SettingToggle.new("Duck During Voice Warnings", "Lower music volume by 6 dB during missile/stall alerts.", Settings.radio_duck_during_warnings, "radio_duck_during_warnings"))
-	_content_box.add_child(SettingToggle.new("Cockpit Radio Effect", "Military band-pass filter simulating tactical radio receiver.", Settings.radio_cockpit_fx, "radio_cockpit_fx"))
 	_content_box.add_child(SettingToggle.new("Show Now-Playing Toast", "Display banner at top of screen when song starts.", Settings.radio_show_toast, "radio_show_toast"))
 
 
