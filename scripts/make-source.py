@@ -25,7 +25,8 @@ entitlements = set()
 for bundle in bundles:
     for key, value in info(bundle).items():
         if PRIVACY_KEY.match(key):
-            privacy[key] = value
+            # SideStore rejects a source whose privacy prompt has an empty description
+            privacy[key] = value or "Not used by Knight Wings."
     try:
         signed = subprocess.run(["codesign", "-d", "--entitlements", ":-", bundle], capture_output=True)
         if signed.returncode == 0 and signed.stdout.strip():
@@ -50,7 +51,7 @@ version = {
 }
 source = {
     "name": "Knight Wings",
-    "subtitle": "Native Navidrome player",
+    "subtitle": "Combat flight game",
     "sourceURL": f"{base}/releases/latest/download/apps.json",
     "website": base,
     "iconURL": f"https://raw.githubusercontent.com/{REPO}/main/game/assets/icon_1024.png",
@@ -59,8 +60,8 @@ source = {
         "name": "Knight Wings",
         "bundleIdentifier": main["CFBundleIdentifier"],
         "developerName": "KNIGHTABDO",
-        "subtitle": "Native Navidrome player",
-        "localizedDescription": "A native Liquid Glass music player for your Navidrome server: offline library, downloads, synced lyrics and animated artwork.",
+        "subtitle": "Combat flight game",
+        "localizedDescription": "Fly 22 real aircraft, from the Spitfire to the B-2, in dogfights, strikes and campaign missions.",
         "iconURL": f"https://raw.githubusercontent.com/{REPO}/main/game/assets/icon_1024.png",
         "tintColor": "FA2D48",
         "category": "entertainment",
