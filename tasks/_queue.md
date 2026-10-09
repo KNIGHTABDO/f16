@@ -12,14 +12,14 @@ Run Gemini AND Haiku (job.sh haiku = Haiku 5.5 xhigh) in parallel; both are prim
 - [x] art | gemini | tasks/art.md | main | needs: -
 - [x] art2 | gemini | tasks/art2.md | main | needs: art
 - [x] combat-units | gemini | tasks/combat_units.md | main | needs: weapons, integration
-- [~] ai | gemini | tasks/ai.md | main | needs: combat-units
+- [~] ai | claude | tasks/ai.md | main | needs: combat-units
 - [x] hud-touch | gemini | tasks/hud_touch.md | main | needs: weapons, integration, settings-menus
 - [x] terrain-polish | haiku | tasks/cont_terrain_polish.md | .claude/worktrees/gem-gem-terrain-polish | needs: -
 - [~] modes-missions | haiku | tasks/modes_missions.md | main | needs: ai, hud-touch
 - [x] hangar-progression | haiku | tasks/hangar.md | .claude/worktrees/hk-hangar (branch hk/hangar) | needs: roster, models2, settings-menus, art
 - [x] b2 | haiku | tasks/b2.md | .claude/worktrees/hk-b2 (branch hk/b2) | needs: -
 - [~] art3 | gemini | tasks/art3.md | main | needs: b2
-- [~] perf-ipa | haiku | tasks/perf_ipa.md | main | needs: - (parallel)
+- [x] perf-ipa | haiku | tasks/perf_ipa.md | main | needs: - (parallel)
 - [ ] playtest-v1 | lead | full headless playthrough, fix, tag v1.0 | main | needs: everything
 
 NOTE 2026-10-09: agy is on abdo.knight7@gmail.com; Gemini weekly quota 95% left (check with /usage in agy TUI; "AI credits" in the status bar is unrelated). If 429 again: Use `scripts/job.sh haiku` (non-weapons) / `claude` (weapons) until `agy -p "Reply with just OK"` works again.
