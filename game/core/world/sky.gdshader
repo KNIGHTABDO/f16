@@ -6,7 +6,7 @@ shader_type sky;
 
 uniform vec3 sun_dir = vec3(0.0, 1.0, 0.0);      // towards the sun, world space
 uniform vec3 sun_color = vec3(1.0);              // transmittance-tinted sun colour
-uniform float sun_energy = 14.0;                 // scattering irradiance scale (tuned, see sky.gd)
+uniform float sun_energy = 10.0;                // scattering irradiance scale (tuned, see sky.gd)
 uniform vec3 moon_dir = vec3(0.0, 1.0, 0.0);     // towards the moon, world space
 uniform float moon_energy = 0.0;
 uniform float night = 0.0;                       // 0 day .. 1 night (stars, moon disk)

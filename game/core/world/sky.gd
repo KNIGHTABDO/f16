@@ -9,7 +9,7 @@ extends Node
 const SKY_SHADER := preload("res://core/world/sky.gdshader")
 const LATITUDE_DEG := 35.8  # Strait of Gibraltar
 const DECLINATION_DEG := 21.0  # sun declination, a summer sky
-const SUN_ENERGY := 14.0  # sky scattering irradiance: sets the zenith blue and the horizon haze (about 1 in linear HDR)
+const SUN_ENERGY := 10.0  # sky scattering irradiance: sets the zenith blue and the horizon haze (golden-hour horizon about 1.1 in linear HDR)
 const MOON_ENERGY := 0.5  # moon scattering irradiance at full night
 const MOON_LIGHT := 0.25  # moon direct light at full night, the only light source after dark
 const MOON_LIGHT_COLOR := Color(0.55, 0.68, 1.0)
