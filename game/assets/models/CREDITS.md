@@ -11,6 +11,7 @@ fetched by `tools/fetch_models.sh` into `tools/cache/models/` (not committed).
 | f16c | Lockheed Martin F-16C | https://github.com/NikolaiVChr/f16 | GPL-2.0 (LICENSE file in repo) | `aircraft/f16c/f16c.glb` |
 | ef2000 | Eurofighter EF-2000 Typhoon | https://github.com/IAHM-COL/EF-Typhoon | GPL-2.0 (LICENSE file in repo) | `aircraft/ef2000/ef2000.glb` |
 | f35a | Lockheed Martin F-35A | https://github.com/PaoloAmoroso/F-35A | GPL-2.0 (LICENSE file in repo) | `aircraft/f35a/f35a.glb` |
+| su27 | Sukhoi Su-27SK (Flanker) | https://github.com/yanes19/SU-27SK | GPL-2.0 (LICENSE header) | `aircraft/su27/su27.glb` |
 
 The GLB files embed the original FlightGear textures. The original authors are listed in each
 repository's history and README. Models are redistributed under the GPL with the licence
@@ -25,7 +26,6 @@ text from each repository.
 | f15c | https://github.com/Zaretto/F-15 | No LICENSE file found; needs checking |
 | f14b | https://github.com/Zaretto/f-14b | No LICENSE file found; needs checking |
 | mirage2000 | https://github.com/5H1N0B11/flightgear-mirage2000 | GPL-2.0 (LICENSE header) |
-| su27sk | https://github.com/yanes19/SU-27SK | GPL-2.0 (LICENSE header) |
 | a10 | https://github.com/l0k1/A-10 | No LICENSE file found; needs checking |
 | p51d | https://github.com/Zaretto/p51d | No LICENSE file found; needs checking |
 | f22a | https://github.com/MonotoneDevelopment/F-22 | GPL-2.0 (LICENSE header) |
