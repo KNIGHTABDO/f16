@@ -26,3 +26,6 @@ Left: virtual stick (or throttle slider, per Settings.control_scheme: gyro tilt 
 detent; right: fire gun (hold), missile, bomb/AG, flares, target cycle, camera switch, gear/airbrake small buttons, pause. Multi-touch,
 haptic feedback (`Input.vibrate_handheld`), customizable opacity/size from Settings, auto-hide when a gamepad is connected.
 Pause menu: resume, restart, settings (open the settings menu scene from settings-menus), radio panel, quit to menu.
+
+## Note (started before weapons merged)
+The weapons system is still being written on another branch. Read weapon/ammo/lock state duck-typed (`has_method` / `has_signal` / `get(...)` with defaults) from the player aircraft or a `weapons` child node, so the HUD works with or without it. Show placeholders when absent. Do not create weapons code yourself.

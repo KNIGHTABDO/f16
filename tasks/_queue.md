@@ -13,7 +13,7 @@ Run Gemini AND Haiku (job.sh haiku = Haiku 5.5 xhigh) in parallel; both are prim
 - [~] art2 | gemini | tasks/art2.md | main | needs: art
 - [ ] combat-units | gemini | tasks/combat_units.md | main | needs: weapons, integration
 - [ ] ai | claude | tasks/ai.md | main | needs: combat-units
-- [ ] hud-touch | gemini | tasks/hud_touch.md | main | needs: weapons, integration, settings-menus
+- [~] hud-touch | gemini | tasks/hud_touch.md | main | needs: weapons, integration, settings-menus
 - [x] terrain-polish | haiku | tasks/cont_terrain_polish.md | .claude/worktrees/gem-gem-terrain-polish | needs: -
 - [ ] modes-missions | gemini | tasks/modes_missions.md | main | needs: ai, hud-touch
 - [x] hangar-progression | haiku | tasks/hangar.md | .claude/worktrees/hk-hangar (branch hk/hangar) | needs: roster, models2, settings-menus, art
