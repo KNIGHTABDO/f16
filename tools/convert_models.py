@@ -573,18 +573,31 @@ def load_image(rel_tex, src_file):
             print("WARN cannot load texture:", cand)
             return None
         img = bpy.data.images.load(png, check_existing=True)
-    w, h = img.size
-    if max(w, h) > MAX_TEX:
-        k = MAX_TEX / float(max(w, h))
-        img.scale(max(1, int(w * k)), max(1, int(h * k)))
-    has_alpha = img.depth == 32 or img.channels == 4
-    base = os.path.splitext(os.path.basename(cand))[0]
-    out = os.path.join(TEX_CACHE, MODEL_ID, base + (".png" if has_alpha else ".jpg"))
-    img.filepath_raw = out
-    img.file_format = "PNG" if has_alpha else "JPEG"
-    img.save()
-    img.filepath = out
-    img["has_alpha"] = bool(has_alpha)
+    try:
+        # Blender can reject some valid files (e.g. SGI .rgb) with "does not have any image data"
+        # only when the pixels are touched, so the whole decode/downscale/save runs guarded.
+        w, h = img.size
+        if w == 0 or h == 0:
+            raise RuntimeError("no image data")
+        if max(w, h) > MAX_TEX:
+            k = MAX_TEX / float(max(w, h))
+            img.scale(max(1, int(w * k)), max(1, int(h * k)))
+        has_alpha = img.depth == 32 or img.channels == 4
+        base = os.path.splitext(os.path.basename(cand))[0]
+        out = os.path.join(TEX_CACHE, MODEL_ID, base + (".png" if has_alpha else ".jpg"))
+        img.filepath_raw = out
+        img.file_format = "PNG" if has_alpha else "JPEG"
+        img.save()
+        img.filepath = out
+        img["has_alpha"] = bool(has_alpha)
+    except RuntimeError as exc:
+        print("WARN texture unusable, left untextured:", cand, exc)
+        try:
+            bpy.data.images.remove(img)
+        except Exception:
+            pass
+        IMAGES[cand] = None
+        return None
     IMAGES[cand] = img
     return img
 
