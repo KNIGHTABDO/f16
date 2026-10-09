@@ -9,3 +9,4 @@
 - [maps] ground.gd header says color.png -> color.jpg (color_file in json)
 - [vfx] aircraft: AfterburnerFx per nozzle, Contrail, VaporFx; flares group "flares"; Vfx finds node named World
 - [perf] IPA 294 MB: compress height.r16/landcover.u8 (zstd via FileAccess.open_compressed or PNG16), color.jpg 8192 -> KTX/ASTC?
+- [terrain polish] real-map colour too dark/desaturated (grade satellite: exposure+saturation, dehaze); near-ground (300 m AGL) looks blurry: stronger detail-texture blend by landcover; grey flat patch NE of Tangier at 1500 m (tile seam?)
