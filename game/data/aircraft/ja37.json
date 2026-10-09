@@ -6,7 +6,7 @@
     "nation": "Sweden",
     "era": "cold_war",
     "description": "Swedish canard delta interceptor designed for short runway dispersal operations. Fitted with a powerful afterburning turbofan with thrust reverser.",
-    "model": "",
+    "model": "res://assets/models/aircraft/ja37/ja37.glb",
     "model_scale": 1.0,
     "model_rotation_deg": [
         0,
@@ -15,19 +15,19 @@
     ],
     "model_offset": [
         0,
-        0,
+        0.933,
         0
     ],
     "cockpit_eye": [
         0.0,
-        0.8,
-        -3.8
+        1.026,
+        -3.072
     ],
-    "chase_distance": 18.0,
+    "chase_distance": 18.2,
     "chase_height": 3.8,
     "length": 16.4,
     "wing_span": 10.6,
-    "hit_radius": 6.5,
+    "hit_radius": 6.2,
     "engine": "jet",
     "engine_sound": "engine_jet",
     "mass_empty": 9500,

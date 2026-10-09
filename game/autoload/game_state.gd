@@ -62,7 +62,7 @@ func goto_menu() -> void:
 	level = null
 	WorldOrigin.reset()
 	get_tree().paused = false
-	get_tree().change_scene_to_file("res://scenes/main.tscn")
+	get_tree().change_scene_to_file("res://ui/menu/menu_root.tscn")
 
 
 ## Loads a JSON file from res://data and returns its parsed value (Dictionary or Array).

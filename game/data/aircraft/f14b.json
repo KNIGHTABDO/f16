@@ -6,7 +6,7 @@
     "nation": "USA",
     "era": "cold_war",
     "description": "Variable-sweep wing fleet defense interceptor. Armed with long-range AIM-54 Phoenix missiles for BVR dominance.",
-    "model": "",
+    "model": "res://assets/models/aircraft/f14b/f14b.glb",
     "model_scale": 1.0,
     "model_rotation_deg": [
         0,
@@ -15,19 +15,19 @@
     ],
     "model_offset": [
         0,
-        0,
+        0.743,
         0
     ],
     "cockpit_eye": [
         0.0,
-        0.9,
-        -4.5
+        1.802,
+        -4.079
     ],
-    "chase_distance": 22.0,
-    "chase_height": 4.5,
+    "chase_distance": 22.7,
+    "chase_height": 4.7,
     "length": 19.1,
     "wing_span": 19.55,
-    "hit_radius": 8.0,
+    "hit_radius": 11.5,
     "engine": "jet",
     "engine_sound": "engine_jet",
     "mass_empty": 19800,

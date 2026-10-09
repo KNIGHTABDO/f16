@@ -6,7 +6,7 @@
     "nation": "UK",
     "era": "ww2",
     "description": "Iconic British fighter renowned for its beautiful elliptical wing and tight turning circle. Powered by the supercharged Rolls-Royce Merlin engine.",
-    "model": "",
+    "model": "res://assets/models/aircraft/spitfire/spitfire.glb",
     "model_scale": 1.0,
     "model_rotation_deg": [
         0,
@@ -15,19 +15,19 @@
     ],
     "model_offset": [
         0,
-        0,
+        -0.47,
         0
     ],
     "cockpit_eye": [
         0.0,
-        0.5,
-        -0.7
+        0.159,
+        -0.432
     ],
-    "chase_distance": 13.0,
-    "chase_height": 2.8,
+    "chase_distance": 11.0,
+    "chase_height": 2.3,
     "length": 9.47,
     "wing_span": 11.23,
-    "hit_radius": 4.5,
+    "hit_radius": 6.7,
     "engine": "prop",
     "engine_sound": "engine_prop",
     "mass_empty": 2630,

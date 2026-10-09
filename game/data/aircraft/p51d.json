@@ -6,7 +6,7 @@
     "nation": "USA",
     "era": "ww2",
     "description": "Legendary long-range piston fighter powered by the Packard Merlin V-12 engine. Outstanding speed, range, and high-altitude escort performance.",
-    "model": "",
+    "model": "res://assets/models/aircraft/p51d/p51d.glb",
     "model_scale": 1.0,
     "model_rotation_deg": [
         0,
@@ -15,19 +15,19 @@
     ],
     "model_offset": [
         0,
-        0,
+        1.744,
         0
     ],
     "cockpit_eye": [
         0.0,
-        0.55,
-        -0.8
+        0.744,
+        -1.0
     ],
-    "chase_distance": 13.0,
-    "chase_height": 2.8,
+    "chase_distance": 11.0,
+    "chase_height": 2.3,
     "length": 9.83,
     "wing_span": 11.28,
-    "hit_radius": 4.5,
+    "hit_radius": 6.8,
     "engine": "prop",
     "engine_sound": "engine_prop",
     "mass_empty": 3465,

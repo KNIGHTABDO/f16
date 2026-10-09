@@ -15,19 +15,19 @@
     ],
     "model_offset": [
         0,
-        0,
+        0.925,
         0
     ],
     "cockpit_eye": [
         0.0,
-        0.516,
+        1.441,
         -3.534
     ],
-    "chase_distance": 18.0,
-    "chase_height": 3.8,
+    "chase_distance": 19.2,
+    "chase_height": 3.9,
     "length": 16.11,
     "wing_span": 11.23,
-    "hit_radius": 6.5,
+    "hit_radius": 6.7,
     "engine": "jet",
     "engine_sound": "engine_jet",
     "mass_empty": 11000,

@@ -6,7 +6,7 @@
     "nation": "Germany",
     "era": "ww2",
     "description": "Final wartime production variant of the iconic German fighter. Features incredible climb rates and high-altitude energy fighting power.",
-    "model": "",
+    "model": "res://assets/models/aircraft/bf109/bf109.glb",
     "model_scale": 1.0,
     "model_rotation_deg": [
         0,
@@ -15,19 +15,19 @@
     ],
     "model_offset": [
         0,
-        0,
+        -0.714,
         0
     ],
     "cockpit_eye": [
         0.0,
-        0.48,
-        -0.6
+        -0.383,
+        -0.366
     ],
-    "chase_distance": 12.5,
-    "chase_height": 2.6,
+    "chase_distance": 10.6,
+    "chase_height": 2.2,
     "length": 8.95,
     "wing_span": 9.92,
-    "hit_radius": 4.2,
+    "hit_radius": 5.9,
     "engine": "prop",
     "engine_sound": "engine_prop",
     "mass_empty": 2670,

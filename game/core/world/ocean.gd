@@ -64,9 +64,8 @@ func setup(id: String, terrain: Terrain = null) -> bool:
 		_height_tex = terrain.height_texture()
 	else:
 		var n := Ground.height_n
-		var height_bytes := FileAccess.get_file_as_bytes(String(Ground.meta["height_file"]))
 		_height_tex = ImageTexture.create_from_image(
-				Image.create_from_data(n, n, false, Image.FORMAT_R16, height_bytes))
+				Image.create_from_data(n, n, false, Image.FORMAT_R16, Ground.get_height_bytes()))
 	_normal_tex = _noise_texture(true)
 	_foam_tex = _noise_texture(false)
 	_active = true

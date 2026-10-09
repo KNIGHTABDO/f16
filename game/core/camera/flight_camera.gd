@@ -6,8 +6,8 @@ extends Node3D
 
 enum Mode { CHASE, COCKPIT, ORBIT }
 
-const NEAR := 0.3
-const FAR := 60000.0
+const NEAR := 0.5
+const FAR := 600000.0  ## the map is 256 km across; the far plane must cover the horizon of the ocean
 const CHASE_POS_RATE := 7.0  ## 1/s spring rate for position
 const CHASE_ROT_RATE := 9.0  ## 1/s slerp rate for orientation (lags in turns)
 const LOOK_DISTANCE := 150.0
@@ -22,6 +22,8 @@ const SHAKE_AB := 0.12  ## continuous rumble while afterburning
 const SHAKE_G_GAIN := 0.04  ## shake per g above the threshold, per second
 const SHAKE_G_START := 6.0
 const SHAKE_MAX := 1.0
+const SHAKE_BLAST := 0.6  ## shake from an explosion at point blank, falls off linearly to 0 at BLAST_RANGE
+const BLAST_RANGE := 2500.0  ## m
 const SHAKE_OFFSET := 0.35  ## m at full shake
 const FOV_BASE := 68.0
 const FOV_FAST := 82.0
@@ -45,6 +47,10 @@ var _snap := true
 
 func _ready() -> void:
 	add_to_group("floating")
+	physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF  # moved every render frame in _process
+	Sfx.set_cockpit(mode == Mode.COCKPIT)
+	if Radio != null and Settings.radio_cockpit_fx:
+		Radio.cockpit_fx = (mode == Mode.COCKPIT)
 	_cam = Camera3D.new()
 	_cam.name = "Camera"
 	_cam.near = NEAR
@@ -55,6 +61,7 @@ func _ready() -> void:
 	_rng.randomize()
 	Events.weapon_fired.connect(_on_weapon_fired)
 	Events.damaged.connect(_on_damaged)
+	Events.explosion.connect(_on_explosion)
 
 
 func _exit_tree() -> void:
@@ -62,6 +69,12 @@ func _exit_tree() -> void:
 		Events.weapon_fired.disconnect(_on_weapon_fired)
 	if Events.damaged.is_connected(_on_damaged):
 		Events.damaged.disconnect(_on_damaged)
+	if Events.explosion.is_connected(_on_explosion):
+		Events.explosion.disconnect(_on_explosion)
+	if mode == Mode.COCKPIT:
+		Sfx.set_cockpit(false)
+		if Radio != null:
+			Radio.cockpit_fx = false
 
 
 func get_camera() -> Camera3D:
@@ -100,6 +113,9 @@ func set_mode(m: Mode) -> void:
 	_snap = true
 	_orbit_yaw = 0.0
 	_orbit_pitch = 0.25
+	Sfx.set_cockpit(mode == Mode.COCKPIT)
+	if Radio != null and Settings.radio_cockpit_fx:
+		Radio.cockpit_fx = (mode == Mode.COCKPIT)
 
 
 func set_look_back(on: bool) -> void:
@@ -243,3 +259,11 @@ func _on_weapon_fired(shooter: Node3D, _weapon_id: String) -> void:
 func _on_damaged(victim: Node3D, _amount: float, _source: Node) -> void:
 	if victim == _target:
 		add_shake(SHAKE_HIT)
+
+
+## world_pos is in World space (this camera's parent), like every floating node.
+func _on_explosion(world_pos: Vector3, size: float) -> void:
+	var falloff := 1.0 - position.distance_to(world_pos) / BLAST_RANGE
+	if falloff <= 0.0:
+		return
+	add_shake(SHAKE_BLAST * falloff * clampf(size / Aircraft.EXPLOSION_SIZE, 0.3, 2.0))
