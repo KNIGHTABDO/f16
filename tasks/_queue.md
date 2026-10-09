@@ -6,7 +6,7 @@ Run Gemini AND Haiku (job.sh haiku = Haiku 5.5 xhigh) in parallel; both are prim
 - [x] roster | gemini | tasks/aircraft_roster.md | main | needs: -
 - [x] world | gemini | tasks/cont_world_dressing.md | worktree-agent-aebba58123a873c40 | needs: -
 - [x] models2 (merged partial) 
-- [~] models3 | haiku | tasks/cont2_models.md | .claude/worktrees/gem-gem-models2 | needs: -
+- [x] models3 | haiku | tasks/cont2_models.md | .claude/worktrees/gem-gem-models2 | needs: -
 - [~] weapons | claude | tasks/cont_weapons.md | .claude/worktrees/agent-ad75bf9a6376f65fc | needs: -
 - [x] integration | haiku | tasks/cont2_integration.md | .claude/worktrees/gem-gem-integration | needs: -
 - [x] art | gemini | tasks/art.md | main | needs: -
