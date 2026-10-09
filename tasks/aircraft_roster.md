@@ -6,7 +6,7 @@
 `game/data/model_info.json` and `game/assets/models/aircraft/` (which models exist, their cockpit_eye/muzzles/nozzles/size).
 
 ## Files you own
-`game/data/aircraft/<id>.json` (new files; you may tune f16c.json only if a value is clearly wrong), `game/data/weapons.json`
+`game/data/aircraft/<id>.json` (new files; do NOT edit f16c.json: another agent owns it; list suggested f16c changes in your report), `game/data/weapons.json`
 (ADD weapons; never change existing ids or keys), `game/data/roster.json`, `tools/check_roster.py`.
 
 ## Roster (id: name, category, era) — ids must match the model folder ids in game/assets/models/aircraft/ where a model exists
