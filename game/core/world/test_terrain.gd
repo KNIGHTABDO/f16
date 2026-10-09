@@ -13,7 +13,7 @@ extends Node3D
 ## north-east mountains, then a climb to 8 km above sea level. The camera is in the "floating" group and
 ## a direct child of World, so the floating origin shifts it (and the terrain follows through WorldOrigin).
 
-const MAP_ID := "test"
+var MAP_ID := "test"
 const FLIGHT_SPEED := 150.0  # m/s along the low pass
 const LOW_AGL := 150.0  # low pass height above ground, metres
 const CLIMB_ASL := 8000.0  # climb target, metres above sea level
@@ -47,6 +47,7 @@ func _ready() -> void:
 	var args := _parse_args()
 	_preset = String(args.get("preset", Settings.graphics_preset))
 	WorldOrigin.reset()
+	MAP_ID = String(args.get("map", MAP_ID))
 	if not Ground.load_map(MAP_ID):
 		push_error("test_terrain: could not load map '%s'" % MAP_ID)
 		get_tree().quit(1)
