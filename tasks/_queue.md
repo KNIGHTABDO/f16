@@ -24,6 +24,9 @@ Run Gemini AND Haiku (job.sh haiku = Haiku 5.5 xhigh) in parallel; both are prim
 - [x] fix-v1 | haiku | tasks/fix_v1.md | .claude/worktrees/hk-fix-v1 | needs: smoke-v1
 - [~] vis-world | haiku | tasks/vis_world.md | .claude/worktrees/hk-vis-world | needs: -
 - [~] vis-hud | haiku | tasks/vis_hud.md | .claude/worktrees/hk-vis-hud | needs: -
+- [~] smoke-v2 | haiku | tasks/smoke_v2.md | .claude/worktrees/hk-smoke-v2 | needs: -
+- [~] polish-a | haiku | tasks/polish_a.md | .claude/worktrees/hk-polish-a | needs: -
+- [~] f35-compress | gemini | tasks/f35_compress.md | main | needs: -
 - [ ] playtest-v1 | lead | full headless playthrough, fix, tag v1.0 | main | needs: everything
 
 NOTE 2026-10-09: agy is on abdo.knight7@gmail.com; Gemini weekly quota 95% left (check with /usage in agy TUI; "AI credits" in the status bar is unrelated). If 429 again: Use `scripts/job.sh haiku` (non-weapons) / `claude` (weapons) until `agy -p "Reply with just OK"` works again.

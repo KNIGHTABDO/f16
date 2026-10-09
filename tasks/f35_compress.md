@@ -1,0 +1,2 @@
+# f35-compress (Gemini) — shrink F-35 model
+`game/assets/models/aircraft/f35a/*.glb` is 24.6 MB. Recompress its embedded textures to max 2048px JPG q85 (PNG only where alpha is needed) and re-pack the GLB, keeping meshes, materials, node names and scale identical. Use python (pygltflib is fine to pip install --user) or gltf-transform via npx if available. Target < 10 MB. Verify the result loads: `godot --headless --path game --import` with no errors for that file. Commit only the new .glb (and any changed .import). Write a 3-line summary to tasks/f35_compress.result.md.
