@@ -8037,5 +8037,441 @@
       }
     },
     "triangles": 56997
+  },
+  "b2": {
+    "source": "https://github.com/FGMEMBERS/B-2 (Models/b2-spirit.xml, spirit.ac; model by Markus Zojer, 2007)",
+    "license": "GPL-2.0 per FlightGear policy (UNVERIFIED: no LICENSE file in repo; confirm before distribution)",
+    "scale_fix": 0.991719,
+    "origin": "center",
+    "size_m": {
+      "span": 51.767,
+      "height": 4.381,
+      "length": 21.03
+    },
+    "cockpit_eye": [
+      0.0,
+      1.15,
+      -7.554
+    ],
+    "wingtips": [
+      [
+        -25.883,
+        0.293,
+        7.665
+      ],
+      [
+        25.883,
+        0.293,
+        7.666
+      ]
+    ],
+    "muzzles": [],
+    "gear_nodes": [
+      "gear_front_gear",
+      "gear_front_gear_hold",
+      "gear_front_gear_top",
+      "gear_gear_cover_front",
+      "gear_gear_cover_l",
+      "gear_gear_cover_r",
+      "gear_gear_cover_rear",
+      "gear_left_gear",
+      "gear_left_gear_1",
+      "gear_left_gear_hold",
+      "gear_right_gear",
+      "gear_right_gear_1",
+      "gear_right_gear_hold",
+      "gear_static",
+      "gear_tire",
+      "gear_tire_001",
+      "gear_tire_002",
+      "gear_tire_003",
+      "gear_tire_004",
+      "gear_tire_005",
+      "gear_tire_006",
+      "gear_tire_007",
+      "gear_tire_008",
+      "gear_tire_009"
+    ],
+    "control_surfaces": {
+      "elevon_l": {
+        "hinge": [
+          -14.454,
+          0.318,
+          4.493
+        ],
+        "axis": [
+          0.7993,
+          -0.0,
+          -0.601
+        ],
+        "max_deg": 30.0,
+        "property": "surface-positions/left-aileron-pos-norm"
+      },
+      "elevon_r": {
+        "hinge": [
+          14.445,
+          0.318,
+          4.493
+        ],
+        "axis": [
+          0.7993,
+          0.0,
+          0.601
+        ],
+        "max_deg": 30.0,
+        "property": "surface-positions/right-aileron-pos-norm"
+      },
+      "gear_front_gear": {
+        "hinge": [
+          0.016,
+          0.041,
+          -9.332
+        ],
+        "axis": [
+          -1.0,
+          -0.0,
+          -0.0
+        ],
+        "max_deg": 71.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_front_gear_hold": {
+        "hinge": [
+          0.016,
+          0.041,
+          -9.332
+        ],
+        "axis": [
+          -1.0,
+          -0.0,
+          -0.0
+        ],
+        "max_deg": 71.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_front_gear_top": {
+        "hinge": [
+          0.016,
+          0.041,
+          -9.332
+        ],
+        "axis": [
+          -1.0,
+          -0.0,
+          -0.0
+        ],
+        "max_deg": 71.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_gear_cover_front": {
+        "hinge": [
+          0.016,
+          -0.068,
+          -9.471
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 70.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_gear_cover_l": {
+        "hinge": [
+          -6.48,
+          -0.287,
+          0.248
+        ],
+        "axis": [
+          -0.0,
+          -0.0,
+          -1.0
+        ],
+        "max_deg": 90.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_gear_cover_r": {
+        "hinge": [
+          6.472,
+          -0.287,
+          0.248
+        ],
+        "axis": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "max_deg": 90.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_gear_cover_rear": {
+        "hinge": [
+          0.452,
+          -0.783,
+          -7.566
+        ],
+        "axis": [
+          0.0,
+          -0.1961,
+          0.9806
+        ],
+        "max_deg": 95.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_left_gear": {
+        "hinge": [
+          -5.806,
+          0.239,
+          1.286
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 97.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_left_gear_1": {
+        "hinge": [
+          -5.806,
+          0.239,
+          1.286
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 97.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_left_gear_hold": {
+        "hinge": [
+          -5.806,
+          0.239,
+          1.286
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 97.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_right_gear": {
+        "hinge": [
+          5.837,
+          0.239,
+          1.286
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 97.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_right_gear_1": {
+        "hinge": [
+          5.837,
+          0.239,
+          1.286
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 97.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_right_gear_hold": {
+        "hinge": [
+          5.837,
+          0.239,
+          1.286
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 97.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_tire": {
+        "hinge": [
+          0.016,
+          0.041,
+          -9.332
+        ],
+        "axis": [
+          -1.0,
+          -0.0,
+          -0.0
+        ],
+        "max_deg": 71.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_tire_001": {
+        "hinge": [
+          0.016,
+          0.041,
+          -9.332
+        ],
+        "axis": [
+          -1.0,
+          -0.0,
+          -0.0
+        ],
+        "max_deg": 71.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_tire_002": {
+        "hinge": [
+          -5.806,
+          0.239,
+          1.286
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 97.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_tire_003": {
+        "hinge": [
+          -5.806,
+          0.239,
+          1.286
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 97.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_tire_004": {
+        "hinge": [
+          -5.806,
+          0.239,
+          1.286
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 97.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_tire_005": {
+        "hinge": [
+          -5.806,
+          0.239,
+          1.286
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 97.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_tire_006": {
+        "hinge": [
+          5.837,
+          0.239,
+          1.286
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 97.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_tire_007": {
+        "hinge": [
+          5.837,
+          0.239,
+          1.286
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 97.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_tire_008": {
+        "hinge": [
+          5.837,
+          0.239,
+          1.286
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 97.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_tire_009": {
+        "hinge": [
+          5.837,
+          0.239,
+          1.286
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 97.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "rudder_l": {
+        "hinge": [
+          -18.044,
+          0.348,
+          6.962
+        ],
+        "axis": [
+          -0.7993,
+          0.0,
+          0.601
+        ],
+        "max_deg": 60.0,
+        "property": "surface-positions/rudder-pos-norm"
+      },
+      "rudder_r": {
+        "hinge": [
+          18.035,
+          0.348,
+          6.962
+        ],
+        "axis": [
+          -0.7993,
+          -0.0,
+          -0.601
+        ],
+        "max_deg": 60.0,
+        "property": "surface-positions/rudder-pos-norm"
+      }
+    },
+    "triangles": 4572
   }
 }
