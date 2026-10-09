@@ -6,6 +6,7 @@ extends Node
 ## (main, mode, map, hangar), then starts one sortie per flight shot, places the aircraft and camera by hand, keeps the
 ## player at full health so AI fire cannot end a shot, puts the player's save back and quits.
 ## Headless runs (DisplayServer "headless") walk the same path and count the shots, but save no PNG.
+## --only=08,24 saves just those shots (by number or full name). Sorties with none of their shots wanted are skipped.
 
 const MENU_SCENE := "res://ui/menu/menu_root.tscn"
 const OUT_DEFAULT := "res://../screenshots/v1/"
@@ -32,6 +33,7 @@ var _data: Dictionary = {}
 var _shots_done := 0
 var _save_backup := ""
 var _had_save := false
+var _only: Array[String] = []  ## shot ids from --only=, empty saves every shot
 
 
 func _ready() -> void:
@@ -44,6 +46,7 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS  ## keeps running while a results screen pauses the tree
 	_headless = DisplayServer.get_name() == "headless"
 	_out_dir = _resolve_out_dir()
+	_only = _parse_only()
 	_data = MissionGenerator.data()
 	if _headless:
 		print("screenshot_tour: headless, the flow runs but no PNG is saved")
@@ -93,7 +96,7 @@ func _tour() -> void:
 
 ## One sortie per group of flight shots. Each group sets its own time of day and weather before its level is built.
 func _flight_shots() -> void:
-	if await _begin("free_flight", MAP_GIBRALTAR, GOLDEN_HOUR, "clear", "07_loading_screen"):
+	if await _begin("free_flight", MAP_GIBRALTAR, GOLDEN_HOUR, "clear", "07_loading_screen", ["07", "08", "09", "10", "11"]):
 		_place(Vector3(STRAIT.x - 2200.0, 900.0, STRAIT.z), 90.0, 500.0)
 		await _take("08_gibraltar_chase_golden_hour")
 		_camera().set_mode(FlightCamera.Mode.COCKPIT)
@@ -113,7 +116,7 @@ func _flight_shots() -> void:
 			push_warning("screenshot_tour: no carrier on the map, the carrier shot is taken where the aircraft is")
 		await _take("11_gibraltar_carrier_nearby")
 
-	if await _begin("free_flight", MAP_ATLAS, "noon", "scattered"):
+	if await _begin("free_flight", MAP_ATLAS, "noon", "scattered", "", ["12", "13"]):
 		var west := Vector3(ATLAS_PEAK.x - 6000.0, 0.0, ATLAS_PEAK.z)
 		west.y = _max_ground(west, Vector3(ATLAS_PEAK.x + 6000.0, 0.0, ATLAS_PEAK.z)) + 350.0
 		_place(west, 90.0, 430.0)
@@ -121,7 +124,7 @@ func _flight_shots() -> void:
 		_place(Vector3(ATLAS_PEAK.x - 2000.0, _ground_asl(ATLAS_PEAK) + 3300.0, ATLAS_PEAK.z), 90.0, 480.0)
 		await _take("13_atlas_high_altitude_clouds")
 
-	if await _begin("dogfight", MAP_GIBRALTAR, "noon", "clear"):
+	if await _begin("dogfight", MAP_GIBRALTAR, "noon", "clear", "", ["14", "15", "16", "17"]):
 		var enemy := _enemy_fighter()
 		var weapons := _weapons()
 		if enemy != null:
@@ -144,7 +147,7 @@ func _flight_shots() -> void:
 		await _wait_real(0.8)
 		await _shot("17_dogfight_explosion")
 
-	if await _begin("sead", MAP_GIBRALTAR, "noon", "clear"):
+	if await _begin("sead", MAP_GIBRALTAR, "noon", "clear", "", ["18"]):
 		var sams := _by_role("sam")
 		if not sams.is_empty():
 			var sam_world := _world_of(sams[0])
@@ -161,7 +164,7 @@ func _flight_shots() -> void:
 		await _shot("18_sead_sam_launch")
 
 	GameState.selected_loadout = "strike"  ## the default air-superiority loadout carries no bombs
-	if await _begin("strike", MAP_GIBRALTAR, "noon", "clear"):
+	if await _begin("strike", MAP_GIBRALTAR, "noon", "clear", "", ["19", "20"]):
 		var targets := _by_role("target")
 		if not targets.is_empty():
 			var target_world := _world_of(targets[0])
@@ -179,7 +182,7 @@ func _flight_shots() -> void:
 			await _shot("20_strike_ground_explosion")
 
 	GameState.selected_loadout = ""
-	if await _begin("anti_ship", MAP_GIBRALTAR, "noon", "clear"):
+	if await _begin("anti_ship", MAP_GIBRALTAR, "noon", "clear", "", ["21"]):
 		var ships := _by_role("ship")
 		if not ships.is_empty():
 			var fwd := _forward(ships[0])
@@ -187,7 +190,7 @@ func _flight_shots() -> void:
 		await _take("21_anti_ship_frigate")
 
 	GameState.selected_aircraft = "fa18c"  ## the Hornet has a tailhook
-	if await _begin("carrier_landing", MAP_GIBRALTAR, "noon", "clear"):
+	if await _begin("carrier_landing", MAP_GIBRALTAR, "noon", "clear", "", ["22"]):
 		var carrier := _carrier()
 		if carrier != null:
 			var astern := _flat(carrier.global_transform.basis.z)
@@ -196,7 +199,7 @@ func _flight_shots() -> void:
 		await _take("22_carrier_landing_approach")
 	GameState.selected_aircraft = "f16c"
 
-	if await _begin("time_trial", MAP_ATLAS, "noon", "clear"):
+	if await _begin("time_trial", MAP_ATLAS, "noon", "clear", "", ["23"]):
 		var mission := _mission()
 		var rings: Array = mission.plan["rings"]
 		var start: Vector3 = mission.plan["start"]["pos"]
@@ -205,18 +208,21 @@ func _flight_shots() -> void:
 		_place(first - dir * 1400.0, _heading_of(dir), 430.0)
 		await _take("23_time_trial_rings")
 
-	if await _begin("free_flight", MAP_GIBRALTAR, "night", "clear"):
+	if await _begin("free_flight", MAP_GIBRALTAR, "night", "clear", "", ["24"]):
 		_place(Vector3(STRAIT.x - 2200.0, 900.0, STRAIT.z), 90.0, 500.0)
 		await _take("24_night_strait")
 
-	if await _begin("free_flight", MAP_GIBRALTAR, "noon", "storm"):
+	if await _begin("free_flight", MAP_GIBRALTAR, "noon", "storm", "", ["25"]):
 		_place(Vector3(STRAIT.x - 2200.0, 700.0, STRAIT.z), 90.0, 460.0)
 		await _take("25_storm_strait")
 
 
 ## Starts a sortie with the time of day and weather the shots need, then waits for the level to come up. A loading_shot
-## is saved while the loading screen is still up, with its process held so it does not change scene yet.
-func _begin(mode_id: String, map_id: String, time_of_day: String, weather: String, loading_shot: String = "") -> bool:
+## is saved while the loading screen is still up, with its process held so it does not change scene yet. shots lists the
+## shot ids the sortie takes: when none of them is wanted (--only), no sortie is started and false is returned.
+func _begin(mode_id: String, map_id: String, time_of_day: String, weather: String, loading_shot: String = "", shots: Array = []) -> bool:
+	if not shots.is_empty() and not _any_wanted(shots):
+		return false
 	if GameState.level != null:
 		GameState.goto_menu()
 		var menu_up := await _wait_scene(MENU_SCENE)
@@ -232,7 +238,7 @@ func _begin(mode_id: String, map_id: String, time_of_day: String, weather: Strin
 	Settings.gameplay_time_of_day = time_of_day
 	Settings.gameplay_weather = weather
 	GameState.begin_mission(mode_id, map_id, options, DIFFICULTY)
-	if loading_shot != "":
+	if loading_shot != "" and _wanted(loading_shot):
 		var loading := get_tree().get_first_node_in_group(LoadingScreen.GROUP)
 		if loading != null:
 			loading.set_process(false)
@@ -248,6 +254,8 @@ func _begin(mode_id: String, map_id: String, time_of_day: String, weather: Strin
 
 ## Waits for the scene to settle, then saves the shot.
 func _take(shot_name: String) -> void:
+	if not _wanted(shot_name):
+		return
 	await _settle()
 	await _shot(shot_name)
 
@@ -262,6 +270,8 @@ func _wait_real(seconds: float) -> void:
 
 ## Saves the frame just drawn as <out>/<shot_name>.png. Headless runs count the shot and save nothing.
 func _shot(shot_name: String) -> void:
+	if not _wanted(shot_name):
+		return
 	_shots_done += 1
 	if _headless:
 		print("screenshot_tour: %s (headless, not saved)" % shot_name)
@@ -278,8 +288,9 @@ func _shot(shot_name: String) -> void:
 func _finish() -> void:
 	_restore_save()
 	var where := "not saved (headless)" if _headless else "saved to %s" % _out_dir
-	print("screenshot_tour: %d of %d shots reached, %s" % [_shots_done, SHOT_TOTAL, where])
-	get_tree().quit(0 if _shots_done == SHOT_TOTAL else 1)
+	var expected := SHOT_TOTAL if _only.is_empty() else _only.size()
+	print("screenshot_tour: %d of %d shots reached, %s" % [_shots_done, expected, where])
+	get_tree().quit(0 if _shots_done == expected else 1)
 
 
 func _wait_scene(path: String) -> bool:
@@ -423,6 +434,33 @@ func _max_ground(a: Vector3, b: Vector3) -> float:
 	for i in 41:
 		top = maxf(top, _ground_asl(a.lerp(b, i / 40.0)))
 	return top
+
+
+## Shot ids from --only=08,24. Each id is a shot number or the start of a shot name.
+func _parse_only() -> Array[String]:
+	var ids: Array[String] = []
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--only="):
+			for id in arg.trim_prefix("--only=").split(",", false):
+				ids.append(id.strip_edges())
+	return ids
+
+
+## True when no --only filter is set, or the shot name matches one of its ids (in either direction, so "07" and "07_loading_screen" match).
+func _wanted(shot_name: String) -> bool:
+	if _only.is_empty():
+		return true
+	for id in _only:
+		if shot_name.begins_with(id) or id.begins_with(shot_name):
+			return true
+	return false
+
+
+func _any_wanted(shot_names: Array) -> bool:
+	for shot_name in shot_names:
+		if _wanted(String(shot_name)):
+			return true
+	return false
 
 
 ## Absolute folder for the PNGs. A relative --out is taken from the folder the shell ran Godot in.

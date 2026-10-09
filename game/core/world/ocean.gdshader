@@ -196,6 +196,6 @@ void fragment() {
 	NORMAL = (VIEW_MATRIX * vec4(n, 0.0)).xyz;
 
 	// Emission includes horizon atmospheric haze and specular sky reflection
-	vec3 water_emission = sky_ref * fresnel * 0.65 * (1.0 - haze);
+	vec3 water_emission = sky_ref * fresnel * 0.45 * (1.0 - haze);
 	EMISSION = mix(water_emission, u_haze_color * haze, haze);
 }
