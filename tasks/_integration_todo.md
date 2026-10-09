@@ -11,3 +11,4 @@
 - [perf] IPA 294 MB: compress height.r16/landcover.u8 (zstd via FileAccess.open_compressed or PNG16), color.jpg 8192 -> KTX/ASTC?
 - [terrain polish] real-map colour too dark/desaturated (grade satellite: exposure+saturation, dehaze); near-ground (300 m AGL) looks blurry: stronger detail-texture blend by landcover; grey flat patch NE of Tangier at 1500 m (tile seam?)
 - [perf] a headless Godot run (level/import with real maps) peaked at 4.6 GB RSS on Linux (2026-10-09): stream/downsample map data; iPhone has 6 GB total
+- [world] level.gd must call WorldBuilder (core/world/world_builder.gd) for sky/clouds/weather/vegetation/cities/airbases/carrier; settings-menus' MenuRoot should replace the temporary main_menu
