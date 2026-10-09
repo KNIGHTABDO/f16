@@ -14,3 +14,7 @@
 - 13:06 tick: nothing finished; running ai, art3, modes-missions, perf-ipa (4/5).
   No merges/launches; only playtest-v1 left in queue (needs everything).
   Overall % unchanged.
+
+- 14:05 tick: nothing finished; running smoke-v1, art3 (2/5), both just started.
+  No merges/launches; playtest-v1 waits on them.
+  Overall % unchanged.
