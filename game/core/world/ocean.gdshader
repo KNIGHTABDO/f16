@@ -4,15 +4,10 @@ render_mode cull_back, specular_schlick_ggx;
 // ==============================================================================
 // Ocean Clipmap Shader - Atlantic & Mediterranean Coastal Polish
 //
-// Texture Fetches per Quality Preset:
-// - Low:     2 fetches total
-//            Fragment: 1 x height_tex (Lod 0 depth), 1 x normal_tex
-// - Medium / Balanced: 4 fetches total
-//            Fragment: 1 x height_tex (Lod 0 depth), 2 x normal_tex (scrolling ripples), 1 x foam_tex
-// - High:    4 fetches total
-//            Fragment: 1 x height_tex (Lod 0 depth), 2 x normal_tex (scrolling ripples), 1 x foam_tex
-// - Ultra:   4 fetches total
-//            Fragment: 1 x height_tex (Lod 0 depth), 2 x normal_tex (scrolling ripples), 1 x foam_tex
+// Texture fetches (identical on every preset; the presets change the ring count and the wave count only):
+// - Vertex:   0 fetches. Gerstner waves are analytic ALU: one wave set per vertex, two on the morph band.
+// - Fragment: 4 fetches: 1 x height_tex (water depth, Lod 0), 2 x normal_tex (scrolling ripples), 1 x foam_tex.
+// - Waves per preset: Low 1, Medium / Balanced 2, High / Ultra 4.
 // (Optimized for Apple A15 / mobile tile-based GPUs at sustained 60 fps)
 // ==============================================================================
 
@@ -128,7 +123,8 @@ void vertex() {
 
 	VERTEX = vec3(pos.x, u_sea + y, pos.y);
 	v_world = u_centre + pos;
-	v_world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
+	// World space, like u_cam. MODEL_MATRIX would give scene space, which is offset by WorldOrigin.offset.
+	v_world_pos = vec3(v_world.x, u_sea + y, v_world.y);
 }
 
 void fragment() {
