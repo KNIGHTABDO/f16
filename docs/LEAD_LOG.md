@@ -22,3 +22,6 @@
 - 15:06 tick: nothing finished; running vis-world, vis-hud (2/5), both committing/editing WIP.
   No merges/launches; art3 deferred, playtest-v1 waits on vis jobs.
   Overall % unchanged.
+- 16:10 tick: merged vis-hud, smoke-v2 (tour --only conflict: kept main's). Import + menu/flight/combat/level smoke clean.
+  Running: f35-compress (1/5). playtest-v1 waits on it. Open: hangar preview Camera3D warning, 13 exit leaks (smoke-v2).
+  Overall % unchanged (~visual polish done, final playtest pending).
