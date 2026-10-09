@@ -7,14 +7,15 @@ extends Node
 ## weapon type the player carries in modes with enemies, then goes back to the menu the way the results screen does.
 ## Engine errors (SCRIPT ERROR, ERROR, push_error) are counted per run by a Logger. One line is printed per run.
 ## Every AI aircraft that dies is printed with its cause (a killer's name, or a crash) and its pilot state at the end.
-## `-- --run-s=<seconds>` changes the run length, and `-- --no-fire` keeps the player from firing: e.g. `--run-s=60 --no-fire`
-## checks that enemies survive a minute with nobody shooting them.
+## `-- --run-s=<seconds>` changes the run length. `-- --no-fire` stops the player firing and keeps the player at full health,
+## so `--run-s=60 --no-fire` checks that enemies survive a minute with nobody shooting them.
 
 const MENU_SCENE := "res://ui/menu/menu_root.tscn"
 const SMOKE_MAP := "gibraltar"
 const SECOND_MAP := "atlas"
 const SECOND_MAP_MODE := "free_flight"
 const RUN_S := 15.0  ## game seconds per run, unless --run-s is given
+const PLAYER_HEALTH_NO_FIRE := 1.0e9  ## player health under --no-fire, far above any hit
 const TIME_SCALE := 2.0  ## game seconds per real second, with --fixed-fps 30
 const FIRE_START_S := 2.0  ## game second of the first forced shot
 const FIRE_GAP_S := 1.2  ## game seconds between forced shots
@@ -105,11 +106,22 @@ func _process(delta: float) -> void:
 		Phase.RUNNING:
 			_elapsed += delta
 			_drive()
+			if _no_fire:
+				_keep_player_up()
 			if _elapsed >= _run_s or _mission_over() or GameState.level == null:
 				_leave()
 		Phase.LEAVING:
 			if _menu_is_up():
 				_end_run()
+
+
+## With --no-fire the enemy AI can still shoot, but the player cannot die, so a long run is not cut short by lives. The
+## health is topped up every frame, and it is high enough that one missile hit cannot take it down in a single step.
+func _keep_player_up() -> void:
+	var p := GameState.player as Aircraft
+	if p != null and p.alive:
+		p.max_health = PLAYER_HEALTH_NO_FIRE
+		p.health = PLAYER_HEALTH_NO_FIRE
 
 
 ## One run per mode on the smoke map, plus free flight on the second map. `-- --only=<mode>` keeps just that mode.
