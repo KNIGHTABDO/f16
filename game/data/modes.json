@@ -1,0 +1,232 @@
+{
+  "version": 1,
+  "mode_order": ["free_flight", "instant_action", "dogfight", "strike", "sead", "anti_ship", "convoy_hunt", "base_defense", "carrier_landing", "time_trial", "target_range"],
+  "difficulty_order": ["easy", "normal", "hard", "ace"],
+  "difficulty": {
+    "easy": {"label": "EASY", "skill": 0.35, "enemies": 0.75, "lives_delta": 2, "score": 0.75},
+    "normal": {"label": "NORMAL", "skill": 0.6, "enemies": 1.0, "lives_delta": 0, "score": 1.0},
+    "hard": {"label": "HARD", "skill": 0.8, "enemies": 1.25, "lives_delta": -1, "score": 1.5},
+    "ace": {"label": "ACE", "skill": 0.95, "enemies": 1.5, "lives_delta": -2, "score": 2.0}
+  },
+  "enemy": {
+    "fighters": {"easy": ["mig21bis"], "normal": ["mig29", "su27"], "hard": ["mig29", "su27"], "ace": ["su27", "su57"]},
+    "escorts": ["mig29", "su27"],
+    "bombers": ["b17"],
+    "wingmen": ["f16c", "mirage2000", "f15c", "ef2000"],
+    "sam": {"easy": ["sam_sa2"], "normal": ["sam_sa6", "sam_sa2"], "hard": ["sam_sa6", "sam_sa15"], "ace": ["sam_sa15", "sam_sa6"]},
+    "ground": ["tank", "apc", "truck", "fuel_truck"],
+    "ship": ["frigate", "patrol_boat", "cargo_ship"]
+  },
+  "modes": {
+    "free_flight": {
+      "title": "Free Flight",
+      "tagline": "No enemies. Fly anywhere, any time.",
+      "description": "Explore the map with no enemies and no clock. Pick the time of day and weather, and start airborne over the map or on the friendly runway.",
+      "art": "modes/free_flight",
+      "category": "practice",
+      "lives": -1,
+      "time_limit_s": 0,
+      "options": [
+        {"id": "spawn", "label": "START", "choices": ["air", "runway"], "names": ["AIRBORNE", "RUNWAY"], "default": "air"},
+        {"id": "time", "label": "TIME OF DAY", "setting": "gameplay_time_of_day", "choices": ["dawn", "noon", "sunset", "night", "realtime"], "names": ["DAWN", "NOON", "SUNSET", "NIGHT", "REAL TIME"], "default": "noon"},
+        {"id": "weather", "label": "WEATHER", "setting": "gameplay_weather", "choices": ["clear", "scattered", "overcast", "storm"], "names": ["CLEAR", "SCATTERED", "OVERCAST", "STORM"], "default": "clear"}
+      ],
+      "tuning": {},
+      "win": "No objectives.",
+      "lose": "Free flight never ends."
+    },
+    "instant_action": {
+      "title": "Instant Action",
+      "tagline": "Endless waves. How long can you last?",
+      "description": "Enemy fighters attack in waves that grow every round. Each kill scores points. Lose all your lives and the sortie ends; reach wave 3 to count it as a won sortie.",
+      "art": "modes/instant_action",
+      "category": "arcade",
+      "lives": 3,
+      "time_limit_s": 0,
+      "options": [
+        {"id": "spawn", "label": "START", "choices": ["air", "runway"], "names": ["AIRBORNE", "RUNWAY"], "default": "air"}
+      ],
+      "tuning": {"first_wave": 2, "wave_add": 1, "max_alive": 10, "wave_gap_s": 8.0, "spawn_km": 10.0, "alt_m": 4500.0, "air_kill": 500, "win_wave": 3},
+      "win": "Reach wave 3.",
+      "lose": "All lives lost."
+    },
+    "dogfight": {
+      "title": "Dogfight",
+      "tagline": "Fighters against fighters. Your wingmen fly with you.",
+      "description": "Enemy fighters come at you from the front. Shoot them all down. Pick the size of the fight: 1v1 up to 4v4, with wingmen on your side.",
+      "art": "modes/dogfight",
+      "category": "arcade",
+      "lives": 3,
+      "time_limit_s": 900,
+      "options": [
+        {"id": "size", "label": "FIGHT", "choices": ["1", "2", "3", "4"], "names": ["1 V 1", "2 V 2", "3 V 3", "4 V 4"], "default": "1"},
+        {"id": "spawn", "label": "START", "choices": ["air", "runway"], "names": ["AIRBORNE", "RUNWAY"], "default": "air"}
+      ],
+      "tuning": {"spawn_km": 8.0, "alt_m": 3500.0, "air_kill": 500},
+      "win": "Destroy every enemy fighter.",
+      "lose": "All lives lost, or the time runs out."
+    },
+    "strike": {
+      "title": "Strike",
+      "tagline": "Hit the targets at a real place. SAMs guard them.",
+      "description": "Intelligence places a depot and its supply yard at a real site: Tangier port, Ceuta, or an airbase. Destroy every target. SAM cover and an AAA battery defend the site; knocking out the SAMs is worth bonus points.",
+      "art": "modes/strike",
+      "category": "mission",
+      "lives": 3,
+      "time_limit_s": 1200,
+      "options": [
+        {"id": "spawn", "label": "START", "choices": ["air", "runway"], "names": ["AIRBORNE", "RUNWAY"], "default": "air"}
+      ],
+      "tuning": {"targets": 4, "sams": 2, "target_pts": 600, "sam_pts": 400, "site_radius_m": 1100.0, "standoff_km": 30.0},
+      "win": "Destroy every strike target.",
+      "lose": "All lives lost, or the time runs out."
+    },
+    "sead": {
+      "title": "SEAD",
+      "tagline": "Suppress the air defences. Clear the way.",
+      "description": "Radar-guided SAM sites cover the coast. Find the emitters and destroy each one before the strike package goes in. Every site is worth points, and the mission is won when all of them are down.",
+      "art": "modes/sead",
+      "category": "mission",
+      "lives": 3,
+      "time_limit_s": 1500,
+      "options": [
+        {"id": "spawn", "label": "START", "choices": ["air", "runway"], "names": ["AIRBORNE", "RUNWAY"], "default": "air"}
+      ],
+      "tuning": {"sams": 4, "sam_pts": 800, "site_radius_m": 6000.0, "standoff_km": 32.0},
+      "win": "Destroy every SAM site.",
+      "lose": "All lives lost, or the time runs out."
+    },
+    "anti_ship": {
+      "title": "Anti-Ship",
+      "tagline": "Sink the convoy before it reaches port.",
+      "description": "Frigates escort cargo ships across the strait. Sink the whole group. The ships sail as they are attacked. On the reservoir map a patrol boat and a cargo ship run the water instead.",
+      "art": "modes/anti_ship",
+      "category": "mission",
+      "lives": 3,
+      "time_limit_s": 1500,
+      "options": [
+        {"id": "spawn", "label": "START", "choices": ["air", "runway"], "names": ["AIRBORNE", "RUNWAY"], "default": "air"}
+      ],
+      "tuning": {"frigates": 2, "cargo": 3, "frigate_pts": 1200, "cargo_pts": 800, "patrol_pts": 300, "ship_knots": 16.0},
+      "win": "Sink every ship in the group.",
+      "lose": "All lives lost, or the time runs out."
+    },
+    "convoy_hunt": {
+      "title": "Convoy Hunt",
+      "tagline": "Trucks and tanks on the roads. Stop the column.",
+      "description": "Supply convoys drive real roads toward the front. Hunt them down before they unload. Trucks, APCs and tanks all count.",
+      "art": "modes/convoy_hunt",
+      "category": "mission",
+      "lives": 3,
+      "time_limit_s": 1200,
+      "options": [
+        {"id": "spawn", "label": "START", "choices": ["air", "runway"], "names": ["AIRBORNE", "RUNWAY"], "default": "air"}
+      ],
+      "tuning": {"convoys": 2, "min_road_km": 4.0, "vehicle_pts": 300, "standoff_km": 25.0},
+      "win": "Destroy every vehicle in every convoy.",
+      "lose": "All lives lost, or the time runs out."
+    },
+    "base_defense": {
+      "title": "Base Defense",
+      "tagline": "Bombers inbound. Intercept them before the base is hit.",
+      "description": "Bombers with fighter escorts are heading for a Moroccan air base. Shoot the bombers down before they reach their target. The base has three assets; losing two ends the mission.",
+      "art": "modes/base_defense",
+      "category": "mission",
+      "lives": 3,
+      "time_limit_s": 1200,
+      "options": [
+        {"id": "spawn", "label": "START", "choices": ["air", "runway"], "names": ["AIRBORNE", "RUNWAY"], "default": "air"}
+      ],
+      "tuning": {"bombers": 3, "escorts": 2, "bomber_pts": 1000, "escort_pts": 500, "asset_pts": 500, "assets": 3, "bomber_spawn_km": 45.0, "bomber_alt_m": 5000.0, "max_asset_losses": 2},
+      "win": "Destroy every bomber.",
+      "lose": "Two base assets destroyed, all lives lost, or the time runs out."
+    },
+    "carrier_landing": {
+      "title": "Carrier Landing",
+      "tagline": "Trap the wire. One pass, one landing.",
+      "description": "Bring your aircraft to the deck of the carrier in the strait. Approach on the centreline at a sensible speed and sink rate, then land. The landing is graded. Over the reservoir map there is no carrier, so the landing is a scored touchdown on the runway at the friendly base.",
+      "art": "modes/carrier_landing",
+      "category": "mission",
+      "lives": 1,
+      "time_limit_s": 600,
+      "options": [],
+      "tuning": {"approach_km": 14.0, "alt_m": 1200.0, "speed_kmh": 420.0, "landing_pts": 2000, "max_sink_ms": 6.0, "centre_m": 12.0, "touchdown_zone_m": 350.0},
+      "win": "Land on the carrier or on the base runway.",
+      "lose": "Crash, or the time runs out."
+    },
+    "time_trial": {
+      "title": "Time Trial",
+      "tagline": "Rings through the valleys and the strait. Fastest time wins.",
+      "description": "Fly through every ring in order. The clock starts when you pass the first ring. The course is generated along real places and terrain on each map. A crash ends the run.",
+      "art": "modes/time_trial",
+      "category": "arcade",
+      "lives": 1,
+      "time_limit_s": 900,
+      "options": [
+        {"id": "length", "label": "COURSE", "choices": ["short", "long"], "names": ["SHORT", "LONG"], "default": "short"},
+        {"id": "spawn", "label": "START", "choices": ["air", "runway"], "names": ["AIRBORNE", "RUNWAY"], "default": "air"}
+      ],
+      "tuning": {"rings_short": 8, "rings_long": 14, "ring_radius_m": 95.0, "ring_alt_m": 120.0, "leg_km": 3.5, "par_pts": 20000, "pts_per_s": 12.0},
+      "win": "Pass every ring.",
+      "lose": "Crash, or the time runs out."
+    },
+    "target_range": {
+      "title": "Target Range",
+      "tagline": "Practice runs on static targets. No clock, no pressure.",
+      "description": "A grid of ground targets on open land near a real town. Destroy them all, and the range resets after a short pause. No credits are paid on the range.",
+      "art": "modes/target_range",
+      "category": "practice",
+      "lives": -1,
+      "time_limit_s": 0,
+      "options": [
+        {"id": "spawn", "label": "START", "choices": ["air", "runway"], "names": ["AIRBORNE", "RUNWAY"], "default": "air"}
+      ],
+      "tuning": {"targets": 9, "spacing_m": 170.0, "respawn_s": 12.0, "alt_m": 1500.0},
+      "win": "Practice: the range resets when every target is down.",
+      "lose": "Practice: nothing to lose."
+    }
+  },
+  "maps": {
+    "gibraltar": {
+      "name": "Strait of Gibraltar",
+      "subtitle": "Tangier, Ceuta, Tarifa, the Rif",
+      "art": "maps/thumb_gibraltar",
+      "loading": "loading/load_gibraltar",
+      "sea": true,
+      "anchors": {
+        "strike": ["Tangier", "Ceuta", "Tétouan"],
+        "airbases": ["LERT", "LEJR", "GMTN"],
+        "range": ["Tétouan", "Asilah", "Chefchaouen", "Ouezzane"],
+        "course": ["Tangier", "Tétouan", "Chefchaouen", "Ceuta", "Tarifa", "Algésiras", "Asilah"]
+      }
+    },
+    "atlas": {
+      "name": "High Atlas",
+      "subtitle": "Marrakech, Jbel Toubkal, Ouarzazate, the desert edge",
+      "art": "maps/thumb_atlas",
+      "loading": "loading/load_atlas",
+      "sea": false,
+      "anchors": {
+        "strike": ["Marrakesh", "Ben Guerir", "Ouarzazate", "Beni Mellal"],
+        "airbases": ["GMMX", "GMMG", "GMMZ", "GMMD"],
+        "range": ["Ait Ourir", "Asni", "Tahannaout", "Demnate"],
+        "course": ["Imlil", "Oukaïmeden", "Asni", "Marrakesh", "Ait Ourir", "Demnate"]
+      }
+    }
+  },
+  "tips": [
+    "Esc pauses the sortie. Restart or go to the next mission from the results screen.",
+    "Arcade: drag the aim point or use the right stick. The instructor flies to it.",
+    "Realistic: watch the G meter. Blackout comes before structural failure.",
+    "SAMs need line of sight. Fly low behind a ridge to break their track.",
+    "Flares break heat-seeking missiles. Chaff is not carried by every aircraft.",
+    "Carrier landings are graded on centreline, sink rate and the wire you catch.",
+    "Trucks are fragile, tanks are not. Stop the column at its head, then work back.",
+    "Patrol boats die to guns. Frigates need missiles or bombs.",
+    "Bombers are slow. Intercept them over the sea before they reach the base.",
+    "Time trial: rings must be passed through. Flying around one does not count.",
+    "Accuracy counts trigger pulls and missile launches that scored a hit.",
+    "Every mission is generated from real places on the map. A new seed is a new sortie.",
+    "Land at the friendly base after the objectives for the RTB bonus."
+  ]
+}
