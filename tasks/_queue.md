@@ -18,7 +18,7 @@ Run Gemini AND Haiku (job.sh haiku = Haiku 5.5 xhigh) in parallel; both are prim
 - [x] modes-missions | haiku | tasks/modes_missions.md | main | needs: ai, hud-touch
 - [x] hangar-progression | haiku | tasks/hangar.md | .claude/worktrees/hk-hangar (branch hk/hangar) | needs: roster, models2, settings-menus, art
 - [x] b2 | haiku | tasks/b2.md | .claude/worktrees/hk-b2 (branch hk/b2) | needs: -
-- [ ] art3 | gemini | tasks/art3.md | main | needs: b2 (DEFERRED 14:55: Gemini hung twice ~1h with no output; retry later or use ChatGPT in browser)
+- [x] art3 | gemini | tasks/art3.md | main | needs: b2 (done: B-2 + all 22 profiles redone (user ChatGPT + Nano Banana 2.1)
 - [x] perf-ipa | haiku | tasks/perf_ipa.md | main | needs: - (parallel)
 - [x] smoke-v1 | haiku | tasks/smoke_v1.md | .claude/worktrees/hk-smoke-v1 | needs: all features (merged)
 - [x] fix-v1 | haiku | tasks/fix_v1.md | .claude/worktrees/hk-fix-v1 | needs: smoke-v1
