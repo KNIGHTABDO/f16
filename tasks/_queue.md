@@ -7,11 +7,11 @@ Run Gemini AND Haiku (job.sh haiku = Haiku 5.5 xhigh) in parallel; both are prim
 - [x] world | gemini | tasks/cont_world_dressing.md | worktree-agent-aebba58123a873c40 | needs: -
 - [x] models2 (merged partial) 
 - [x] models3 | haiku | tasks/cont2_models.md | .claude/worktrees/gem-gem-models2 | needs: -
-- [~] weapons | claude | tasks/cont_weapons.md | .claude/worktrees/agent-ad75bf9a6376f65fc | needs: -
+- [x] weapons | claude | tasks/cont_weapons.md | .claude/worktrees/agent-ad75bf9a6376f65fc | needs: -
 - [x] integration | haiku | tasks/cont2_integration.md | .claude/worktrees/gem-gem-integration | needs: -
 - [x] art | gemini | tasks/art.md | main | needs: -
 - [~] art2 | gemini | tasks/art2.md | main | needs: art
-- [ ] combat-units | gemini | tasks/combat_units.md | main | needs: weapons, integration
+- [~] combat-units | gemini | tasks/combat_units.md | main | needs: weapons, integration
 - [ ] ai | claude | tasks/ai.md | main | needs: combat-units
 - [~] hud-touch | gemini | tasks/hud_touch.md | main | needs: weapons, integration, settings-menus
 - [x] terrain-polish | haiku | tasks/cont_terrain_polish.md | .claude/worktrees/gem-gem-terrain-polish | needs: -
