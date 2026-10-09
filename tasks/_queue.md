@@ -20,4 +20,4 @@ Gemini is the primary coder (check quota: scripts/job.sh gemini fails fast if ag
 - [ ] perf-ipa | claude | tasks/perf_ipa.md | main | needs: modes-missions
 - [ ] playtest-v1 | lead | full headless playthrough, fix, tag v1.0 | main | needs: everything
 
-NOTE 2026-10-09 11:20: Gemini credits exhausted on 2 accounts; 11:40 agy now signed in as abdo.knight7@gmail.com (works). If 429 again: Use `scripts/job.sh haiku` (non-weapons) / `claude` (weapons) until `agy -p "Reply with just OK"` works again.
+NOTE 2026-10-09: agy is on abdo.knight7@gmail.com; Gemini weekly quota 95% left (check with /usage in agy TUI; "AI credits" in the status bar is unrelated). If 429 again: Use `scripts/job.sh haiku` (non-weapons) / `claude` (weapons) until `agy -p "Reply with just OK"` works again.
