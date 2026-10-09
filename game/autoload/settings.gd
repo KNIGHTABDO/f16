@@ -27,6 +27,7 @@ var volume_master := 1.0
 var volume_sfx := 1.0
 var volume_music := 0.6
 var volume_radio_chatter := 0.8
+var volume_cockpit := 1.0  ## "Cockpit" bus: cockpit-only sounds (warnings, radio in cockpit)
 
 ## Navidrome / OpenSubsonic server for the in-game radio.
 var navidrome_url := ""
@@ -34,6 +35,7 @@ var navidrome_user := ""
 var navidrome_password := ""
 var radio_enabled := true
 var radio_source := "random"  # "random", "starred", "playlist:<id>", "genre:<name>"
+var radio_cockpit_fx := true  ## band-limited, slightly distorted radio while in cockpit view
 
 
 func _ready() -> void:
@@ -73,7 +75,7 @@ func save() -> void:
 func apply() -> void:
 	Engine.max_fps = fps_target
 	Engine.physics_ticks_per_second = 60
-	for bus in [["Master", volume_master], ["SFX", volume_sfx], ["Music", volume_music]]:
+	for bus in [["Master", volume_master], ["SFX", volume_sfx], ["Music", volume_music], ["Cockpit", volume_cockpit]]:
 		var idx := AudioServer.get_bus_index(bus[0])
 		if idx >= 0:
 			AudioServer.set_bus_volume_db(idx, linear_to_db(maxf(bus[1], 0.0001)))

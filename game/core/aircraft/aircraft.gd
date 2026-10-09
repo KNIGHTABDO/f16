@@ -38,6 +38,8 @@ var _wreck_spin := Vector3.ZERO
 var _exploded := false
 var _free_timer := WRECK_FREE_DELAY
 var _rng := RandomNumberGenerator.new()
+var _engine_audio: EngineAudio  ## engine layers, child of this node; freed on destruction
+var _contrail: Contrail  ## condensation trail, a child of the World node (floating), retired on destruction
 
 
 ## Builds an aircraft from data/aircraft/<aircraft_id>.json. Returns null if the data cannot be loaded.
@@ -80,6 +82,7 @@ func _build() -> void:
 	visual.name = "Visual"
 	add_child(visual)
 	visual.setup(data)
+	visual.bind(self)
 
 	_smoke = _make_smoke()
 	add_child(_smoke)
@@ -91,6 +94,21 @@ func _ready() -> void:
 	add_to_group("floating")
 	add_to_group("team_%d" % team)
 	_setup_weapons()
+	_engine_audio = EngineAudio.new()
+	_engine_audio.name = "EngineAudio"
+	add_child(_engine_audio)
+	_engine_audio.setup(self)
+	var world := get_parent()
+	if world != null:
+		_contrail = Contrail.new()
+		_contrail.name = "Contrail_%s" % name
+		world.add_child(_contrail)
+		_contrail.setup(self, data.wing_span * 0.5, Vector3(0.0, 0.0, data.length * 0.46))
+
+
+func _exit_tree() -> void:
+	if _contrail != null and is_instance_valid(_contrail):
+		_contrail.retire()
 
 
 ## Places the aircraft flying at speed_kmh along heading_deg (0 = north, clockwise), gear up.
@@ -127,6 +145,8 @@ func _physics_process(delta: float) -> void:
 	_sync_transform()
 	visual.set_state(controls.throttle, flight.afterburner)
 	_check_overg(delta)
+	if _contrail != null:
+		_contrail.update(flight.mach, flight.g_load, flight.alpha, position.y)
 	if weapons and weapons.has_method("tick"):
 		weapons.call("tick", controls, delta)
 
@@ -279,6 +299,11 @@ func _die(killer: Node) -> void:
 		_rng.randf_range(-2.0, 2.0), _rng.randf_range(-1.0, 1.0), _rng.randf_range(-3.0, 3.0))
 	_smoke.emitting = true
 	visual.stop_effects()
+	if _engine_audio != null:
+		_engine_audio.queue_free()
+		_engine_audio = null
+	if _contrail != null:
+		_contrail.retire()
 	destroyed.emit(killer)
 	Events.aircraft_destroyed.emit(self, killer)
 	Events.target_destroyed.emit(self, killer)

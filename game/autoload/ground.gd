@@ -6,7 +6,7 @@ extends Node
 ## - height.r16  : N*N little-endian uint16, row-major, row 0 = north edge, col 0 = west edge.
 ##                 height_m = height_min + v / 65535 * (height_max - height_min)
 ## - landcover.u8: L*L uint8 land-cover classes (Ground.LC_*), same orientation.
-## - color.png   : satellite colour for the whole map (used by the terrain shader only).
+## - color.jpg   : satellite colour for the whole map (color_file in the map json; terrain shader only).
 ## Map metadata in res://data/maps/<id>.json (see Ground.load_map).
 
 const LC_WATER := 0
@@ -33,6 +33,11 @@ var _landcover := PackedByteArray()
 
 func is_loaded() -> bool:
 	return height_n > 0
+
+
+## Raw height file bytes (N*N little-endian uint16, see header). Shared with Ocean so it need not re-read the file.
+func get_height_bytes() -> PackedByteArray:
+	return _heights
 
 
 ## Loads data/maps/<id>.json and the binary files it references. Returns false on error.
