@@ -34,15 +34,8 @@ func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	theme = load("res://ui/theme/knight_theme.tres")
 
-	# Load current layout or defaults
-	_layout_data = Settings.touch_layout.duplicate(true)
-	if _layout_data.is_empty():
-		_layout_data = Settings.DEFAULT_TOUCH_LAYOUT.duplicate(true)
-
-	# Ensure every key exists in _layout_data
-	for k in Settings.DEFAULT_TOUCH_LAYOUT:
-		if not _layout_data.has(k):
-			_layout_data[k] = Settings.DEFAULT_TOUCH_LAYOUT[k].duplicate(true)
+	# Same resolution as TouchControls, so the editor shows exactly what the player gets
+	_layout_data = HUDLayout.active_touch_layout(Settings.touch_layout)
 
 	# Dark tactical HUD grid background
 	var bg := ColorRect.new()
@@ -86,18 +79,21 @@ func _create_mock_hud_overlay() -> void:
 	hud_overlay.add_child(center_pip)
 
 
+func _map_rect() -> Rect2:
+	return HUDLayout.safe_rect(get_viewport_rect().size)
+
+
 func _create_touch_button_widget(key: String) -> void:
-	var data: Dictionary = _layout_data.get(key, {"pos": [0.5, 0.5], "scale": 1.0, "opacity": 0.8})
+	var data: Dictionary = _layout_data[key]
 	var pos_frac: Array = data.get("pos", [0.5, 0.5])
 	var b_scale: float = float(data.get("scale", 1.0))
-	var b_opacity: float = float(data.get("opacity", 0.8))
+	var b_opacity: float = float(data.get("opacity", 0.6))
 
 	var container := PanelContainer.new()
 	container.name = "Btn_" + key
 	container.mouse_filter = Control.MOUSE_FILTER_PASS
 
-	var base_size := Vector2(100, 100) if key == "stick" else (Vector2(60, 140) if key == "throttle" else Vector2(80, 80))
-	container.custom_minimum_size = base_size * b_scale
+	container.custom_minimum_size = HUDLayout.base_size(key) * b_scale
 	container.size = container.custom_minimum_size
 
 	var sb := StyleBoxFlat.new()
@@ -123,9 +119,8 @@ func _create_touch_button_widget(key: String) -> void:
 	lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	container.add_child(lbl)
 
-	# Position based on fraction
-	var vp_size := get_viewport_rect().size
-	container.position = Vector2(pos_frac[0] * vp_size.x, pos_frac[1] * vp_size.y) - (container.size * 0.5)
+	# Position based on fraction, mapped the same way TouchControls maps it
+	container.position = HUDLayout.to_px(pos_frac, _map_rect(), Settings.left_handed) - (container.size * 0.5)
 
 	container.gui_input.connect(_on_button_gui_input.bind(key))
 	_editor_canvas.add_child(container)
@@ -173,11 +168,10 @@ func _input(event: InputEvent) -> void:
 	new_pos.y = clampf(new_pos.y, 60, vp_size.y - node.size.y - 80)
 	node.position = new_pos
 
-	# Update fraction in _layout_data
+	# Update fraction in _layout_data (inverse of the mapping used for display)
 	var center_pos := new_pos + (node.size * 0.5)
-	var frac_x: float = clampf(center_pos.x / vp_size.x, 0.0, 1.0)
-	var frac_y: float = clampf(center_pos.y / vp_size.y, 0.0, 1.0)
-	_layout_data[_selected_btn_key]["pos"] = [frac_x, frac_y]
+	var frac: Array = HUDLayout.to_frac(center_pos, _map_rect(), Settings.left_handed)
+	_layout_data[_selected_btn_key]["pos"] = [clampf(frac[0], 0.0, 1.0), clampf(frac[1], 0.0, 1.0)]
 
 
 func _select_button(key: String) -> void:
@@ -309,8 +303,7 @@ func _on_scale_slider_changed(val: float) -> void:
 		return
 	_layout_data[_selected_btn_key]["scale"] = val
 	var node: Control = _button_nodes[_selected_btn_key]
-	var base_size := Vector2(100, 100) if _selected_btn_key == "stick" else (Vector2(60, 140) if _selected_btn_key == "throttle" else Vector2(80, 80))
-	node.custom_minimum_size = base_size * val
+	node.custom_minimum_size = HUDLayout.base_size(_selected_btn_key) * val
 	node.size = node.custom_minimum_size
 	_select_button(_selected_btn_key)
 
@@ -324,17 +317,15 @@ func _on_opacity_slider_changed(val: float) -> void:
 
 func _on_reset_pressed() -> void:
 	Sfx.play_2d("ui_confirm")
-	_layout_data = Settings.DEFAULT_TOUCH_LAYOUT.duplicate(true)
-	var vp_size := get_viewport_rect().size
+	_layout_data = HUDLayout.active_touch_layout({})
 	for k in _button_nodes:
 		var node: Control = _button_nodes[k]
 		var data: Dictionary = _layout_data[k]
 		var pos_frac: Array = data["pos"]
 		var b_scale: float = float(data["scale"])
-		var base_size := Vector2(100, 100) if k == "stick" else (Vector2(60, 140) if k == "throttle" else Vector2(80, 80))
-		node.custom_minimum_size = base_size * b_scale
+		node.custom_minimum_size = HUDLayout.base_size(k) * b_scale
 		node.size = node.custom_minimum_size
-		node.position = Vector2(pos_frac[0] * vp_size.x, pos_frac[1] * vp_size.y) - (node.size * 0.5)
+		node.position = HUDLayout.to_px(pos_frac, _map_rect(), Settings.left_handed) - (node.size * 0.5)
 	_select_button(_selected_btn_key)
 
 
