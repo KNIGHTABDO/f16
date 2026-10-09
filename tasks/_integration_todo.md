@@ -8,3 +8,4 @@
 - [terrain] Ground: expose height bytes/texture so Ocean doesn't re-read file; color 8192² memory on iOS check
 - [maps] ground.gd header says color.png -> color.jpg (color_file in json)
 - [vfx] aircraft: AfterburnerFx per nozzle, Contrail, VaporFx; flares group "flares"; Vfx finds node named World
+- [perf] IPA 294 MB: compress height.r16/landcover.u8 (zstd via FileAccess.open_compressed or PNG16), color.jpg 8192 -> KTX/ASTC?
