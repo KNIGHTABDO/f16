@@ -16,7 +16,7 @@ Gemini is the primary coder (check quota: scripts/job.sh gemini fails fast if ag
 - [ ] hud-touch | gemini | tasks/hud_touch.md | main | needs: weapons, integration, settings-menus
 - [~] terrain-polish | haiku | tasks/cont_terrain_polish.md | .claude/worktrees/gem-gem-terrain-polish | needs: -
 - [ ] modes-missions | gemini | tasks/modes_missions.md | main | needs: ai, hud-touch
-- [ ] hangar-progression | gemini | tasks/hangar.md | main | needs: roster, models2, settings-menus, art
+- [~] hangar-progression | haiku | tasks/hangar.md | .claude/worktrees/hk-hangar (branch hk/hangar) | needs: roster, models2, settings-menus, art
 - [ ] perf-ipa | claude | tasks/perf_ipa.md | main | needs: modes-missions
 - [ ] playtest-v1 | lead | full headless playthrough, fix, tag v1.0 | main | needs: everything
 
