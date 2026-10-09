@@ -50,6 +50,7 @@ var _blast_radius := 25.0
 var _is_ground := false
 var _trail: Node3D
 var _seen_flares := {}
+var _decoyed := false  # seeker was spoofed by a decoy; never re-acquires
 var _registered_on: Node
 var _prev_pos := Vector3.ZERO
 var _target_valid_kinds: Array = []
@@ -230,7 +231,7 @@ func _seeker_update() -> void:
 			_set_target(null)
 	if type == "ir_missile":
 		_flare_roll()
-	if target == null:
+	if target == null and not _decoyed:
 		_acquire()
 
 
@@ -253,6 +254,7 @@ func _flare_roll() -> void:
 			continue
 		_seen_flares[id] = true
 		if randf() > resist:
+			_decoyed = true  # a spoofed seeker does not find its way back to the aircraft
 			_set_target(fl)
 			return
 
@@ -298,6 +300,7 @@ func _on_flares_dropped(aircraft: Node3D) -> void:
 	if type != "radar_missile" or _dead or aircraft != target or phase == Phase.DROP:
 		return
 	if randf() > float(data.get("chaff_resist", 0.7)):
+		_decoyed = true
 		_set_target(null)
 
 

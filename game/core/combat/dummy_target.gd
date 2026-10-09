@@ -17,6 +17,7 @@ var kind := "air"
 var circle_center := Vector3.ZERO
 var circle_radius := 1500.0
 var speed := 150.0
+var start_angle := 0.0  # radians along the circle at spawn
 var _angle := 0.0
 var _vel := Vector3.ZERO
 var _size := Vector3(10, 3, 10)
@@ -58,7 +59,8 @@ func _ready() -> void:
 	bm.material = mat
 	add_child(mesh)
 	if kind == "air":
-		_place_on_circle(0.0)
+		_angle = start_angle
+		_place_on_circle(_angle)
 
 
 func take_damage(amount: float, source: Node, hit_pos: Vector3) -> void:

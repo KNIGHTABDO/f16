@@ -151,9 +151,8 @@ func _physics_process(delta: float) -> void:
 		_pos[i] = p1
 		_life[i] -= delta
 		var dead := _life[i] <= 0.0
-		var shooter: Node = _shooter[i]
-		if shooter != null and not is_instance_valid(shooter):
-			shooter = null
+		var sv: Variant = _shooter[i]
+		var shooter: Node = sv if is_instance_valid(sv) else null
 		_query.from = p0
 		_query.to = p1
 		_query.exclude = _exclude[i]

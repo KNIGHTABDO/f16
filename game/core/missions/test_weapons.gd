@@ -12,6 +12,7 @@ const GUN_TIMEOUT := 70.0
 const MISSILE_TIMEOUT := 60.0
 
 var world: Node3D
+var _min_y := 0.0
 var player: Aircraft
 var enemy: Aircraft
 var cam: Camera3D
@@ -27,6 +28,7 @@ func _ready() -> void:
 		if a.begins_with("--shot="):
 			shot_path = a.substr(7)
 	Settings.flight_mode = "arcade"
+	seed(20260609)  # deterministic flare / chaff rolls
 	WorldOrigin.reset()
 	if not Ground.load_map(MAP_ID):
 		push_error("test_weapons: cannot load map")
@@ -79,7 +81,8 @@ func _wait(cond: Callable, timeout: float) -> float:
 
 func _clear_world() -> void:
 	for n in world.get_children():
-		if n.name != "BulletPool":
+		# Vfx owns lights/emitters/trail pools under World; only free gameplay nodes.
+		if n is Aircraft or n is DummyTarget or n is Missile or n is Bomb or n is Rocket:
 			n.queue_free()
 	_targets.clear()
 	player = null
@@ -96,14 +99,16 @@ func _spawn_player(loadout: String, pos: Vector3, heading: float, kmh := 700.0) 
 	world.add_child(player)
 	player.spawn_in_air(pos, heading, kmh)
 	player.controls.throttle = 0.8
+	_min_y = pos.y - 600.0
 	WorldOrigin.anchor = null
 
 
-func _drone(center: Vector3, radius: float, speed: float, hp := 100.0) -> DummyTarget:
+func _drone(center: Vector3, radius: float, speed: float, hp := 100.0, start_angle := 0.0) -> DummyTarget:
 	var d := DummyTarget.create("air", 1, hp, Vector3(9, 3, 14))
 	d.circle_center = center
 	d.circle_radius = radius
 	d.speed = speed
+	d.start_angle = start_angle
 	world.add_child(d)
 	_targets.append(d)
 	return d
@@ -119,7 +124,16 @@ func _ground_target(kind: String, x: float, z: float, hp: float, size: Vector3) 
 
 func _steer(point: Vector3) -> void:
 	player.controls.use_aim = true
-	player.controls.aim_direction = (point - player.global_position).normalized()
+	var dir := (point - player.global_position).normalized()
+	var pp := player.global_position
+	# Test pilot safety: never chase into terrain (pull up when low or sinking toward it).
+	var clearance := pp.y - _terrain_y(pp.x, pp.z)
+	var ahead := pp + player.flight.velocity * 3.0
+	if clearance < 150.0 or pp.y < _min_y or player.flight.velocity.y < -90.0 or ahead.y - _terrain_y(ahead.x, ahead.z) < 60.0:
+		dir.y = maxf(dir.y, 0.35)
+		dir = dir.normalized()
+	# ControlInput.aim_direction is in the aircraft's local frame.
+	player.controls.aim_direction = player.global_transform.basis.inverse() * dir
 
 
 func _press_fire() -> void:
@@ -158,7 +172,10 @@ func _shot(label: String) -> void:
 func _run() -> void:
 	await _frames(5)
 	var land := Vector2(0.0, 0.0)
-	var alt := maxf(2000.0, _terrain_y(land.x, land.y) + 1200.0)
+	var alt := 2000.0
+	for k in range(-20, 21):
+		for j in range(-20, 21):
+			alt = maxf(alt, _terrain_y(land.x + k * 400.0, land.y + j * 800.0) + 1500.0)
 	await _phase_gun(alt)
 	await _phase_missile("aim9x", "air_superiority", alt, 3000.0)
 	await _phase_missile("aim120c", "air_superiority", alt, 14000.0)
@@ -175,8 +192,13 @@ func _run() -> void:
 
 func _phase_gun(alt: float) -> void:
 	_clear_world()
-	_spawn_player("air_superiority", Vector3(0, alt, 0), 0.0, 700.0)
-	var drone := _drone(Vector3(0, alt, -4200), 1500.0, 130.0)
+	# Drone flies a 3 km circle at 150 m/s; the player starts 1.5 km behind it on the same circle, 720 km/h.
+	var radius := 3000.0
+	var centre := Vector3(-3000.0, alt, -4000.0)
+	var a0 := PI * 0.5 - 1500.0 / radius
+	var start := centre + Vector3(sin(a0), 0.0, cos(a0)) * radius
+	_spawn_player("air_superiority", start, rad_to_deg(PI * 0.5 - a0), 720.0)
+	var drone := _drone(centre, radius, 150.0, 100.0, PI * 0.5)
 	var start_ammo: int = player.weapons.get_gun_ammo()
 	var t := 0.0
 	var fired_ticks := 0
@@ -192,11 +214,11 @@ func _phase_gun(alt: float) -> void:
 			fired_ticks += 1
 			if fired_ticks == 40:
 				_shot("gun")
-		player.controls.throttle = 1.0 if dist > 1000.0 else 0.4
+		player.controls.throttle = 1.0 if dist > 500.0 else 0.6
 		await get_tree().physics_frame
 		t += DT
 	player.controls.fire_gun = false
-	var used := start_ammo - player.weapons.get_gun_ammo()
+	var used: int = start_ammo - player.weapons.get_gun_ammo()
 	_report("gun vs drone", not drone.alive, "t=%.1fs rounds=%d hp_left=%.0f" % [t, used, drone.health])
 
 
@@ -338,6 +360,8 @@ func _phase_rockets() -> void:
 			break
 		await get_tree().physics_frame
 		t += DT
+	if player.alive:
+		player.controls.aim_direction = Vector3(0.0, 0.3, -1.0).normalized()  # pull up and away
 	await _wait(func() -> bool: return not tank.alive, 10.0)
 	_report("Hydra rockets vs tank", not tank.alive, "salvos=%d rockets_left=%d" % [
 		salvos, player.weapons.get_selected().count])
@@ -405,11 +429,12 @@ func _phase_flares(alt: float, use_flares: bool) -> void:
 	ew.set_target(player)
 	_select_for(ew, "aim9x")
 	var missile_seen: Missile = null
+	var fired_missile := false
 	var t := 0.0
 	var warned := false
 	var flares_used := 0
 	var switched := false
-	while t < 45.0:
+	while t < 45.0 and player.alive:
 		_steer(Vector3(0, alt, -30000.0))
 		var lock: int = ew.get_lock_state()
 		if lock == WeaponSystem.Lock.LOCKED and missile_seen == null:
@@ -418,6 +443,7 @@ func _phase_flares(alt: float, use_flares: bool) -> void:
 			enemy.controls.clear_triggers()
 			for m in get_tree().get_nodes_in_group("missiles"):
 				missile_seen = m
+				fired_missile = true
 		if missile_seen != null and is_instance_valid(missile_seen):
 			var d := missile_seen.global_position.distance_to(player.global_position)
 			if player.weapons.get_incoming_missiles().size() > 0:
@@ -426,6 +452,8 @@ func _phase_flares(alt: float, use_flares: bool) -> void:
 				player.controls.drop_flares = true
 			else:
 				player.controls.drop_flares = false
+			if int(t * 60.0) % 15 == 0:
+				print("DBGF t=%.2f d=%.0f flare=%s tdist=%.0f" % [t, d, missile_seen.target != null and missile_seen.target.is_in_group("flares"), missile_seen.target.global_position.distance_to(player.global_position) if missile_seen.target != null else -1.0])
 			if missile_seen.target != null and missile_seen.target.is_in_group("flares"):
 				switched = true
 		elif missile_seen != null:
@@ -437,7 +465,7 @@ func _phase_flares(alt: float, use_flares: bool) -> void:
 	await _frames(120)
 	var survived := player.alive and player.health > 30.0
 	var name := "missile + flares" if use_flares else "missile, no flares (control)"
-	var ok := (survived and switched and warned) if use_flares else (missile_seen != null and warned and player.health < 100.0)
+	var ok := (survived and switched and warned) if use_flares else (fired_missile and warned and player.health < 100.0)
 	_report(name, ok, "hp=%.0f decoyed=%s warned=%s flares_used=%d" % [player.health, switched, warned, flares_used])
 
 
