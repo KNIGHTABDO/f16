@@ -13,7 +13,7 @@ var map_id := ""
 var player: Aircraft
 var camera: FlightCamera
 var controller: PlayerController
-var overlay: FlightOverlay
+var hud: HUD
 var terrain: Terrain
 var ocean: Ocean
 var _hud: CanvasLayer
@@ -60,10 +60,10 @@ func _ready() -> void:
 	_hud = CanvasLayer.new()
 	_hud.name = "Hud"
 	add_child(_hud)
-	overlay = FlightOverlay.new()
-	overlay.name = "FlightOverlay"
-	overlay.setup(controller, camera)
-	_hud.add_child(overlay)
+	hud = HUD.new()
+	hud.name = "HUD"
+	hud.setup(controller, camera)
+	_hud.add_child(hud)
 
 	if Settings.radio_enabled:
 		Radio.cockpit_fx = (camera.get_mode() == FlightCamera.Mode.COCKPIT) and Settings.radio_cockpit_fx
@@ -96,7 +96,7 @@ func _process(delta: float) -> void:
 		if _respawn_left <= 0.0:
 			_respawn_left = -1.0
 			_spawn_player()
-	overlay.respawn_in = _respawn_left
+	hud.respawn_in = _respawn_left
 
 
 ## The settings name a fixed time of day. "realtime" passes the device clock as a float hour, which WorldSky parses.

@@ -3,6 +3,7 @@ extends Control
 ## In-flight pause menu with Resume, Settings, Restart, and Quit to Menu options.
 
 var _settings_subview: Control
+var _radio_subview: Control
 
 
 func _ready() -> void:
@@ -21,7 +22,7 @@ func _ready() -> void:
 	add_child(center)
 
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size = Vector2(440, 480)
+	panel.custom_minimum_size = Vector2(440, 520)
 	center.add_child(panel)
 
 	var margin := MarginContainer.new()
@@ -77,6 +78,10 @@ func _ready() -> void:
 	btn_settings.pressed.connect(_on_settings_pressed)
 	btn_vbox.add_child(btn_settings)
 
+	var btn_radio := _create_btn("RADIO PANEL")
+	btn_radio.pressed.connect(_on_radio_pressed)
+	btn_vbox.add_child(btn_radio)
+
 	var btn_restart := _create_btn("RESTART SORTIE")
 	btn_restart.pressed.connect(_on_restart_pressed)
 	btn_vbox.add_child(btn_restart)
@@ -91,6 +96,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		if _settings_subview:
 			_settings_subview.queue_free()
 			_settings_subview = null
+		elif _radio_subview:
+			_radio_subview.queue_free()
+			_radio_subview = null
 		else:
 			_on_resume_pressed()
 		get_viewport().set_input_as_handled()
@@ -112,7 +120,7 @@ func _on_resume_pressed() -> void:
 
 func _on_settings_pressed() -> void:
 	Sfx.play_2d("ui_click")
-	if _settings_subview:
+	if _settings_subview or _radio_subview:
 		return
 
 	var subview := Control.new()
@@ -136,6 +144,26 @@ func _on_settings_pressed() -> void:
 		_settings_subview = null
 	)
 	subview.add_child(back_btn)
+
+
+func _on_radio_pressed() -> void:
+	Sfx.play_2d("ui_click")
+	if _settings_subview or _radio_subview:
+		return
+
+	var subview := Control.new()
+	subview.process_mode = Node.PROCESS_MODE_ALWAYS
+	subview.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(subview)
+	_radio_subview = subview
+
+	var panel := RadioPanel.new()
+	panel.process_mode = Node.PROCESS_MODE_ALWAYS
+	panel.closed.connect(func():
+		subview.queue_free()
+		_radio_subview = null
+	)
+	subview.add_child(panel)
 
 
 func _on_restart_pressed() -> void:
