@@ -1,6 +1,28 @@
 shader_type spatial;
 render_mode cull_back, specular_schlick_ggx;
 
+// ==============================================================================
+// Terrain Clipmap Shader - Moroccan Landscape & Visual Polish
+//
+// Texture fetches per quality preset (worst case per invocation; procedural noise is ALU, not counted).
+// Vertex: 1 x height_tex per surface_h() call, 2 calls on the morph band (odd vertices). With detail on,
+//         each call also samples the height grid 4 more times for the slope mask.
+// - Low (detail off, near-ground textures off):
+//     Vertex:   1 (2 on morph band)
+//     Fragment: 1 x color_tex, 4 x height_tex (shading normal)                        = 5
+// - Medium (detail on, triplanar off):
+//     Vertex:   up to 10
+//     Fragment, inside color_end: 1 color + 4 height + 4 landcover + 2 layers x 3     = 15
+//               (layer = albedo, albedo, normal)
+//     Fragment, beyond color_end: 1 color + 4 height                                  = 5
+// - Balanced / High / Ultra (detail on, triplanar on):
+//     Vertex:   up to 10
+//     Fragment, inside color_end: as Medium + 2 (cliff rock albedo, normal)           = 17
+//     Fragment, beyond color_end: 5
+// The presets differ in ring count (half_cells), colour texture size (color_px) and the detail flags,
+// not in per-pixel fetch count. Target: sustained 60 fps on Apple A15 (tile-based GPU).
+// ==============================================================================
+
 // Geometry clipmap ring (one MeshInstance3D per ring, all sharing one unit grid mesh).
 // VERTEX.xz of the mesh are integer cell indices (-N/2..N/2); the ring cell size is u_cell.
 // Vertices strictly inside the next finer ring's window are discarded (degenerate), and the
@@ -25,15 +47,17 @@ uniform float u_hmin = -200.0;
 uniform float u_hmax = 3200.0;
 uniform float u_sea = 0.0;
 uniform float u_detail_on = 1.0;
-uniform float u_near_on = 1.0;                  // close-range colour textures on/off (quality)
+uniform float u_near_on = 1.0;                    // close-range colour textures on/off (quality)
 uniform float u_detail_amp = 2.5;
 uniform float u_detail_end = 2000.0;              // procedural detail fades out by this distance
-uniform float u_color_end = 2500.0;               // detail textures fade out by this distance
+uniform float u_color_end = 3200.0;               // detail textures fade out by this distance
 uniform vec3 u_haze_color = vec3(0.62, 0.74, 0.86);
 uniform float u_haze_density = 0.0000167;         // 1 / 60 km at sea level
 uniform float u_haze_scale = 2500.0;              // haze thins with altitude over this scale
 uniform float u_tile_a = 12.0;                    // detail texture tile sizes, metres
 uniform float u_tile_b = 37.0;
+uniform float u_triplanar_on = 1.0;
+uniform float u_exposure = 5.5;                   // satellite grade exposure (linear), see section 1
 
 varying float v_h;
 varying vec2 v_dgrad;
@@ -142,6 +166,30 @@ void vertex() {
 	v_world = u_centre + pos;
 }
 
+// Satellite luminance weights (Rec. 709, linear light).
+const vec3 LUMA = vec3(0.2126, 0.7152, 0.0722);
+
+// Soft shoulder: identity below the knee, then an exponential roll-off towards 1.0 (C1 continuous at the knee).
+vec3 shoulder(vec3 x) {
+	float knee = 0.6;
+	vec3 over = max(x - knee, vec3(0.0));
+	vec3 rolled = knee + (1.0 - knee) * (1.0 - exp(-over / (1.0 - knee)));
+	return mix(x, rolled, step(vec3(knee), x));
+}
+
+// Mean linear luminance of each layer's albedo (measured on the 1024 px files, decoded with gamma 2.2).
+// The detail is divided by its layer's mean, so its brightness comes from the satellite instead.
+float layer_mean_lum(int layer) {
+	if (layer == 0) return 0.186; // grass
+	if (layer == 1) return 0.317; // dry
+	if (layer == 2) return 0.095; // farm
+	if (layer == 3) return 0.030; // forest
+	if (layer == 4) return 0.142; // rock
+	if (layer == 5) return 0.469; // sand
+	if (layer == 6) return 0.809; // snow
+	return 0.138;                 // urban
+}
+
 void fragment() {
 	vec2 w = v_world;
 	vec3 p3 = vec3(w.x, v_h, w.y);
@@ -152,18 +200,45 @@ void fragment() {
 	float hx = terrain_base(w + vec2(e, 0.0)) - terrain_base(w - vec2(e, 0.0));
 	float hz = terrain_base(w + vec2(0.0, e)) - terrain_base(w - vec2(0.0, e));
 	vec2 grad = vec2(hx, hz) / (2.0 * e) + v_dgrad;
-	vec3 n = normalize(vec3(-grad.x, 1.0, -grad.y));
+	vec3 geom_n = normalize(vec3(-grad.x, 1.0, -grad.y));
+	vec3 n = geom_n;
 	float slope = length(grad);
 
-	// Far colour: satellite image (linear light).
+	// --- 1. SATELLITE GRADE ---
+	// The satellite export is dark (land median about 0.16 sRGB), so the grade lifts it hard:
+	// black point -> linear -> exposure -> contrast 1.12 about 0.06 -> shoulder from 0.6 ->
+	// saturation 1.25 -> warm tint -> shadow floor -> macro variation.
 	vec2 uv_map = w / u_map_size + 0.5;
-	vec3 albedo = pow(texture(color_tex, uv_map).rgb, vec3(2.2));
+	vec3 sat_raw = texture(color_tex, uv_map).rgb;
+	vec3 sat_linear = pow(max(sat_raw - vec3(0.02), vec3(0.0)) / 0.98, vec3(2.2)) * u_exposure;
+	sat_linear = 0.06 * pow(sat_linear / 0.06, vec3(1.12));
+	sat_linear = shoulder(sat_linear);
 
-	// Snow above the snow line and rock on steep faces override the class colour.
-	float rock_all = smoothstep(0.35, 0.6, slope);
-	float snow_all = smoothstep(2300.0, 2700.0, v_h);
+	float sat_luma = dot(sat_linear, LUMA);
+	sat_linear = max(mix(vec3(sat_luma), sat_linear, 1.25), vec3(0.0));
+	sat_linear *= vec3(1.06, 1.0, 0.9);
+	sat_linear = max(sat_linear, vec3(0.008, 0.009, 0.007));
 
-	float near_w = u_near_on * (1.0 - smoothstep(0.6 * u_color_end, u_color_end, dist));
+	// Macro variation noise: large-scale organic richness across the plains and hills
+	float macro_noise = vnoise(w / 240.0) * 0.7 + vnoise(w / 75.0 + vec2(37.4, 18.2)) * 0.3;
+	sat_linear *= (0.86 + 0.28 * macro_noise);
+	sat_luma = dot(sat_linear, LUMA);
+
+	// --- 2. ALTITUDE & SLOPE OVERRIDES (Snow line in Atlas, Rock on cliffs) ---
+	// Snow above ~3000 m in High Atlas (aspect-dependent: cooler north slopes have snow down to ~2850m)
+	float snow_alt = 3000.0 - geom_n.z * 150.0;
+	float snow_all = smoothstep(snow_alt - 150.0, snow_alt + 150.0, v_h);
+
+	// Steep rock faces shed snow
+	float cliff_mask = smoothstep(0.38, 0.65, slope);
+	snow_all *= (1.0 - cliff_mask * 0.85);
+
+	// Rock on steep slopes and high rocky mountain peaks
+	float rock_all = smoothstep(0.32, 0.56, slope);
+	rock_all = max(rock_all, smoothstep(2200.0, 2700.0, v_h) * smoothstep(0.18, 0.36, slope));
+
+	// --- 3. NEAR GROUND DETAIL TEXTURING (within color_end) ---
+	float near_w = u_near_on * (1.0 - smoothstep(0.35 * u_color_end, u_color_end, dist));
 	if (near_w > 0.01) {
 		vec2 dwx = dFdx(w);
 		vec2 dwy = dFdy(w);
@@ -182,15 +257,19 @@ void fragment() {
 				vec2 cuv = (lb + vec2(float(i), float(j)) + 0.5) / u_land_n;
 				int cls = int(floor(textureLod(landcover_tex, cuv, 0.0).r * 255.0 + 0.5));
 				float bw = (i == 0 ? 1.0 - lf.x : lf.x) * (j == 0 ? 1.0 - lf.y : lf.y);
-				int layer = 5;
-				if (cls == 1) layer = 3;
-				else if (cls == 2) layer = 1;
-				else if (cls == 3) layer = 0;
-				else if (cls == 4) layer = 2;
-				else if (cls == 5) layer = 7;
-				else if (cls == 7) layer = 6;
-				else if (cls == 8) layer = 3;
-				else if (cls == 6) {
+				int layer = 5; // default sand / bare
+				if (cls == 0) {
+					// Water class on land (above sea level): blend sand near coast, dry inland
+					layer = (v_h > u_sea + 2.0) ? 1 : 5;
+				}
+				else if (cls == 1) layer = 3; // forest
+				else if (cls == 2) layer = 1; // shrub / dry
+				else if (cls == 3) layer = 0; // grass
+				else if (cls == 4) layer = 2; // farm
+				else if (cls == 5) layer = 7; // urban
+				else if (cls == 7) layer = 6; // snow
+				else if (cls == 8) layer = 3; // wetland -> lush forest
+				else if (cls == 6) {          // bare
 					float r = max(smoothstep(0.25, 0.5, slope), smoothstep(1200.0, 1800.0, v_h));
 					wl[4] += bw * r;
 					layer = 5;
@@ -199,49 +278,113 @@ void fragment() {
 				wl[layer] += bw;
 			}
 		}
+
+		// Apply rock and snow overrides to class weights
 		for (int i = 0; i < 8; i++) {
 			wl[i] *= (1.0 - rock_all) * (1.0 - snow_all);
 		}
 		wl[4] += rock_all;
 		wl[6] += snow_all;
 
-		// Two scales of each tile, rotated against each other, to hide repetition.
+		// Select the two most dominant layers for performance (keeps fetches within budget)
+		int top0 = 0;
+		int top1 = 1;
+		float max0 = -1.0;
+		float max1 = -1.0;
+		for (int i = 0; i < 8; i++) {
+			if (wl[i] > max0) {
+				max1 = max0;
+				top1 = top0;
+				max0 = wl[i];
+				top0 = i;
+			} else if (wl[i] > max1) {
+				max1 = wl[i];
+				top1 = i;
+			}
+		}
+
 		vec3 acc_alb = vec3(0.0);
 		vec2 acc_nrm = vec2(0.0);
-		float acc_w = 0.0;
-		for (int L = 0; L < 8; L++) {
-			float wgt = wl[L];
-			if (wgt < 0.01) {
-				continue;
+		float acc_mean = 0.0; // weighted mean linear luminance of the blended layers
+		float total_w = max0 + max(max1, 0.0);
+
+		if (total_w > 0.001) {
+			float norm_w0 = max0 / total_w;
+			float norm_w1 = max(max1, 0.0) / total_w;
+
+			// Layer 0: Two-scale rotated stochastic tiling
+			float fl0 = float(top0);
+			vec3 a1_0 = textureGrad(albedo_array, vec3(w / u_tile_a, fl0), dwx / u_tile_a, dwy / u_tile_a).rgb;
+			vec3 a2_0 = textureGrad(albedo_array, vec3(rot * w / u_tile_b, fl0), rot * dwx / u_tile_b, rot * dwy / u_tile_b).rgb;
+			vec2 nn_0 = textureGrad(normal_array, vec3(w / u_tile_a, fl0), dwx / u_tile_a, dwy / u_tile_a).xy * 2.0 - 1.0;
+
+			acc_alb += norm_w0 * pow(0.5 * (a1_0 + a2_0), vec3(2.2));
+			acc_nrm += norm_w0 * nn_0;
+			acc_mean += norm_w0 * layer_mean_lum(top0);
+
+			// Layer 1 (if significant weight):
+			if (norm_w1 > 0.08) {
+				float fl1 = float(top1);
+				vec3 a1_1 = textureGrad(albedo_array, vec3(w / u_tile_a, fl1), dwx / u_tile_a, dwy / u_tile_a).rgb;
+				vec3 a2_1 = textureGrad(albedo_array, vec3(rot * w / u_tile_b, fl1), rot * dwx / u_tile_b, rot * dwy / u_tile_b).rgb;
+				vec2 nn_1 = textureGrad(normal_array, vec3(w / u_tile_a, fl1), dwx / u_tile_a, dwy / u_tile_a).xy * 2.0 - 1.0;
+
+				acc_alb += norm_w1 * pow(0.5 * (a1_1 + a2_1), vec3(2.2));
+				acc_nrm += norm_w1 * nn_1;
+				acc_mean += norm_w1 * layer_mean_lum(top1);
 			}
-			float fl = float(L);
-			vec3 a1 = textureGrad(albedo_array, vec3(w / u_tile_a, fl), dwx / u_tile_a, dwy / u_tile_a).rgb;
-			vec3 a2 = textureGrad(albedo_array, vec3(rot * w / u_tile_b, fl), rot * dwx / u_tile_b, rot * dwy / u_tile_b).rgb;
-			vec2 nn = textureGrad(normal_array, vec3(w / u_tile_a, fl), dwx / u_tile_a, dwy / u_tile_a).xy;
-			acc_alb += wgt * pow(0.5 * (a1 + a2), vec3(2.2));
-			acc_nrm += wgt * (nn * 2.0 - 1.0);
-			acc_w += wgt;
-		}
-		if (acc_w > 0.001) {
-			vec3 det_alb = acc_alb / acc_w;
-			vec2 det_n = acc_nrm / acc_w;
-			float lum = dot(det_alb, vec3(0.2126, 0.7152, 0.0722));
-			float bright = clamp(lum / 0.2, 0.4, 2.0);
-			// Keep the satellite colour as the base; detail adds brightness variation up close.
-			albedo *= mix(1.0, bright, 0.7 * near_w);
-			n = normalize(vec3(n.x + det_n.x * 0.5 * near_w, n.y, n.z + det_n.y * 0.5 * near_w));
+
+			// Triplanar rock projection on steep cliff faces (prevents vertical texture stretching)
+			if (u_triplanar_on > 0.5 && cliff_mask > 0.08 && wl[4] > 0.15) {
+				vec2 side_uv = abs(geom_n.x) > abs(geom_n.z) ? vec2(w.y, v_h) / u_tile_a : vec2(w.x, v_h) / u_tile_a;
+				vec2 side_dx = dFdx(side_uv);
+				vec2 side_dy = dFdy(side_uv);
+				vec3 rock_side = textureGrad(albedo_array, vec3(side_uv, 4.0), side_dx, side_dy).rgb;
+				vec2 rock_side_n = textureGrad(normal_array, vec3(side_uv, 4.0), side_dx, side_dy).xy * 2.0 - 1.0;
+				float tri_w = clamp(cliff_mask * (1.0 - abs(geom_n.y)) * 1.5, 0.0, 1.0) * wl[4];
+				acc_alb = mix(acc_alb, pow(rock_side, vec3(2.2)), tri_w);
+				acc_nrm = mix(acc_nrm, rock_side_n, tri_w);
+				acc_mean = mix(acc_mean, layer_mean_lum(4), tri_w);
+			}
+
+			// Brightness-matched detail: the satellite sets each pixel's brightness; the texture supplies only its
+			// relative variation (albedo / layer mean, so the average is 1) and a half-strength regional tint.
+			// Snow keeps at least 0.6 luma, so it stays white where the satellite is dim.
+			vec3 det_rel = min(acc_alb / max(acc_mean, 0.01), vec3(2.5));
+			vec3 sat_tint = mix(vec3(1.0), sat_linear / max(sat_luma, 0.001), 0.5);
+			float target_luma = mix(sat_luma, max(sat_luma, 0.6), snow_all);
+			vec3 detail_colored = det_rel * sat_tint * target_luma;
+
+			// High-res detail blend: close to ground (< 500 m AGL), detail textures give crisp tactile surface
+			sat_linear = mix(sat_linear, detail_colored, near_w * 0.85);
+
+			// Perturb geometric normal with high-res normal map
+			n = normalize(mix(geom_n, normalize(geom_n + vec3(acc_nrm.x, 0.0, acc_nrm.y) * 1.8), near_w * 0.82));
 		}
 	}
 
-	// Aerial perspective: distant ground fades into the horizon colour.
-	float dens = u_haze_density * exp(-max(v_h - u_sea, 0.0) / u_haze_scale);
-	float haze = 1.0 - exp(-dist * dens);
-	// Beyond the map edge there is no data (height and colour are clamped), so fade to the horizon tone.
+	// --- 4. AERIAL PERSPECTIVE (Physical atmospheric haze, blue mountain vista) ---
+	// Analytic ray integral through exponential atmospheric density
+	float h1 = max(v_h - u_sea, 0.0);
+	float h2 = max(u_cam.y - u_sea, 0.0);
+	float diff_h = abs(h2 - h1);
+	float avg_rho;
+	if (diff_h > 1.0) {
+		avg_rho = u_haze_density * (exp(-h1 / u_haze_scale) - exp(-h2 / u_haze_scale)) / (diff_h / u_haze_scale);
+	} else {
+		avg_rho = u_haze_density * exp(-0.5 * (h1 + h2) / u_haze_scale);
+	}
+	float haze = 1.0 - exp(-dist * avg_rho);
+
+	// Beyond the map edge fade cleanly into the horizon tone
 	haze = max(haze, smoothstep(0.0, 6000.0, max(abs(w.x), abs(w.y)) - 0.5 * u_map_size));
 
-	ALBEDO = albedo * (1.0 - haze);
-	EMISSION = u_haze_color * haze;
+	// Sky-tinted haze (distant Moroccan mountain ridges turn blue-hazy like real photography)
+	vec3 haze_tint = u_haze_color;
+
+	ALBEDO = sat_linear * (1.0 - haze);
+	EMISSION = haze_tint * haze;
 	SPECULAR = 0.5 * (1.0 - haze);
-	ROUGHNESS = mix(0.92, 0.6, snow_all);
+	ROUGHNESS = mix(0.92, 0.55, snow_all);
 	NORMAL = (VIEW_MATRIX * vec4(n, 0.0)).xyz;
 }

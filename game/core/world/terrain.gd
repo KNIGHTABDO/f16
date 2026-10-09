@@ -31,11 +31,14 @@ const HAZE_SCALE := 2500.0  # altitude scale of the aerial haze, metres
 const AABB_MARGIN := 60.0  # vertical cull margin beyond the height range, metres
 
 ## Quality presets (Settings.graphics_preset). half_cells must be even so that ring edges align.
+## color_px is the side of the satellite colour texture (the map's file is downscaled to it; 8192 costs about 270 MB with mips).
+## Fragment fetches per preset are documented in terrain.gdshader.
 const PRESETS := {
-	"low": {"half_cells": 24, "detail": false, "near": false, "color_end": 1200.0},
-	"balanced": {"half_cells": 40, "detail": true, "near": true, "color_end": 2500.0},
-	"high": {"half_cells": 56, "detail": true, "near": true, "color_end": 3000.0},
-	"ultra": {"half_cells": 64, "detail": true, "near": true, "color_end": 3500.0},
+	"low": {"half_cells": 24, "detail": false, "near": false, "color_end": 1200.0, "triplanar": false, "color_px": 2048},
+	"medium": {"half_cells": 32, "detail": true, "near": true, "color_end": 2200.0, "triplanar": false, "color_px": 2048},
+	"balanced": {"half_cells": 40, "detail": true, "near": true, "color_end": 2600.0, "triplanar": true, "color_px": 4096},
+	"high": {"half_cells": 56, "detail": true, "near": true, "color_end": 3400.0, "triplanar": true, "color_px": 4096},
+	"ultra": {"half_cells": 64, "detail": true, "near": true, "color_end": 4200.0, "triplanar": true, "color_px": 8192},
 }
 
 ## Aerial haze colour (sky horizon tone) and density per metre at sea level; thins with altitude.
@@ -58,6 +61,8 @@ var _half_cells := 40
 var _detail_on := true
 var _near_on := true
 var _color_end := 2500.0
+var _triplanar_on := true
+var _color_px := 4096
 var _land_n := 1
 var _active := false
 var _camera: Camera3D
@@ -82,10 +87,15 @@ func setup(id: String) -> bool:
 		return false
 	map_id = id
 	var meta: Dictionary = Ground.meta
-	var n := Ground.height_n
-	var height_bytes := FileAccess.get_file_as_bytes(String(meta["height_file"]))
-	_height_tex = ImageTexture.create_from_image(
-			Image.create_from_data(n, n, false, Image.FORMAT_R16, height_bytes))
+	if Ground.get_height_texture() != null:
+		_height_tex = Ground.get_height_texture()
+	else:
+		var n := Ground.height_n
+		var height_bytes := Ground.get_height_bytes()
+		if height_bytes.is_empty():
+			height_bytes = FileAccess.get_file_as_bytes(String(meta["height_file"]))
+		_height_tex = ImageTexture.create_from_image(
+				Image.create_from_data(n, n, false, Image.FORMAT_R16, height_bytes))
 
 	var lc_img: Image
 	_land_n = Ground.landcover_n
@@ -97,7 +107,7 @@ func setup(id: String) -> bool:
 		lc_img = Image.create_from_data(1, 1, false, Image.FORMAT_R8, PackedByteArray([Ground.LC_GRASS]))
 	_landcover_tex = ImageTexture.create_from_image(lc_img)
 
-	_color_tex = ImageTexture.create_from_image(_load_rgb(String(meta.get("color_file", ""))))
+	_build_color_texture()
 
 	var albedo: Array[Image] = []
 	var normals: Array[Image] = []
@@ -114,8 +124,8 @@ func setup(id: String) -> bool:
 	return true
 
 
-## Chooses the quality preset ("low", "balanced", "high", "ultra"): ring resolution, procedural detail,
-## and the distance out to which the close-range colour textures are used.
+## Chooses the quality preset ("low", "medium", "balanced", "high", "ultra"): ring resolution, procedural detail,
+## the colour texture size, and the distance out to which the close-range colour textures are used.
 func apply_quality(preset: String) -> void:
 	if not PRESETS.has(preset):
 		push_warning("Terrain.apply_quality: unknown preset '%s', using balanced" % preset)
@@ -124,6 +134,12 @@ func apply_quality(preset: String) -> void:
 	_detail_on = bool(cfg["detail"])
 	_near_on = bool(cfg["near"])
 	_color_end = float(cfg["color_end"])
+	_triplanar_on = bool(cfg.get("triplanar", true))
+	var px := int(cfg["color_px"])
+	var rebuild_color := _active and px != _color_px
+	_color_px = px
+	if rebuild_color:
+		_build_color_texture()
 	if _active:
 		_build_rings()
 
@@ -197,6 +213,12 @@ func _update_rings() -> void:
 		mat.set_shader_parameter("u_cam", cam3)
 
 
+## Decodes the map's satellite colour image at the current preset's size (_color_px) and uploads it.
+func _build_color_texture() -> void:
+	_color_tex = ImageTexture.create_from_image(_load_rgb(String(Ground.meta.get("color_file", "")), _color_px))
+	_push_shared()
+
+
 ## Builds the ring meshes (one per level, all sharing one grid) for the current quality.
 func _build_rings() -> void:
 	for ring in _rings:
@@ -232,6 +254,8 @@ func _build_rings() -> void:
 		mi.material_override = mat
 		# The vertex shader displaces the grid, so the mesh's own bounds are wrong: set the real ones.
 		mi.custom_aabb = AABB(Vector3(-half, y0, -half), Vector3(2.0 * half, y1 - y0, 2.0 * half))
+		mi.extra_cull_margin = 10000.0
+		mi.ignore_occlusion_culling = true
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		mi.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 		add_child(mi)
@@ -272,6 +296,7 @@ func _push_shared() -> void:
 		"u_haze_scale": HAZE_SCALE,
 		"u_tile_a": TILE_A,
 		"u_tile_b": TILE_B,
+		"u_triplanar_on": 1.0 if _triplanar_on else 0.0,
 	}
 	for mat in _materials:
 		for key in params:
@@ -327,7 +352,8 @@ func _make_ring_mesh(grid: PackedVector3Array, n: int, d: Vector2i, with_hole: b
 
 
 ## Decodes an image to RGB8 with mipmaps (layers of a Texture2DArray must match in size and format).
-func _load_rgb(path: String) -> Image:
+## max_px > 0 first downscales a wider image to that width (the satellite colour texture).
+func _load_rgb(path: String, max_px := 0) -> Image:
 	# Decode from the file bytes: Image.load_from_file on res:// warns that it will not work on export.
 	var img := Image.new()
 	var bytes := FileAccess.get_file_as_bytes(path)
@@ -344,6 +370,8 @@ func _load_rgb(path: String) -> Image:
 	if img.is_compressed():
 		img.decompress()
 	img.convert(Image.FORMAT_RGB8)
+	if max_px > 0 and img.get_width() > max_px:
+		img.resize(max_px, img.get_height() * max_px / img.get_width(), Image.INTERPOLATE_BILINEAR)
 	img.generate_mipmaps()
 	return img
 
