@@ -102,6 +102,7 @@ $(cat "$FILE")"
     rm -f "$STATE/conv"; : > "$LOG"
     git -C "$ROOT" fetch -q origin
     [ -d "$WT" ] || git -C "$ROOT" worktree add -q -B "$BRANCH" "$WT" "$BASE" 2>>"$LOG"  # local base: write mode never pushes, origin may be stale
+    [ -d "$WT/game/.godot" ] || cp -a "$ROOT/game/.godot" "$WT/game/" 2>/dev/null  # reuse import cache: a fresh map import needs >4 GB RAM
     cp "$FILE" "$STATE/brief.md"
     say "task $BRANCH (write-only) started in $WT"
     agy_run "$RULES

@@ -8,7 +8,7 @@ set -euo pipefail
 ROOT=$(git -C "$(dirname "$0")/.." rev-parse --show-toplevel); cd "$ROOT"; mkdir -p .jobs
 kind=${1:?}; [ "$kind" = status ] && { systemctl --user list-units 'f16-*' --all --no-legend --plain | awk '{print $1, $3, $4}'; exit; }
 name=${2:?}; brief=${3:?}
-env=(--setenv=PATH="$PATH" --setenv=HOME="$HOME")
+env=(--setenv=PATH="$PATH" --setenv=HOME="$HOME" -p OOMPolicy=continue)  # an OOM-killed godot child must not stop the agent
 case $kind in
   gemini) systemd-run --user --collect --unit="f16-gem-$name" "${env[@]}" --working-directory="$ROOT" \
             -p StandardOutput=append:"$ROOT/.jobs/$name.out" -p StandardError=append:"$ROOT/.jobs/$name.out" \
