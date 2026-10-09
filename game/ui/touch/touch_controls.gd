@@ -96,29 +96,22 @@ func _rebuild_layout() -> void:
 	if vp.x <= 0 or vp.y <= 0:
 		return
 
-	var layout: Dictionary = Settings.touch_layout
-	if layout.is_empty():
-		layout = Settings.DEFAULT_TOUCH_LAYOUT
-
+	var layout := HUDLayout.active_touch_layout(Settings.touch_layout)
+	var rect := HUDLayout.safe_rect(vp)
 	var is_left_handed := Settings.left_handed
 	var stick_sz_mult := Settings.stick_size
 	_button_specs.clear()
 
-	for k in Settings.DEFAULT_TOUCH_LAYOUT:
-		var cfg: Dictionary = layout.get(k, Settings.DEFAULT_TOUCH_LAYOUT[k])
+	for k in HUDLayout.TOUCH_DEFAULTS:
+		var cfg: Dictionary = layout[k]
 		var frac: Array = cfg.get("pos", [0.5, 0.5])
 		var b_scale: float = float(cfg.get("scale", 1.0))
-		var b_op: float = float(cfg.get("opacity", 0.8))
-
-		var px_x: float = frac[0] * vp.x
-		if is_left_handed:
-			px_x = (1.0 - frac[0]) * vp.x
-		var px_y: float = frac[1] * vp.y
-		var pos := Vector2(px_x, px_y)
+		var b_op: float = float(cfg.get("opacity", 0.6))
+		var pos := HUDLayout.to_px(frac, rect, is_left_handed)
 
 		if k == "stick":
 			_stick_center = pos
-			_stick_radius = 65.0 * b_scale * stick_sz_mult
+			_stick_radius = HUDLayout.TOUCH_RADIUS["stick"] * b_scale * stick_sz_mult
 			_button_specs[k] = {
 				"center": pos,
 				"radius": _stick_radius,
@@ -126,16 +119,15 @@ func _rebuild_layout() -> void:
 				"opacity": b_op
 			}
 		elif k == "throttle":
-			var tw := 56.0 * b_scale
-			var th := 150.0 * b_scale
-			_throttle_rect = Rect2(pos - Vector2(tw * 0.5, th * 0.5), Vector2(tw, th))
+			var tsz := HUDLayout.THROTTLE_SIZE * b_scale
+			_throttle_rect = Rect2(pos - tsz * 0.5, tsz)
 			_button_specs[k] = {
 				"rect": _throttle_rect,
 				"scale": b_scale,
 				"opacity": b_op
 			}
 		else:
-			var btn_r := (36.0 if (k == "gun" or k == "weapon") else 28.0) * b_scale
+			var btn_r: float = HUDLayout.TOUCH_RADIUS[k] * b_scale
 			_button_specs[k] = {
 				"center": pos,
 				"radius": btn_r,
@@ -353,8 +345,8 @@ func _draw_stick() -> void:
 	var op: float = spec["opacity"] * _fade_alpha
 
 	# Base ring
-	draw_circle(c, r, Color(0.04, 0.10, 0.16, 0.45 * op))
-	draw_arc(c, r, 0.0, TAU, 40, Color(0.25, 0.82, 1.0, 0.4 * op), 2.0)
+	draw_circle(c, r, Color(0.02, 0.06, 0.07, 0.35 * op))
+	draw_arc(c, r, 0.0, TAU, 40, Color(0.45, 0.9, 1.0, 0.3 * op), 1.5)
 	draw_arc(c, r * 0.5, 0.0, TAU, 24, Color(0.25, 0.82, 1.0, 0.2 * op), 1.0)
 
 	# Crosshair axes
@@ -375,8 +367,8 @@ func _draw_throttle() -> void:
 	var op: float = spec["opacity"] * _fade_alpha
 
 	# Background track
-	draw_rect(rect, Color(0.04, 0.10, 0.16, 0.5 * op), true)
-	draw_rect(rect, Color(0.25, 0.82, 1.0, 0.4 * op), false, 1.5)
+	draw_rect(rect, Color(0.02, 0.06, 0.07, 0.4 * op), true)
+	draw_rect(rect, Color(0.45, 0.9, 1.0, 0.35 * op), false, 1.5)
 
 	# Fill bar based on throttle value
 	var fill_h := rect.size.y * _throttle_val
@@ -407,11 +399,12 @@ func _draw_action_button(k: String) -> void:
 	var op: float = spec["opacity"] * _fade_alpha
 	var held := _is_held(k)
 
-	var bg_col := Color(0.12, 0.32, 0.50, 0.85 * op) if held else Color(0.04, 0.10, 0.16, 0.6 * op)
-	var border_col := Color(1, 1, 1, 0.9 * op) if held else Color(0.25, 0.82, 1.0, 0.5 * op)
+	# Translucent glass disc, thin cyan rim; held buttons brighten instead of changing hue
+	var bg_col := Color(0.20, 0.55, 0.55, 0.40 * op) if held else Color(0.02, 0.06, 0.07, 0.42 * op)
+	var border_col := Color(0.75, 1.0, 1.0, 0.85 * op) if held else Color(0.45, 0.9, 1.0, 0.45 * op)
 
 	draw_circle(c, r, bg_col)
-	draw_arc(c, r, 0.0, TAU, 32, border_col, 2.0 if held else 1.5)
+	draw_arc(c, r, 0.0, TAU, 32, border_col, 1.5)
 
 	# Draw Icon or Label
 	var icon_tex: Texture2D = _icons.get(k)

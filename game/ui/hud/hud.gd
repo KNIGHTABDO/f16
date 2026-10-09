@@ -3,8 +3,11 @@ extends Control
 ## Knight Wings In-Flight Head-Up Display (HUD).
 ## Supports Realistic F-16 collimated green HUD and clean modern Arcade overlay.
 ## Includes RWR tactical scope, voice/tone warnings, rotating minimap,
-## weapon inventory, damage indicators, radio ticker, and objective strips.
-## Scales with Settings.hud_scale and respects iOS/iPad display safe areas.
+## weapon inventory, damage indicators, radio ticker and the respawn banner.
+## Mission objectives and messages are drawn by MissionOverlay, not here.
+## Scales with Settings.hud_scale and places everything inside HUDLayout.safe_rect.
+
+const BAND_H := 36.0  ## bottom band (integrity bar and weapons panel) height, above the screen edge
 
 var respawn_in := -1.0  ## Seconds remaining until respawn when down
 
@@ -22,11 +25,6 @@ var _hud_weapons: HUDWeapons
 var _hud_damage: HUDDamage
 var _hud_radio_ticker: HUDRadioTicker
 var _touch_controls: TouchControls
-
-# Mission objective / message state
-var _objective_text := ""
-var _mission_message := ""
-var _message_timer := 0.0
 
 # Targets & Ballistics cache
 var _target: Node3D
@@ -99,8 +97,6 @@ func _ready() -> void:
 	Events.target_destroyed.connect(_on_target_destroyed)
 	Events.missile_warning.connect(_on_missile_warning)
 	Events.missile_launched.connect(_on_missile_launched)
-	Events.mission_message.connect(_on_mission_message)
-	Events.objective_updated.connect(_on_objective_updated)
 	Settings.changed.connect(_on_settings_changed)
 
 	_apply_settings()
@@ -117,10 +113,6 @@ func _exit_tree() -> void:
 		Events.missile_warning.disconnect(_on_missile_warning)
 	if Events.missile_launched.is_connected(_on_missile_launched):
 		Events.missile_launched.disconnect(_on_missile_launched)
-	if Events.mission_message.is_connected(_on_mission_message):
-		Events.mission_message.disconnect(_on_mission_message)
-	if Events.objective_updated.is_connected(_on_objective_updated):
-		Events.objective_updated.disconnect(_on_objective_updated)
 	if Settings.changed.is_connected(_on_settings_changed):
 		Settings.changed.disconnect(_on_settings_changed)
 
@@ -128,11 +120,6 @@ func _exit_tree() -> void:
 func _process(delta: float) -> void:
 	if _controller != null and _aircraft == null:
 		_aircraft = _controller.aircraft
-
-	if _message_timer > 0.0:
-		_message_timer = maxf(0.0, _message_timer - delta)
-		if _message_timer <= 0.0:
-			_mission_message = ""
 
 	# Periodic target scan (5 Hz)
 	_target_scan_timer -= delta
@@ -147,37 +134,18 @@ func _process(delta: float) -> void:
 
 func _layout_subviews() -> void:
 	var vp := get_viewport_rect().size
-	var safe := DisplayServer.get_display_safe_area()
-
-	# Safe area insets (iPad / iPhone notch padding)
-	var left_m := 18.0
-	var right_m := 18.0
-	var top_m := 18.0
-	var bot_m := 18.0
-
-	if safe.size.x > 0 and safe.size.y > 0 and vp.x > 0:
-		var scr := DisplayServer.screen_get_size()
-		if scr.x > 0 and scr.y > 0:
-			var scale_x := vp.x / float(scr.x)
-			var scale_y := vp.y / float(scr.y)
-			left_m = maxf(left_m, safe.position.x * scale_x)
-			top_m = maxf(top_m, safe.position.y * scale_y)
-			right_m = maxf(right_m, (scr.x - (safe.position.x + safe.size.x)) * scale_x)
-			bot_m = maxf(bot_m, (scr.y - (safe.position.y + safe.size.y)) * scale_y)
-
+	var r := HUDLayout.safe_rect(vp)
 	var s := Settings.hud_scale
 
-	# Minimap (Top Left)
-	_hud_minimap.position = Vector2(left_m, top_m)
+	# Top left: minimap, with the RWR scope beside it (keeps the lower-left free for the stick)
+	_hud_minimap.position = r.position
+	_hud_rwr.position = Vector2(r.position.x + _hud_minimap.size.x + 10.0 * s, r.position.y)
 
-	# RWR (Bottom Left, above throttle track or left corner)
-	_hud_rwr.position = Vector2(left_m, vp.y - bot_m - _hud_rwr.size.y - 12 * s)
+	# Bottom band: weapons panel on the right shares its baseline with the integrity bar
+	_hud_weapons.position = Vector2(r.end.x - _hud_weapons.size.x, r.end.y - _hud_weapons.size.y)
 
-	# Weapons panel (Bottom Right)
-	_hud_weapons.position = Vector2(vp.x - right_m - _hud_weapons.size.x, vp.y - bot_m - _hud_weapons.size.y - 12 * s)
-
-	# Radio Ticker (Top Center)
-	_hud_radio_ticker.position = Vector2((vp.x - _hud_radio_ticker.size.x) * 0.5, top_m)
+	# Radio ticker centered, just above the integrity bar
+	_hud_radio_ticker.position = Vector2((vp.x - _hud_radio_ticker.size.x) * 0.5, r.end.y - BAND_H * s - _hud_radio_ticker.size.y - 6.0 * s)
 
 
 func _update_subviews(delta: float) -> void:
@@ -402,18 +370,7 @@ func _draw() -> void:
 	var vp_size := size
 	var s := Settings.hud_scale
 
-	# 1. Mission Objectives & Messages Strip (Top Center)
-	var top_y := 44.0 * s
-	if _mission_message != "":
-		var fs_msg := int(16.0 * s)
-		draw_rect(Rect2((vp_size.x - 420 * s) * 0.5, top_y, 420 * s, 32 * s), Color(0.02, 0.06, 0.12, 0.85), true)
-		draw_rect(Rect2((vp_size.x - 420 * s) * 0.5, top_y, 420 * s, 32 * s), Color("#3FD0FF"), false, 1.5)
-		draw_string(_font, Vector2(vp_size.x * 0.5, top_y + 22 * s), _mission_message, HORIZONTAL_ALIGNMENT_CENTER, int(400 * s), fs_msg, Color("#FFFFFF"))
-	elif _objective_text != "":
-		var fs_obj := int(14.0 * s)
-		draw_string(_font, Vector2(vp_size.x * 0.5, top_y + 16 * s), "OBJECTIVE: " + _objective_text.to_upper(), HORIZONTAL_ALIGNMENT_CENTER, int(500 * s), fs_obj, Color("#FFB020"))
-
-	# 2. Respawn Countdown Banner
+	# Respawn Countdown Banner
 	if respawn_in >= 0.0:
 		var c := vp_size * 0.5
 		var fs_down := int(38.0 * s)
@@ -460,17 +417,6 @@ func _on_missile_warning(missile: Node3D, target: Node3D) -> void:
 	if target == _aircraft and is_instance_valid(missile):
 		if not _incoming_missiles.has(missile):
 			_incoming_missiles.append(missile)
-
-
-func _on_mission_message(text: String, duration: float) -> void:
-	_mission_message = text
-	_message_timer = duration if duration > 0.0 else 5.0
-
-
-func _on_objective_updated(objectives: Array) -> void:
-	if not objectives.is_empty():
-		var first: Variant = objectives[0]
-		_objective_text = str(first.get("text", str(first))) if first is Dictionary else str(first)
 
 
 func _on_settings_changed(_key: String) -> void:

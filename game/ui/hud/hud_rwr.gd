@@ -22,7 +22,7 @@ var _font: Font
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_font = ThemeDB.fallback_font
-	custom_minimum_size = Vector2(150, 150)
+	custom_minimum_size = Vector2(128, 128)
 	size = custom_minimum_size
 
 
