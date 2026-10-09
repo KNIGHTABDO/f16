@@ -17,6 +17,7 @@ Run Gemini AND Haiku (job.sh haiku = Haiku 5.5 xhigh) in parallel; both are prim
 - [x] terrain-polish | haiku | tasks/cont_terrain_polish.md | .claude/worktrees/gem-gem-terrain-polish | needs: -
 - [ ] modes-missions | gemini | tasks/modes_missions.md | main | needs: ai, hud-touch
 - [x] hangar-progression | haiku | tasks/hangar.md | .claude/worktrees/hk-hangar (branch hk/hangar) | needs: roster, models2, settings-menus, art
+- [~] b2 | haiku | tasks/b2.md | main | needs: -
 - [ ] perf-ipa | haiku | tasks/perf_ipa.md | main | needs: modes-missions
 - [ ] playtest-v1 | lead | full headless playthrough, fix, tag v1.0 | main | needs: everything
 
