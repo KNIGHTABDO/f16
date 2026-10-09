@@ -241,6 +241,55 @@
       "wing": "^HULL_Hull_Upper\\.001$",
       "cockpit": "^canopy\\.glass$",
       "muzzles_raw": []
+    },
+    "f15c": {
+      "kind": "aircraft",
+      "repo": "Zaretto/F-15",
+      "branch": "HEAD",
+      "src": "tools/cache/models/src-f15c",
+      "sparse": [],
+      "entry": "Models/f15c.xml",
+      "include_models": ["nozzle"],
+      "offset_overrides": {},
+      "source": "https://github.com/Zaretto/F-15 (Models/f15c.xml, Models/f15c.ac; fetched with tools/ghget.py)",
+      "license": "UNVERIFIED (no LICENSE file in repo; check README.md before redistributing)",
+      "out": "game/assets/models/aircraft/f15c/f15c.glb",
+      "remap": ["-z", "+y", "+x"],
+      "body_remap": ["+y", "+z", "+x"],
+      "scale": 1.0,
+      "origin": "center",
+      "max_tex": 2048,
+      "max_tris": 60000,
+      "glass": "^(CanopyGlass|CanopyGlassInside|WindscreenGlass|WindscreenGlassInside)$",
+      "rules": [
+        ["_drop", "^CFT|^mk-?84|^gbu|^aim|^su59|^lau128|^adu552|^tank|^rails$|^radio-call$|^convexhull$|^Holes$|Fasteners$"],
+        ["canopy", "^(Canopy|CanopyGlass|CanopyGlassInside|WindscreenGlass|WindscreenGlassInside|CanopyBackCover|WindscreenCanopyFrame)$"],
+        ["gear", "^Nose wheel$|oleo|retract|Nose door|Main door|Main wheel|Landing light|Taxi light|^GearWells$"],
+        ["elevator_l", "^StabilatorL$"],
+        ["elevator_r", "^StabilatorR$"],
+        ["aileron_l", "^AileronL$"],
+        ["aileron_r", "^AileronR$"],
+        ["flap_l", "^FlapL$"],
+        ["flap_r", "^FlapR$"],
+        ["rudder_l", "^rudder$"],
+        ["rudder_r", "^rudder\\.001$"]
+      ],
+      "anim": {},
+      "hinges": {
+        "canopy": { "center": [-2.36, 0.0, 1.4], "axis": [0, 1, 0], "max_deg": 35, "property": "canopy/position-norm" },
+        "elevator_l": { "center": [7.9652, -1.7929, 0.0], "axis": [0, 1, 0], "max_deg": 29, "property": "surface-positions/elevator-pos-norm" },
+        "elevator_r": { "center": [7.9652, 1.7929, 0.0], "axis": [0, 1, 0], "max_deg": 29, "property": "surface-positions/elevator-pos-norm" },
+        "aileron_l": { "center": [4.4, -4.6, 0.5], "axis": [0, -1, 0], "max_deg": 20, "property": "controls/flight/aileron" },
+        "aileron_r": { "center": [4.4, 4.6, 0.5], "axis": [0, -1, 0], "max_deg": 20, "property": "controls/flight/aileron" },
+        "flap_l": { "center": [4.39, -3.78, 0.5], "axis": [0, 1, 0], "max_deg": 35, "property": "surface-positions/flap-pos-norm" },
+        "flap_r": { "center": [4.39, 3.78, 0.5], "axis": [0, 1, 0], "max_deg": 35, "property": "surface-positions/flap-pos-norm" },
+        "rudder_l": { "center": [7.33, -1.74, 1.45], "axis": [0, 0, -1], "max_deg": 30, "property": "surface-positions/rudder-pos-norm" },
+        "rudder_r": { "center": [7.33, 1.74, 1.45], "axis": [0, 0, -1], "max_deg": 30, "property": "surface-positions/rudder-pos-norm" }
+      },
+      "nozzle": "^(Nozzle|Nozzle\\.00[0-5])$",
+      "wing": "^WingL$|^WingR$",
+      "cockpit": "^CanopyGlass$",
+      "muzzles_raw": []
     }
   }
 }
