@@ -14,6 +14,7 @@ fetched by `tools/fetch_models.sh` into `tools/cache/models/` (not committed).
 | su27 | Sukhoi Su-27SK (Flanker) | https://github.com/yanes19/SU-27SK | GPL-2.0 (LICENSE header) | `aircraft/su27/su27.glb` |
 | mig29 | Mikoyan MiG-29 (FlightGear FGAddon) | https://svn.code.sf.net/p/flightgear/fgaddon/trunk/Aircraft/Mig-29 | GPL-2.0 (COPYING.txt) | `aircraft/mig29/mig29.glb` |
 | f15c | McDonnell Douglas F-15C Eagle (model by Enrique Laso, port by Richard Harrison) | https://github.com/Zaretto/F-15 | UNVERIFIED: no LICENSE file or licence text in repo; confirm before distribution | `aircraft/f15c/f15c.glb` |
+| mig21bis | Mikoyan MiG-21bis (FlightGear; authors listed in the repo readme) | https://github.com/l0k1/MiG-21bis | GPL-3.0 (License.txt in repo) | `aircraft/mig21bis/mig21bis.glb` |
 
 The GLB files embed the original FlightGear textures. The original authors are listed in each
 repository's history and README. Models are redistributed under the GPL with the licence
@@ -23,7 +24,6 @@ text from each repository.
 
 | Id | Source repo | Licence status |
 |----|-------------|----------------|
-| mig21bis | https://github.com/l0k1/MiG-21bis | No LICENSE file found in repo root; needs checking |
 | ja37 | https://github.com/NikolaiVChr/flightgear-saab-ja-37-viggen | GPL-2.0 (LICENSE header) |
 | f14b | https://github.com/Zaretto/f-14b | No LICENSE file found; needs checking |
 | mirage2000 | https://github.com/5H1N0B11/flightgear-mirage2000 | GPL-2.0 (LICENSE header) |

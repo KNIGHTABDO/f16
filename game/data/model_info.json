@@ -2873,5 +2873,252 @@
       }
     },
     "triangles": 33199
+  },
+  "mig21bis": {
+    "source": "https://github.com/l0k1/MiG-21bis (Models/MiG-21bis.xml, Models/MiG-21bis.ac, Models/Default.png; fetched with tools/ghget.py)",
+    "license": "GPL-3.0 (License.txt in repo)",
+    "scale_fix": 1.0,
+    "origin": "center",
+    "size_m": {
+      "span": 7.45,
+      "height": 4.465,
+      "length": 16.45
+    },
+    "cockpit_eye": [
+      0.0,
+      0.611,
+      -2.797
+    ],
+    "wingtips": [
+      [
+        -3.725,
+        -0.499,
+        3.297
+      ],
+      [
+        3.725,
+        -0.499,
+        3.297
+      ]
+    ],
+    "nozzles": [
+      {
+        "pos": [
+          0.0,
+          -0.367,
+          6.674
+        ],
+        "radius": 0.364
+      }
+    ],
+    "muzzles": [],
+    "gear_nodes": [
+      "gear_front_strut",
+      "gear_frontd_strut",
+      "gear_left_door",
+      "gear_left_inner_door",
+      "gear_left_inner_strut",
+      "gear_left_outer_door_down",
+      "gear_left_outer_door_up",
+      "gear_left_scissor",
+      "gear_left_strut",
+      "gear_left_wheel",
+      "gear_leftd_strut",
+      "gear_nose_wheel",
+      "gear_right_door",
+      "gear_right_inner_door",
+      "gear_right_inner_strut",
+      "gear_right_outer_door_down",
+      "gear_right_outer_door_up",
+      "gear_right_scissor",
+      "gear_right_strut",
+      "gear_right_wheel",
+      "gear_rightd_strut"
+    ],
+    "control_surfaces": {
+      "aileron_l": {
+        "hinge": [
+          -2.723,
+          -0.456,
+          2.678
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 15.0,
+        "property": "controls/flight/aileron"
+      },
+      "aileron_r": {
+        "hinge": [
+          2.722,
+          -0.456,
+          2.678
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 15.0,
+        "property": "controls/flight/aileron"
+      },
+      "canopy": {
+        "hinge": [
+          0.392,
+          0.292,
+          -2.768
+        ],
+        "axis": [
+          0.0586,
+          -0.0586,
+          -0.9966
+        ],
+        "max_deg": 80.0,
+        "property": "canopy/position-norm"
+      },
+      "elevator_l": {
+        "hinge": [
+          -1.294,
+          -0.246,
+          5.638
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 15.0,
+        "property": "surface-positions/elevator-pos-norm"
+      },
+      "elevator_r": {
+        "hinge": [
+          1.294,
+          -0.246,
+          5.638
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 15.0,
+        "property": "surface-positions/elevator-pos-norm"
+      },
+      "flap_l": {
+        "hinge": [
+          -1.449,
+          -0.406,
+          2.628
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 30.0,
+        "property": "surface-positions/flap-pos-norm"
+      },
+      "flap_r": {
+        "hinge": [
+          1.448,
+          -0.406,
+          2.628
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 30.0,
+        "property": "surface-positions/flap-pos-norm"
+      },
+      "gear_front_strut": {
+        "hinge": [
+          0.0,
+          -0.546,
+          -3.782
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_frontd_strut": {
+        "hinge": [
+          0.0,
+          -0.546,
+          -3.782
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_left_wheel": {
+        "hinge": [
+          0.0,
+          -1.816,
+          1.268
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 8.2,
+        "property": "gear/gear[1]/rollspeed-ms"
+      },
+      "gear_nose_wheel": {
+        "hinge": [
+          0.0,
+          -0.546,
+          -3.782
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 1.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "gear_right_wheel": {
+        "hinge": [
+          0.0,
+          -1.816,
+          1.268
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 8.2,
+        "property": "gear/gear[2]/rollspeed-ms"
+      },
+      "rudder": {
+        "hinge": [
+          0.0,
+          1.321,
+          6.606
+        ],
+        "axis": [
+          0.0,
+          0.7071,
+          0.7071
+        ],
+        "max_deg": 25.0,
+        "property": "surface-positions/rudder-pos-norm"
+      }
+    },
+    "triangles": 21503
   }
 }

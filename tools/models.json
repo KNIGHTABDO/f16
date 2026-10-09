@@ -290,6 +290,93 @@
       "wing": "^WingL$|^WingR$",
       "cockpit": "^CanopyGlass$",
       "muzzles_raw": []
+    },
+    "mig21bis": {
+      "kind": "aircraft",
+      "repo": "l0k1/MiG-21bis",
+      "branch": "HEAD",
+      "src": "tools/cache/models/src-mig21bis",
+      "sparse": [],
+      "entry": "Models/MiG-21bis.xml",
+      "include_models": [],
+      "offset_overrides": {},
+      "source": "https://github.com/l0k1/MiG-21bis (Models/MiG-21bis.xml, Models/MiG-21bis.ac, Models/Default.png; fetched with tools/ghget.py)",
+      "license": "GPL-3.0 (License.txt in repo)",
+      "out": "game/assets/models/aircraft/mig21bis/mig21bis.glb",
+      "remap": ["-z", "+y", "+x"],
+      "body_remap": ["+y", "+z", "+x"],
+      "scale": 1.0,
+      "origin": "center",
+      "max_tex": 2048,
+      "max_tris": 60000,
+      "glass": "^(canopyGlass|canopyFrontGlass)$",
+      "rules": [
+        ["_drop", "^heat$"],
+        ["canopy", "^(canopy|canopyGlass|canopyInside)$"],
+        ["gear", "^(nose_wheel|left_wheel|right_wheel|front_strut|frontd_strut|left_strut|leftd_strut|left_scissor|left_inner_strut|right_strut|rightd_strut|right_scissor|right_inner_strut|left_door|right_door|left_inner_door|right_inner_door|left_outer_door_up|left_outer_door_down|right_outer_door_up|right_outer_door_down)$"],
+        ["elevator_l", "^left_elevator$"],
+        ["elevator_r", "^right_elevator$"],
+        ["aileron_l", "^left_aileron$"],
+        ["aileron_r", "^right_aileron$"],
+        ["flap_l", "^left_flap$"],
+        ["flap_r", "^right_flap$"],
+        ["rudder", "^rudder$"]
+      ],
+      "anim": {},
+      "hinges": {
+        "canopy": {
+          "center": [-3.05, 0.37, 0.86],
+          "axis": [-0.9947, 0.0585, -0.0585],
+          "max_deg": 80,
+          "property": "canopy/position-norm"
+        },
+        "elevator_l": {
+          "center": [4.99, 0.0, 0.3],
+          "axis": [0, 1, 0],
+          "max_deg": 15,
+          "property": "surface-positions/elevator-pos-norm"
+        },
+        "elevator_r": {
+          "center": [4.99, 0.0, 0.3],
+          "axis": [0, 1, 0],
+          "max_deg": 15,
+          "property": "surface-positions/elevator-pos-norm"
+        },
+        "aileron_l": {
+          "center": [2.03, -2.1, 0.09],
+          "axis": [0, -1, 0],
+          "max_deg": 15,
+          "property": "controls/flight/aileron"
+        },
+        "aileron_r": {
+          "center": [2.03, 2.1, 0.09],
+          "axis": [0, -1, 0],
+          "max_deg": 15,
+          "property": "controls/flight/aileron"
+        },
+        "flap_l": {
+          "center": [1.98, -0.65, 0.14],
+          "axis": [0, 1, 0],
+          "max_deg": 30,
+          "property": "surface-positions/flap-pos-norm"
+        },
+        "flap_r": {
+          "center": [1.98, 0.65, 0.14],
+          "axis": [0, 1, 0],
+          "max_deg": 30,
+          "property": "surface-positions/flap-pos-norm"
+        },
+        "rudder": {
+          "center": [5.19, 0.0, 1.1],
+          "axis": [0.7071, 0, 0.7071],
+          "max_deg": 25,
+          "property": "surface-positions/rudder-pos-norm"
+        }
+      },
+      "nozzle": "^nozzle$",
+      "wing": "^wings$",
+      "cockpit": "^canopyGlass$",
+      "muzzles_raw": []
     }
   }
 }
