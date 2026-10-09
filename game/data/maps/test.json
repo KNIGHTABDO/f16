@@ -1,0 +1,14 @@
+{
+  "id": "test",
+  "name": "Synthetic test map",
+  "generator": "tools/make_test_map.py",
+  "size_m": 256000.0,
+  "sea_level": 0.0,
+  "height_min": -200.0,
+  "height_max": 3200.0,
+  "height_n": 4096,
+  "landcover_n": 2048,
+  "height_file": "res://assets/maps/test/height.r16",
+  "landcover_file": "res://assets/maps/test/landcover.u8",
+  "color_file": "res://assets/maps/test/color.jpg"
+}
