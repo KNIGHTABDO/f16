@@ -4,21 +4,23 @@ render_mode cull_back, specular_schlick_ggx;
 // ==============================================================================
 // Terrain Clipmap Shader - Moroccan Landscape & Visual Polish
 //
-// Texture Fetches per Quality Preset:
-// - Low:     2 fetches total
-//            Vertex:   1 x height_tex (Lod 0)
-//            Fragment: 1 x color_tex (satellite albedo)
-// - Medium / Balanced: 6 fetches total
-//            Vertex:   1 x height_tex (Lod 0)
-//            Fragment: 1 x color_tex, 1 x landcover_tex, 2 x albedo_array (2-scale hex), 1 x normal_array
-// - High:    7 fetches total
-//            Vertex:   1 x height_tex (Lod 0)
-//            Fragment: 1 x color_tex, 1 x landcover_tex, 2 x albedo_array (2-scale hex), 2 x normal_array
-//            (Optimal sustained 60 fps on Apple A15 / mobile tile-based GPUs)
-// - Ultra:   8 fetches total
-//            Vertex:   1 x height_tex (Lod 0)
-//            Fragment: 1 x color_tex, 1 x landcover_tex, 2 x albedo_array, 2 x normal_array,
-//                      + 1 x albedo_array (triplanar cliff rock projection on steep faces)
+// Texture fetches per quality preset (worst case per invocation; procedural noise is ALU, not counted).
+// Vertex: 1 x height_tex per surface_h() call, 2 calls on the morph band (odd vertices). With detail on,
+//         each call also samples the height grid 4 more times for the slope mask.
+// - Low (detail off, near-ground textures off):
+//     Vertex:   1 (2 on morph band)
+//     Fragment: 1 x color_tex, 4 x height_tex (shading normal)                        = 5
+// - Medium (detail on, triplanar off):
+//     Vertex:   up to 10
+//     Fragment, inside color_end: 1 color + 4 height + 4 landcover + 2 layers x 3     = 15
+//               (layer = albedo, albedo, normal)
+//     Fragment, beyond color_end: 1 color + 4 height                                  = 5
+// - Balanced / High / Ultra (detail on, triplanar on):
+//     Vertex:   up to 10
+//     Fragment, inside color_end: as Medium + 2 (cliff rock albedo, normal)           = 17
+//     Fragment, beyond color_end: 5
+// The presets differ in ring count (half_cells), colour texture size (color_px) and the detail flags,
+// not in per-pixel fetch count. Target: sustained 60 fps on Apple A15 (tile-based GPU).
 // ==============================================================================
 
 // Geometry clipmap ring (one MeshInstance3D per ring, all sharing one unit grid mesh).
@@ -55,6 +57,7 @@ uniform float u_haze_scale = 2500.0;              // haze thins with altitude ov
 uniform float u_tile_a = 12.0;                    // detail texture tile sizes, metres
 uniform float u_tile_b = 37.0;
 uniform float u_triplanar_on = 1.0;
+uniform float u_exposure = 5.5;                   // satellite grade exposure (linear), see section 1
 
 varying float v_h;
 varying vec2 v_dgrad;
@@ -163,6 +166,30 @@ void vertex() {
 	v_world = u_centre + pos;
 }
 
+// Satellite luminance weights (Rec. 709, linear light).
+const vec3 LUMA = vec3(0.2126, 0.7152, 0.0722);
+
+// Soft shoulder: identity below the knee, then an exponential roll-off towards 1.0 (C1 continuous at the knee).
+vec3 shoulder(vec3 x) {
+	float knee = 0.6;
+	vec3 over = max(x - knee, vec3(0.0));
+	vec3 rolled = knee + (1.0 - knee) * (1.0 - exp(-over / (1.0 - knee)));
+	return mix(x, rolled, step(vec3(knee), x));
+}
+
+// Mean linear luminance of each layer's albedo (measured on the 1024 px files, decoded with gamma 2.2).
+// The detail is divided by its layer's mean, so its brightness comes from the satellite instead.
+float layer_mean_lum(int layer) {
+	if (layer == 0) return 0.186; // grass
+	if (layer == 1) return 0.317; // dry
+	if (layer == 2) return 0.095; // farm
+	if (layer == 3) return 0.030; // forest
+	if (layer == 4) return 0.142; // rock
+	if (layer == 5) return 0.469; // sand
+	if (layer == 6) return 0.809; // snow
+	return 0.138;                 // urban
+}
+
 void fragment() {
 	vec2 w = v_world;
 	vec3 p3 = vec3(w.x, v_h, w.y);
@@ -177,30 +204,25 @@ void fragment() {
 	vec3 n = geom_n;
 	float slope = length(grad);
 
-	// --- 1. SATELLITE COLOR GRADING (Morocco warm earth, dehaze, exposure, saturation) ---
+	// --- 1. SATELLITE GRADE ---
+	// The satellite export is dark (land median about 0.16 sRGB), so the grade lifts it hard:
+	// black point -> linear -> exposure -> contrast 1.12 about 0.06 -> shoulder from 0.6 ->
+	// saturation 1.25 -> warm tint -> shadow floor -> macro variation.
 	vec2 uv_map = w / u_map_size + 0.5;
 	vec3 sat_raw = texture(color_tex, uv_map).rgb;
+	vec3 sat_linear = pow(max(sat_raw - vec3(0.02), vec3(0.0)) / 0.98, vec3(2.2)) * u_exposure;
+	sat_linear = 0.06 * pow(sat_linear / 0.06, vec3(1.12));
+	sat_linear = shoulder(sat_linear);
 
-	// Dehaze: remove the dark murky atmospheric veil and shadow crush
-	vec3 sat_dehazed = max(sat_raw - vec3(0.022, 0.028, 0.035), vec3(0.0)) / 0.965;
-	sat_dehazed = pow(sat_dehazed, vec3(1.12));
-
-	// Exposure boost and linear color conversion
-	vec3 sat_linear = pow(sat_dehazed, vec3(2.2)) * 1.85;
-
-	// Saturation boost for rich landscape colors
-	float sat_luma = dot(sat_linear, vec3(0.2126, 0.7152, 0.0722));
-	sat_linear = max(mix(vec3(sat_luma), sat_linear, 1.35), vec3(0.0));
-
-	// Warm Moroccan tone grading (terracotta soil, golden sand, warm limestone)
-	sat_linear *= vec3(1.16, 1.05, 0.88);
-
-	// Prevent muddy black/grey holes in shadows
-	sat_linear = max(sat_linear, vec3(0.032, 0.036, 0.028));
+	float sat_luma = dot(sat_linear, LUMA);
+	sat_linear = max(mix(vec3(sat_luma), sat_linear, 1.25), vec3(0.0));
+	sat_linear *= vec3(1.06, 1.0, 0.9);
+	sat_linear = max(sat_linear, vec3(0.008, 0.009, 0.007));
 
 	// Macro variation noise: large-scale organic richness across the plains and hills
 	float macro_noise = vnoise(w / 240.0) * 0.7 + vnoise(w / 75.0 + vec2(37.4, 18.2)) * 0.3;
 	sat_linear *= (0.86 + 0.28 * macro_noise);
+	sat_luma = dot(sat_linear, LUMA);
 
 	// --- 2. ALTITUDE & SLOPE OVERRIDES (Snow line in Atlas, Rock on cliffs) ---
 	// Snow above ~3000 m in High Atlas (aspect-dependent: cooler north slopes have snow down to ~2850m)
@@ -215,7 +237,7 @@ void fragment() {
 	float rock_all = smoothstep(0.32, 0.56, slope);
 	rock_all = max(rock_all, smoothstep(2200.0, 2700.0, v_h) * smoothstep(0.18, 0.36, slope));
 
-	// --- 3. NEAR GROUND DETAIL TEXTURING (< 500 m AGL & close range) ---
+	// --- 3. NEAR GROUND DETAIL TEXTURING (within color_end) ---
 	float near_w = u_near_on * (1.0 - smoothstep(0.35 * u_color_end, u_color_end, dist));
 	if (near_w > 0.01) {
 		vec2 dwx = dFdx(w);
@@ -283,6 +305,7 @@ void fragment() {
 
 		vec3 acc_alb = vec3(0.0);
 		vec2 acc_nrm = vec2(0.0);
+		float acc_mean = 0.0; // weighted mean linear luminance of the blended layers
 		float total_w = max0 + max(max1, 0.0);
 
 		if (total_w > 0.001) {
@@ -297,6 +320,7 @@ void fragment() {
 
 			acc_alb += norm_w0 * pow(0.5 * (a1_0 + a2_0), vec3(2.2));
 			acc_nrm += norm_w0 * nn_0;
+			acc_mean += norm_w0 * layer_mean_lum(top0);
 
 			// Layer 1 (if significant weight):
 			if (norm_w1 > 0.08) {
@@ -307,6 +331,7 @@ void fragment() {
 
 				acc_alb += norm_w1 * pow(0.5 * (a1_1 + a2_1), vec3(2.2));
 				acc_nrm += norm_w1 * nn_1;
+				acc_mean += norm_w1 * layer_mean_lum(top1);
 			}
 
 			// Triplanar rock projection on steep cliff faces (prevents vertical texture stretching)
@@ -319,13 +344,16 @@ void fragment() {
 				float tri_w = clamp(cliff_mask * (1.0 - abs(geom_n.y)) * 1.5, 0.0, 1.0) * wl[4];
 				acc_alb = mix(acc_alb, pow(rock_side, vec3(2.2)), tri_w);
 				acc_nrm = mix(acc_nrm, rock_side_n, tri_w);
+				acc_mean = mix(acc_mean, layer_mean_lum(4), tri_w);
 			}
 
-			// Blend detail texture albedo and micro-normal
-			// Tint detail albedo by regional satellite colour tone for authentic local terrain coloration
-			float det_luma = max(dot(acc_alb, vec3(0.2126, 0.7152, 0.0722)), 0.01);
-			vec3 sat_tone = sat_linear / max(sat_luma, 0.02);
-			vec3 detail_colored = acc_alb * sat_tone * 1.08;
+			// Brightness-matched detail: the satellite sets each pixel's brightness; the texture supplies only its
+			// relative variation (albedo / layer mean, so the average is 1) and a half-strength regional tint.
+			// Snow keeps at least 0.6 luma, so it stays white where the satellite is dim.
+			vec3 det_rel = min(acc_alb / max(acc_mean, 0.01), vec3(2.5));
+			vec3 sat_tint = mix(vec3(1.0), sat_linear / max(sat_luma, 0.001), 0.5);
+			float target_luma = mix(sat_luma, max(sat_luma, 0.6), snow_all);
+			vec3 detail_colored = det_rel * sat_tint * target_luma;
 
 			// High-res detail blend: close to ground (< 500 m AGL), detail textures give crisp tactile surface
 			sat_linear = mix(sat_linear, detail_colored, near_w * 0.85);
