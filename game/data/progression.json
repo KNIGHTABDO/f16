@@ -1,0 +1,51 @@
+{
+	"version": 1,
+	"starter_aircraft": ["f16c", "mirage2000", "p51d"],
+	"price_overrides": {
+		"mig21bis": 20000
+	},
+	"economy": {
+		"mission_base": 8000,
+		"win_bonus": 5000,
+		"air_kill": 3000,
+		"ground_kill": 1500,
+		"xp_air_kill": 120,
+		"xp_ground_kill": 40,
+		"xp_win": 250,
+		"xp_loss": 60
+	},
+	"ranks": [
+		{"name": "Cadet", "xp": 0},
+		{"name": "Pilot Officer", "xp": 1500},
+		{"name": "Flying Officer", "xp": 4000},
+		{"name": "Flight Lieutenant", "xp": 8000},
+		{"name": "Squadron Leader", "xp": 14000},
+		{"name": "Wing Commander", "xp": 22000},
+		{"name": "Group Captain", "xp": 32000},
+		{"name": "Air Commodore", "xp": 45000},
+		{"name": "Air Vice Marshal", "xp": 60000},
+		{"name": "Air Marshal", "xp": 80000}
+	],
+	"rack_capacity": {
+		"hydra70": 19,
+		"s5": 32,
+		"s8": 20,
+		"hellfire": 4
+	},
+	"presets": [
+		{"id": "air_to_air", "label": "A/A", "targets": ["air"], "types": ["ir_missile", "radar_missile"]},
+		{"id": "air_to_ground", "label": "A/G", "targets": ["vehicle", "armor", "structure"], "types": ["ag_missile", "guided_bomb", "bomb", "rocket"]},
+		{"id": "sead", "label": "SEAD", "targets": ["sam"], "types": ["ag_missile", "guided_bomb"]},
+		{"id": "anti_ship", "label": "ANTI-SHIP", "targets": ["ship"], "types": ["ag_missile", "guided_bomb", "bomb"]}
+	],
+	"liveries": [
+		{"id": "f16c_rmaf_grey", "aircraft": "f16c", "name": "RMAF Grey", "price": 6000},
+		{"id": "f16c_desert_camo", "aircraft": "f16c", "name": "Desert Camo", "price": 8000},
+		{"id": "mirage2000_desert", "aircraft": "mirage2000", "name": "Desert", "price": 6000},
+		{"id": "mirage2000_air_superiority", "aircraft": "mirage2000", "name": "Air Superiority", "price": 6000},
+		{"id": "ef2000_nato_grey", "aircraft": "ef2000", "name": "NATO Grey", "price": 8000},
+		{"id": "ef2000_splinter", "aircraft": "ef2000", "name": "Splinter", "price": 10000},
+		{"id": "f35a_stealth_ram", "aircraft": "f35a", "name": "Stealth RAM", "price": 12000},
+		{"id": "f35a_aggressor", "aircraft": "f35a", "name": "Aggressor", "price": 12000}
+	]
+}
