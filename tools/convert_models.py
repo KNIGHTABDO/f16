@@ -211,9 +211,15 @@ class AC3DFile:
             elif k == "loc":
                 obj["loc"] = tuple(float(x) for x in t[1:4])
             elif k == "numvert":
+                last_v = (0.0, 0.0, 0.0)
                 for _ in range(to_int(t[1])):
                     v = self._next()
-                    obj["verts"].append((float(v[0]), float(v[1]), float(v[2])))
+                    pt = (float(v[0]), float(v[1]), float(v[2]))
+                    if max(abs(c) for c in pt) > 500.0:
+                        pt = last_v
+                    else:
+                        last_v = pt
+                    obj["verts"].append(pt)
             elif k == "numsurf":
                 for _ in range(to_int(t[1])):
                     flags, mat, refs = 0, 0, []
@@ -261,8 +267,17 @@ def xf(node, name, default=0.0):
     if node is None:
         return default
     v = node.findtext(name)
-    # Some FG XMLs use a decimal comma ("4,3428"); accept it.
-    return float(v.strip().replace(",", ".")) if v not in (None, "") else default
+    if v in (None, ""):
+        return default
+    s = v.strip().replace(",", ".")
+    try:
+        return float(s)
+    except ValueError:
+        clean = re.sub(r"[^0-9eE\.\-+]", "", s)
+        try:
+            return float(clean)
+        except ValueError:
+            return default
 
 
 def parse_animations(root):
@@ -279,7 +294,14 @@ def parse_animations(root):
         }
         ax = a.find("axis")
         if ax is not None:
-            d["axis"] = (xf(ax, "x"), xf(ax, "y"), xf(ax, "z"))
+            if ax.find("x1-m") is not None:
+                x1, y1, z1 = xf(ax, "x1-m"), xf(ax, "y1-m"), xf(ax, "z1-m")
+                x2, y2, z2 = xf(ax, "x2-m"), xf(ax, "y2-m"), xf(ax, "z2-m")
+                d["axis"] = (x2 - x1, y2 - y1, z2 - z1)
+                if d["center"] is None:
+                    d["center"] = (x1, y1, z1)
+            else:
+                d["axis"] = (xf(ax, "x"), xf(ax, "y"), xf(ax, "z"))
         ce = a.find("center")
         if ce is not None:
             d["center"] = (xf(ce, "x-m"), xf(ce, "y-m"), xf(ce, "z-m"))
@@ -327,6 +349,8 @@ def parse_xml_components(path, out, depth=0, include=None):
         if depth == 0 and name in OFFSET_OVERRIDES:
             body = tuple(float(c) for c in OFFSET_OVERRIDES[name])
         sub = resolve_fg_path(base, p)
+        if not os.path.exists(sub):
+            continue
         if sub.lower().endswith(".xml") and depth < 3:
             for ac, b, _ in parse_xml_components(sub, [], depth + 1):
                 out.append((ac, vadd(body, b), None))

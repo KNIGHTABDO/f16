@@ -15,6 +15,7 @@ fetched by `tools/fetch_models.sh` into `tools/cache/models/` (not committed).
 | mig29 | Mikoyan MiG-29 (FlightGear FGAddon) | https://svn.code.sf.net/p/flightgear/fgaddon/trunk/Aircraft/Mig-29 | GPL-2.0 (COPYING.txt) | `aircraft/mig29/mig29.glb` |
 | f15c | McDonnell Douglas F-15C Eagle (model by Enrique Laso, port by Richard Harrison) | https://github.com/Zaretto/F-15 | UNVERIFIED: no LICENSE file or licence text in repo; confirm before distribution | `aircraft/f15c/f15c.glb` |
 | mig21bis | Mikoyan MiG-21bis (FlightGear; authors listed in the repo readme) | https://github.com/l0k1/MiG-21bis | GPL-3.0 (License.txt in repo) | `aircraft/mig21bis/mig21bis.glb` |
+| a10c | Fairchild Republic A-10 Thunderbolt II (FlightGear) | https://github.com/l0k1/A-10 | GPL-2.0 (COPYING in repo) | `aircraft/a10c/a10c.glb` |
 
 The GLB files embed the original FlightGear textures. The original authors are listed in each
 repository's history and README. Models are redistributed under the GPL with the licence
@@ -27,7 +28,6 @@ text from each repository.
 | ja37 | https://github.com/NikolaiVChr/flightgear-saab-ja-37-viggen | GPL-2.0 (LICENSE header) |
 | f14b | https://github.com/Zaretto/f-14b | No LICENSE file found; needs checking |
 | mirage2000 | https://github.com/5H1N0B11/flightgear-mirage2000 | GPL-2.0 (LICENSE header) |
-| a10 | https://github.com/l0k1/A-10 | No LICENSE file found; needs checking |
 | p51d | https://github.com/Zaretto/p51d | No LICENSE file found; needs checking |
 | f22a | https://github.com/MonotoneDevelopment/F-22 | GPL-2.0 (LICENSE header) |
 | f22a (alt) | https://github.com/SamJD261/F-22-Raptor | No LICENSE file found; needs checking |
