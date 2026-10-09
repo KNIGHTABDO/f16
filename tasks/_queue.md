@@ -11,7 +11,7 @@ Run Gemini AND Haiku (job.sh haiku = Haiku 5.5 xhigh) in parallel; both are prim
 - [x] integration | haiku | tasks/cont2_integration.md | .claude/worktrees/gem-gem-integration | needs: -
 - [x] art | gemini | tasks/art.md | main | needs: -
 - [x] art2 | gemini | tasks/art2.md | main | needs: art
-- [~] combat-units | gemini | tasks/combat_units.md | main | needs: weapons, integration
+- [x] combat-units | gemini | tasks/combat_units.md | main | needs: weapons, integration
 - [~] ai | gemini | tasks/ai.md | main | needs: combat-units
 - [x] hud-touch | gemini | tasks/hud_touch.md | main | needs: weapons, integration, settings-menus
 - [x] terrain-polish | haiku | tasks/cont_terrain_polish.md | .claude/worktrees/gem-gem-terrain-polish | needs: -
