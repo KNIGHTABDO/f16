@@ -145,7 +145,7 @@ func _physics_process(dt: float) -> void:
 		elif phase == Phase.COAST:
 			velocity -= fwd * (COAST_DRAG * speed * speed) * dt
 		velocity += Vector3(0, -GRAVITY, 0) * dt
-		if target != null and is_instance_valid(target):
+		if _has_target():
 			a = _guidance(pos, fwd, speed)
 		var lim := _max_g * GRAVITY * clampf(speed / AUTHORITY_SPEED, 0.2, 1.0)
 		if a.length() > lim:
@@ -221,11 +221,12 @@ func _in_seeker(n: Node3D) -> bool:
 
 
 func _seeker_update() -> void:
-	# Current target validity.
-	if target != null:
+	# Current target validity. A decoy that Vfx pools back has left the tree.
+	if target != null and not _has_target():
+		_set_target(null)
+	elif _has_target():
 		var is_flare := target.is_in_group("flares")
-		if not is_instance_valid(target) or (is_flare and not _flare_live(target)) \
-				or (not is_flare and not Targeting.is_valid_target(target, team)):
+		if (is_flare and not _flare_live(target)) or (not is_flare and not Targeting.is_valid_target(target, team)):
 			_set_target(null)
 		elif not _in_seeker(target):
 			_set_target(null)
@@ -233,6 +234,11 @@ func _seeker_update() -> void:
 		_flare_roll()
 	if target == null and not _decoyed:
 		_acquire()
+
+
+## A target that is still flying in the scene: valid and in the tree.
+func _has_target() -> bool:
+	return target != null and is_instance_valid(target) and target.is_inside_tree()
 
 
 func _flare_live(f: Node3D) -> bool:
@@ -306,7 +312,7 @@ func _on_flares_dropped(aircraft: Node3D) -> void:
 
 func _check_hits(pos: Vector3, dt: float) -> void:
 	# Proximity fuze against the tracked target: closest approach within this tick's segment.
-	if target != null and is_instance_valid(target) and _age > SPAWN_ARM_TIME:
+	if _has_target() and _age > SPAWN_ARM_TIME:
 		var tp := target.global_position
 		var tv := Targeting.velocity_of(target)
 		var rel_p := _prev_pos - (tp - tv * dt)

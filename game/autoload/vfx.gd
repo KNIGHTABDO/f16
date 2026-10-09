@@ -51,7 +51,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	for i in _lights.size():
-		if _light_age[i] >= LIGHT_TIME:
+		if _light_age[i] >= LIGHT_TIME or not is_instance_valid(_lights[i]):
 			continue
 		_light_age[i] = minf(_light_age[i] + delta, LIGHT_TIME)
 		var k := 1.0 - _light_age[i] / LIGHT_TIME
@@ -248,7 +248,8 @@ func _cap(base: int) -> int:
 
 ## Takes the least recently flashed light (or a free one) for a short flash. Skipped on the low preset.
 func _light_flash(pos: Vector3, color: Color, energy: float, range_m: float) -> void:
-	if _lights.is_empty() or VfxAssets.amount_scale() < 0.5:
+	# The lights belong to the World of the current level; looking it up rebuilds them after a scene change.
+	if _world_node() == null or _lights.is_empty() or VfxAssets.amount_scale() < 0.5:
 		return
 	var idx := 0
 	for i in _lights.size():

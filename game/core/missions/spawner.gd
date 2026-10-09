@@ -99,7 +99,7 @@ static func _attach_ai(ac: Aircraft, entry: Dictionary, skill: float, nodes: Arr
 		pilot.call("setup", ac, skill, AI_ROLE.get(role, role))
 	if entry.has("waypoints") and pilot.has_method("set_patrol"):
 		var alt: float = entry["pos"].y
-		var pts: Array = []
+		var pts: Array[Vector3] = []
 		for p in entry["waypoints"]:
 			pts.append(WorldOrigin.to_local(Vector3(p.x, alt, p.y)))
 		pilot.call("set_patrol", pts, alt)
