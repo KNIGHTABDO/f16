@@ -24,7 +24,7 @@ const SHALLOW_COLOR := Color(0.025, 0.40, 0.38)  # linear albedo over the shelf 
 ## Quality presets ("low", "medium", "balanced", "high", "ultra"): ring resolution and wave complexity.
 const PRESETS := {
 	"low": {"half_cells": 12, "wave_count": 1},
-	"medium": {"half_cells": 16, "wave_count": 2},
+	"medium": {"half_cells": 14, "wave_count": 2},
 	"balanced": {"half_cells": 16, "wave_count": 2},
 	"high": {"half_cells": 20, "wave_count": 4},
 	"ultra": {"half_cells": 24, "wave_count": 4},
@@ -87,8 +87,6 @@ func setup(id: String, terrain: Terrain = null) -> bool:
 
 ## Chooses the quality preset ("low", "medium", "balanced", "high", "ultra"): ring resolution and wave complexity.
 func apply_quality(preset: String) -> void:
-	if preset == "medium":
-		preset = "balanced"
 	if not PRESETS.has(preset):
 		push_warning("Ocean.apply_quality: unknown preset '%s', using balanced" % preset)
 	var cfg: Dictionary = PRESETS.get(preset, PRESETS["balanced"])
