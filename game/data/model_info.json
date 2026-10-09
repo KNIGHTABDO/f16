@@ -7243,5 +7243,205 @@
       }
     },
     "triangles": 10435
+  },
+  "b17": {
+    "source": "https://github.com/FGMEMBERS/FlyingFortress-Jsb (Models/b17.xml, b17.ac)",
+    "license": "GPL-2.0",
+    "scale_fix": 1.0,
+    "origin": "center",
+    "size_m": {
+      "span": 31.52,
+      "height": 7.937,
+      "length": 22.612
+    },
+    "muzzles": [],
+    "gear_nodes": [
+      "gear_roueA",
+      "gear_roueD",
+      "gear_roueG"
+    ],
+    "control_surfaces": {
+      "aileron_l": {
+        "hinge": [
+          -14.607,
+          -0.35,
+          -2.199
+        ],
+        "axis": [
+          -0.993,
+          0.0863,
+          -0.0804
+        ],
+        "max_deg": 15.0,
+        "property": "surface-positions/left-aileron-pos-norm"
+      },
+      "aileron_r": {
+        "hinge": [
+          8.913,
+          -0.845,
+          -1.738
+        ],
+        "axis": [
+          -0.993,
+          -0.0863,
+          0.0804
+        ],
+        "max_deg": 15.0,
+        "property": "surface-positions/right-aileron-pos-norm"
+      },
+      "elevator": {
+        "hinge": [
+          0.0,
+          -0.486,
+          7.991
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 25.0,
+        "property": "surface-positions/elevator-pos-norm"
+      },
+      "flap_l": {
+        "hinge": [
+          -8.766,
+          -1.022,
+          -2.218
+        ],
+        "axis": [
+          0.9927,
+          -0.0826,
+          0.0881
+        ],
+        "max_deg": 40.0,
+        "property": "surface-positions/flap-pos-norm"
+      },
+      "flap_r": {
+        "hinge": [
+          1.433,
+          -1.632,
+          -1.567
+        ],
+        "axis": [
+          0.9927,
+          0.0826,
+          -0.0881
+        ],
+        "max_deg": 40.0,
+        "property": "surface-positions/flap-pos-norm"
+      },
+      "gear_roueA": {
+        "hinge": [
+          0.0,
+          -1.626,
+          5.722
+        ],
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 85.0,
+        "property": "gear/gear[2]/position-norm"
+      },
+      "gear_roueD": {
+        "hinge": [
+          3.148,
+          -1.589,
+          -4.711
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 60.0,
+        "property": "gear/gear[1]/position-norm"
+      },
+      "gear_roueG": {
+        "hinge": [
+          -2.78,
+          -1.589,
+          -4.711
+        ],
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "max_deg": 60.0,
+        "property": "gear/gear[0]/position-norm"
+      },
+      "rudder": {
+        "hinge": [
+          0.0,
+          0.157,
+          8.711
+        ],
+        "axis": [
+          0.0,
+          0.9984,
+          0.0561
+        ],
+        "max_deg": 25.0,
+        "property": "surface-positions/rudder-pos-norm"
+      }
+    },
+    "rotors": {
+      "propeller_de": {
+        "hub": [
+          6.505,
+          -1.027,
+          -7.846
+        ],
+        "axis": [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        "property": "/engines/engine[3]/rpm"
+      },
+      "propeller_di": {
+        "hub": [
+          3.021,
+          -1.428,
+          -8.427
+        ],
+        "axis": [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        "property": "/engines/engine[2]/rpm"
+      },
+      "propeller_ge": {
+        "hub": [
+          -6.505,
+          -1.027,
+          -7.846
+        ],
+        "axis": [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        "property": "/engines/engine[0]/rpm"
+      },
+      "propeller_gi": {
+        "hub": [
+          -3.021,
+          -1.428,
+          -8.427
+        ],
+        "axis": [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        "property": "/engines/engine[1]/rpm"
+      }
+    },
+    "triangles": 34875
   }
 }

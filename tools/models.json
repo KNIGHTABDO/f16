@@ -1,5 +1,5 @@
 {
-  "_comment": "Source recipes for tools/convert_models.py (Blender) and tools/fetch_models.sh. Frames: remap maps AC3D raw axes to Godot (+X right, +Y up, -Z nose). AC3D raw in the FlightGear F-16 is x aft, y up, z left (verified against the animation centres). body_remap maps the FlightGear body frame (x aft, y right, z up) used by XML offsets and animations. rules: [bucket, regex] on AC3D object names, first match wins, '_drop' removes the object, unmatched objects go to 'airframe'. anim: bucket -> FG animation object-name giving the hinge (center/axis/max from the XML). hinges: bucket -> hinge in body frame where the XML animation is commented out (center, axis, max_deg, property). offset_overrides: model name -> body offset that replaces the XML <offsets>. scale: meters per AC3D unit (no fit).",
+  "_comment": "Source recipes for tools/convert_models.py (Blender) and tools/fetch_models.sh. Frames: remap maps AC3D raw axes to Godot (+X right, +Y up, -Z nose). AC3D raw in the FlightGear F-16 is x aft, y up, z left (verified against the animation centres). body_remap maps the FlightGear body frame (x aft, y right, z up) used by XML offsets and animations. rules: [bucket, regex] on AC3D object names, first match wins, '_drop' removes the object, unmatched objects go to 'airframe'. anim: bucket -> FG animation object-name giving the hinge (center/axis/max from the XML). hinges: bucket -> hinge in body frame where the XML animation is commented out (center, axis, max_deg, property). offset_overrides: model name -> body offset that replaces the XML <offsets>. scale: meters per AC3D unit (no fit). extra_ac: [{path (relative to src), offset (body frame), bucket}] places extra AC3D files (rotor discs) with a forced bucket. A hinges entry with rotor: true is a spin axis (hub + axis) recorded in model_info rotors instead of control_surfaces.",
   "models": {
     "f16c": {
       "kind": "aircraft",
@@ -2317,6 +2317,277 @@
       "nozzle": "^NOPE$",
       "wing": "^wing\\.[LR]|^slat\\.[LR]|^fuselage_G",
       "cockpit": "^canopyglass_G10$",
+      "muzzles_raw": []
+    },
+    "b17": {
+      "kind": "aircraft",
+      "repo": "FGMEMBERS/FlyingFortress-Jsb",
+      "branch": "master",
+      "src": "tools/cache/models/src-b17",
+      "sparse": [
+        "*"
+      ],
+      "entry": "Models/b17.xml",
+      "include_models": [
+        "turretnoze",
+        "turretup",
+        "turretdown"
+      ],
+      "offset_overrides": {},
+      "source": "https://github.com/FGMEMBERS/FlyingFortress-Jsb (Models/b17.xml, b17.ac)",
+      "license": "GPL-2.0",
+      "out": "game/assets/models/aircraft/b17/b17.glb",
+      "remap": [
+        "-z",
+        "+y",
+        "+x"
+      ],
+      "body_remap": [
+        "+y",
+        "+z",
+        "+x"
+      ],
+      "scale": 1.0,
+      "origin": "center",
+      "max_tex": 2048,
+      "max_tris": 60000,
+      "rules": [
+        [
+          "_drop",
+          "^(propblur[GD][EI]|propdisc[GD][EI])$"
+        ],
+        [
+          "gear",
+          "^roue[GDA]$"
+        ],
+        [
+          "propeller_ge",
+          "^heliceGE$"
+        ],
+        [
+          "propeller_gi",
+          "^heliceGI$"
+        ],
+        [
+          "propeller_di",
+          "^heliceDI$"
+        ],
+        [
+          "propeller_de",
+          "^heliceDE$"
+        ],
+        [
+          "aileron_l",
+          "^aileronG$"
+        ],
+        [
+          "aileron_r",
+          "^aileronD$"
+        ],
+        [
+          "flap_l",
+          "^voletG$"
+        ],
+        [
+          "flap_r",
+          "^voletD$"
+        ],
+        [
+          "elevator",
+          "^profondeur$"
+        ],
+        [
+          "rudder",
+          "^direction$"
+        ]
+      ],
+      "anim": {
+        "propeller_ge": "heliceGE",
+        "propeller_gi": "heliceGI",
+        "propeller_di": "heliceDI",
+        "propeller_de": "heliceDE",
+        "aileron_l": "aileronG",
+        "aileron_r": "aileronD",
+        "flap_l": "voletG",
+        "flap_r": "voletD",
+        "elevator": "profondeur",
+        "rudder": "direction"
+      },
+      "hinges": {
+        "roueD": {
+          "center": [
+            -4.704,
+            2.78,
+            -0.746
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "max_deg": 60,
+          "property": "gear/gear[1]/position-norm"
+        }
+      },
+      "nozzle": "^NOPE$",
+      "wing": "^NOPE$",
+      "muzzles_raw": [],
+      "glass": "^verriere$"
+    },
+    "fa18c": {
+      "kind": "aircraft",
+      "repo": "FGMEMBERS/F-18C",
+      "branch": "master",
+      "src": "tools/cache/models/src-fa18c",
+      "sparse": [
+        "*"
+      ],
+      "entry": "Models/FA-18C_Hornet.xml",
+      "include_models": [],
+      "offset_overrides": {},
+      "source": "https://github.com/FGMEMBERS/F-18C (Models/FA-18C_Hornet.xml, F-18.ac; FGUK Hangar)",
+      "license": "GPL-2.0",
+      "out": "game/assets/models/aircraft/fa18c/fa18c.glb",
+      "remap": [
+        "-z",
+        "+y",
+        "+x"
+      ],
+      "body_remap": [
+        "+y",
+        "+z",
+        "+x"
+      ],
+      "scale": 1.0,
+      "origin": "center",
+      "max_tex": 2048,
+      "max_tris": 60000,
+      "rules": [],
+      "anim": {},
+      "hinges": {},
+      "nozzle": "^NOPE$",
+      "wing": "^NOPE$",
+      "muzzles_raw": []
+    },
+    "rafale": {
+      "kind": "aircraft",
+      "repo": "FGMEMBERS/RafaleB",
+      "branch": "master",
+      "src": "tools/cache/models/src-rafale",
+      "sparse": [
+        "*"
+      ],
+      "entry": "Models/RafaleB17-model.xml",
+      "include_models": [],
+      "offset_overrides": {},
+      "source": "https://github.com/FGMEMBERS/RafaleB (Models/RafaleB17-model.xml, RafaleB17.ac)",
+      "license": "GPL-2.0",
+      "out": "game/assets/models/aircraft/rafale/rafale.glb",
+      "remap": [
+        "-z",
+        "+y",
+        "+x"
+      ],
+      "body_remap": [
+        "+y",
+        "+z",
+        "+x"
+      ],
+      "scale": 1.0,
+      "origin": "center",
+      "max_tex": 2048,
+      "max_tris": 60000,
+      "rules": [],
+      "anim": {},
+      "hinges": {},
+      "nozzle": "^NOPE$",
+      "wing": "^NOPE$",
+      "muzzles_raw": []
+    },
+    "ah64": {
+      "kind": "aircraft",
+      "repo": "FGMEMBERS/AH-64_Apache",
+      "branch": "master",
+      "src": "tools/cache/models/src-ah64",
+      "sparse": [
+        "*"
+      ],
+      "entry": "Models/WAH-64_Apache.xml",
+      "include_models": [],
+      "offset_overrides": {},
+      "source": "https://github.com/FGMEMBERS/AH-64_Apache (Models/WAH-64_Apache.xml, apache3.ac, MainRotor/mainrotor.ac, TailRotor/tailrotor.ac; FGUK Hangar)",
+      "license": "GPL-2.0",
+      "out": "game/assets/models/aircraft/ah64/ah64.glb",
+      "remap": [
+        "-z",
+        "+y",
+        "+x"
+      ],
+      "body_remap": [
+        "+y",
+        "+z",
+        "+x"
+      ],
+      "scale": 1.0,
+      "origin": "center",
+      "max_tex": 2048,
+      "max_tris": 60000,
+      "rules": [],
+      "extra_ac": [
+        {
+          "path": "Models/MainRotor/mainrotor.ac",
+          "offset": [
+            -1.3,
+            -0.05,
+            2.05
+          ],
+          "bucket": "rotor_main"
+        },
+        {
+          "path": "Models/TailRotor/tailrotor.ac",
+          "offset": [
+            8.15,
+            -0.7,
+            1.3
+          ],
+          "bucket": "rotor_tail"
+        }
+      ],
+      "anim": {},
+      "hinges": {
+        "rotor_main": {
+          "center": [
+            -1.3,
+            -0.05,
+            2.05
+          ],
+          "axis": [
+            0,
+            0,
+            1
+          ],
+          "max_deg": 0,
+          "property": "rotors/main/rpm",
+          "rotor": true
+        },
+        "rotor_tail": {
+          "center": [
+            15.47,
+            0.0,
+            3.21
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "max_deg": 0,
+          "property": "rotors/tail/rpm",
+          "rotor": true
+        }
+      },
+      "nozzle": "^NOPE$",
+      "wing": "^NOPE$",
       "muzzles_raw": []
     }
   }
