@@ -44,6 +44,7 @@ var _next_stream: AudioStreamMP3
 var _next_song: Dictionary = {}
 var _download_song: Dictionary = {}
 var _http_download: HTTPRequest
+var _retry_timer: Timer  # a node timer, unlike create_timer(), can be stopped when the radio goes away
 var _listing := false
 var _skip_pending := false
 var _retry_pending := false
@@ -66,7 +67,18 @@ func _ready() -> void:
 	_http_download.timeout = DOWNLOAD_TIMEOUT
 	add_child(_http_download)
 	_http_download.request_completed.connect(_on_download_done)
+	_retry_timer = Timer.new()
+	_retry_timer.one_shot = true
+	add_child(_retry_timer)
+	_retry_timer.timeout.connect(_on_retry)
 	_apply_cockpit_fx()
+
+
+## Stops the crossfade and the retry timer, so no pending callback is left when the autoload is freed.
+func _exit_tree() -> void:
+	if _tween != null:
+		_tween.kill()
+	_retry_timer.stop()
 
 
 func _process(delta: float) -> void:
@@ -106,6 +118,7 @@ func stop() -> void:
 	_running = false
 	_skip_pending = false
 	_retry_pending = false
+	_retry_timer.stop()
 	_http_download.cancel_request()
 	_download_song = {}
 	_next_stream = null
@@ -366,7 +379,7 @@ func _retry_later() -> void:
 	if _retry_pending:
 		return
 	_retry_pending = true
-	get_tree().create_timer(RETRY_SECONDS).timeout.connect(_on_retry)
+	_retry_timer.start(RETRY_SECONDS)
 
 
 func _on_retry() -> void:

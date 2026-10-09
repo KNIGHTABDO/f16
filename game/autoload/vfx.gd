@@ -49,6 +49,12 @@ func _ready() -> void:
 		Events.explosion.connect(_on_events_explosion)
 
 
+## Disconnects from the explosion signal, so nothing calls back into the effect pools while the tree is torn down.
+func _exit_tree() -> void:
+	if Events.explosion.is_connected(_on_events_explosion):
+		Events.explosion.disconnect(_on_events_explosion)
+
+
 func _process(delta: float) -> void:
 	for i in _lights.size():
 		if _light_age[i] >= LIGHT_TIME or not is_instance_valid(_lights[i]):
